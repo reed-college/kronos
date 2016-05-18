@@ -1,1 +1,4 @@
 
+This will take in google calendars and icals for proffessors and the determine what times they are free during orals week.
+There will be an interface to see what proffessors under certain departments or other criteria are free at a certain time.
+Also it will be able to tell what times some amount of proffessors are all free. 
