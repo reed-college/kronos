@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://kronos_dev_user:password@localhost:5432/kronos_dev'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://kronos_dev_user:password@localhost:5432/kronos_dev'
 db = SQLAlchemy(app)
 
 
@@ -21,12 +21,16 @@ class User(db.Model):
 
 @app.route("/")
 def hello():
-    return "Hello World!" + str(User.query.all())
+    users = ""
+    for user in User.query.all():
+        users += user.username + "\n\n"
+    return "Hello World!\n\n" + users
 
 @app.route("/<name>")
 def makeuser(name):
     db.session.add(User(name, name + '@example.com'))
-
+    db.session.commit()
+    return "created user " + name
 
 if __name__ == "__main__":
     app.run()
