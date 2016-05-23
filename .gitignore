@@ -61,4 +61,4 @@ target/
 #Ipython Notebook
 .ipynb_checkpoints
 
-client_secret.json
+client_secrets.json
