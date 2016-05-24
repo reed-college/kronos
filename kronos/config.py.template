@@ -1,0 +1,10 @@
+import uuid
+
+class Config(object):
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://username:password@host:port/mydatabase'
+    DEBUG = False 
+    SECRET_KEY = str(uuid.uuid4())
+
+class DevelopmentConfig(Config):
+    DEBUG = True
