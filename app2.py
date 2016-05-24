@@ -1,5 +1,5 @@
 import json
-
+import datetime
 import flask
 import httplib2
 
@@ -19,9 +19,17 @@ def index():
     return flask.redirect(flask.url_for('oauth2callback'))
   else:
     http_auth = credentials.authorize(httplib2.Http())
-    service = discovery.build('calendar', 'v3', http_auth)
-   # files = drive_service.files().list().execute()
-    return "hi" #json.dumps(files)
+    service = discovery.build('calendar', 'v3', http=http_auth)
+    oralsweekstart = datetime.datetime(2017,5,1).isoformat() + 'Z' # 'Z' indicates UTC time
+    oralsweekend = datetime.datetime(2017,5,6).isoformat() + 'Z' 
+
+    print('Getting events during orals week')
+    eventsResult = service.events().list(
+      calendarId='primary', timeMin=oralsweekstart, timeMax=oralsweekend, singleEvents=True,
+      orderBy='startTime').execute()
+    events = eventsResult.get('items', [])
+
+    return json.dumps(events)
 
 
 @app.route('/oauth2callback')
@@ -31,22 +39,22 @@ def oauth2callback():
       scope='https://www.googleapis.com/auth/calendar.readonly',
       redirect_uri=flask.url_for('oauth2callback', _external=True))
   if 'code' not in flask.request.args:
-    print("I'm in the if part")
     auth_uri = flow.step1_get_authorize_url()
     return flask.redirect(auth_uri)
   else:
-    print("I'm in the else statement")
     auth_code = flask.request.args.get('code')
     credentials = flow.step2_exchange(auth_code)
     flask.session['credentials'] = credentials.to_json()
     return flask.redirect(flask.url_for('index'))
 
+"""
 @app.errorhandler(500)
 def server_error(e):
     return str(e)
+"""
 
 if __name__ == '__main__':
   import uuid
   app.secret_key = str(uuid.uuid4())
-  app.debug = False
+  app.debug = True
   app.run()
