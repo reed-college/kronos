@@ -14,6 +14,9 @@ def index():
 
 @app.route('/gcal')
 def get_gcal():
+    """
+    Shows the user what events they have during orals week
+    """
     if 'credentials' not in flask.session:
         return flask.redirect(flask.url_for('oauth2callback'))
     credentials = client.OAuth2Credentials.from_json(flask.session['credentials'])
@@ -36,6 +39,11 @@ def get_gcal():
 
 @app.route('/oauth2callback')
 def oauth2callback():
+    """
+    Connects to the google api
+    copied almost etirely from:
+    https://developers.google.com/api-client-library/python/auth/web-app#example
+    """
     flow = client.flow_from_clientsecrets(
         'client_secrets.json',
         scope='https://www.googleapis.com/auth/calendar.readonly',
