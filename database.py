@@ -27,8 +27,8 @@ class User(db.Model):
 class Event(db.Model):
     id = db.Column(db.String(40), primary_key = True)
     summary = db.Column(db.Text)
-    dtstart = db.Column(db.Timstamp)
-    dtend = db.Column(db.Timstamp)
+    dtstart = db.Column(db.DateTime)
+    dtend = db.Column(db.DateTime)
     status = db.Column(db.Enum('busy', 'free'))
     private = db.Column(db.Boolean)
     oral = db.Column(db.Boolean)
@@ -36,10 +36,11 @@ class Event(db.Model):
     userid = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', backref = db.backref('event')) # lazy???
 
-    def __init__(self, summary, dtstart, dtend, user, status = busy, private = True, oral = False):
+    def __init__(self, summary, dtstart, dtend, user, private = True, oral = False):
         self.summary = summary
         self.dtstart = dtstart
         self.dtend = dtend
+        self.status = status
         self.user = user
         
     def __repr__(self):
