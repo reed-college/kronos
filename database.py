@@ -5,6 +5,9 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://Jiahui:password@localhost/db_kronos'
 db = SQLAlchemy(app)
+
+department = ('Anthropology', 'Art', 'Biology', 'Chemistry', 'Chinese', 'Classics', 'Dance', 'Economics', 'English', 'French', 'German', 'History', 'Linguistics', 'Mathematics', 'Music', 'Philosophy', 'Physics', 'Political Science', 'Psychology', 'Religion', 'Russian', 'Sociology', 'Spanish', 'Theatre')
+division = ('The Arts', 'History and Social Sciences', 'Literature and Languages', 'Mathematics and Natural Sciences', 'Philosophy, Religion, Psychology and Linguistics')
  
 class User(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -12,18 +15,33 @@ class User(db.Model):
     name = db.Column(db.String(50))
     password = db.Column(db.Text)
     email = db.Column(db.String(120), unique = True)
-    department = db.Column(db.String(50))
-
+    department = db.Column(db.Enum(*department))
+    division = db.Column(db.Enum(*division))
+    
     def __init__(self, username, name, password, email, department):
         self.username = username
         self.name = name
         self.password = password
         self.email = email
         self.department = department
+        self.division = division
+        
+    def __repr__(self):
+        return '<%r>' % self.username
+'''
+class Prof(db.User):
+    department = db.Column(db.Enum(*department))
+    division = db.Column(db.Enum(*division))
+
+    def __init__(self, username, name, password, email, department, division):
+        User.__init__(self, username, name, password, email)
+        self.department = department
+        self.division = division
+        self.type = 'professor'
 
     def __repr__(self):
-        return '<User %r>' % self.username
-
+        return '<%r>' % self.username
+'''
 class Event(db.Model):
     id = db.Column(db.String(40), primary_key = True)
     summary = db.Column(db.Text)
@@ -47,9 +65,12 @@ class Event(db.Model):
         return '<Event %r>' % self.summary
 
 class Oral(db.Model):
+    __tablename__ = 'Oral'
     id = db.Column(db.String(40), primary_key = True)
-    response = db.Column(db.Enum('Accepted', 'Declined'))
-
+    response = db.Column(db.Enum('Accepted', 'Declined', 'Tentative'))
+    
+    eventid = db.Column(db.Integer, db.ForeignKey('event.id'))
+    event = db.relationship('Event', backref = db.backref('oral'))
     attendee_userid = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', backref = db.backref('oral'))
 
@@ -57,7 +78,7 @@ class Oral(db.Model):
         self.user = user
 
     def __repr__(self):
-        return '<Oral>'
+        return '<Oral>' #???
 
 
 
