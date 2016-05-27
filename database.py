@@ -56,7 +56,7 @@ class Prof(User):
         return User.__table__.c.get('division', Enum(*division))
 
     def __init__(self, username, name, password, email, department, division):
-        User.__init__(self, username, name, email)
+        User.__init__(self, username, name, password, email)
         self.department = department
         self.division = division
         self.type = 'professor'
@@ -81,7 +81,7 @@ class Stu(User):
         return User.__table__.c.get('division', Enum(*division))
 
     def __init__(self, username, name, password, email, department, division):
-        User.__init__(self, username, name, email)
+        User.__init__(self, username, name, password, email)
         self.department = department
         self.division = division
         self.type = 'student'
@@ -126,7 +126,7 @@ class Oral(db.Model):
     prof_id = db.Column(db.Integer, db.ForeignKey('prof.id'))
     prof = db.relationship('Prof', backref = db.backref('oral'))
     stu_id = db.Column(db.Integer, db.ForeignKey('stu.id'))
-    stu = db.relationship('stu', backref = db.backref('oral'))
+    stu = db.relationship('Stu', backref = db.backref('oral'))
 
     def __init__(self, stu, prof, response = None):
         Event.__init__(self, dtstart, dtend)
@@ -138,6 +138,11 @@ class Oral(db.Model):
         return '<%rs Oral>' % self.stu
 
 
+
+
+# Example:
+# Adding myself:
+# me = Stu('weij', 'Jiahui', 123, 'weij@reed.edu', 'Physics', 'Mathematics and Natural Sciences' )
 
 
 
