@@ -10,7 +10,7 @@ from kronos import app
 
 @app.route('/')
 def index():
-    return 'Hello World!'
+    return app.config['SQLALCHEMY_DATABASE_URI']#'Hello World!'
 
 @app.route('/gcal')
 def get_gcal():
