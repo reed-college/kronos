@@ -1,0 +1,49 @@
+Events page
+  FACs 
+    create new events 
+    needs to be able to find overlapping time slots for first two readers
+      must be able to generate list of availible time slots between the first two readers
+        This will give a set of starting points. Since the first and second readers MUST be present for the Oral
+        Thus ensuring that they will be there
+        PROBLEM: This doesn't give a lot of wiggle room for special cases? I can't think of any right now, but I'm sure it will happen.
+    free times must be searchable both ways
+      can look up list of availible times for a certain professor
+      can look up list of availible professors for a certain availible time slot
+    filters
+      For example, if the fourth reader must be OUTSIDE the department, then eliminate any professors within the department
+      each datapoint can have a set of attributes attached
+        in terms of python implementation. Like we can have different Class for professors vs students, and each person is an instance of their respective class
+        this means that professor and students can have different functions. 
+        Facs will be able to see all this activity 
+  Professors
+    Upload their own schedule
+    Get notified of their Orals schedules (formatted? Probably not. Definitely a least concern thing for now)
+  Students
+    Yeah we get no say, I would like to call for a people's revolution please?
+    
+Upload page
+  allows professors to upload their schedules
+    Can handle
+      Google Calendar
+      iCal
+      Outlook? Does anyone use this? What if they just get an error message that says "please switch to something else"
+      What if someone does not have a digital calendar?
+        Manual input, check all time slots where they are availible
+  Interface
+    do we want a calendar looking sort of thing? Or will this just be a boring page of lists. The second one is easier, but a lot less intuitive
+Main page
+  For the FACs
+  need to make sure every student is accounted for. So they can see list of students without scheduled orals, and work on those
+  mainly a searchable interface
+  (OPTIONAL) maybe have a way of viewing every Oral by Department or whatever? 
+Data entry
+  Will the FACs be required to manually enter in data for every single student? Can we make this easier for the FACs by making each student do it for themselves?
+  This may be more complicated. OPTIONAL
+
+OPTIONAL THINGS THAT WOULD BE SUPER COOL TO HAVE BUT TIME AND ABILITY IS A CRUEL CONSTRAINT
+  Option for students to request readers themselves
+    student would be able to search the database for professors with time slots that match that of their first and second readers
+    If we want to get ~super~ fancy, we can have the student talk about the general gist of their thesis so professors could know what they are agreeing to when they become readers
+  Professors can input "interests", so they can get requests for thesis that relate to something they are interested in/ have knowledge about
+  The world is your oyster, albeit a small and shriveled oyster that is lacking in ability and is on the verge of death, but an oyster. 
+  
