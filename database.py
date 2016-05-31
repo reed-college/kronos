@@ -32,7 +32,7 @@ class User(db.Model):
         self.email = email
         
     def __repr__(self):
-        return '<%r>' % self.username
+        return '<User %r>' % self.username
 
 class FAC(User):
     def __init__(self, username, name, password, email):
@@ -40,20 +40,20 @@ class FAC(User):
         self.type = 'FAC'
 
 class Prof(User):    
-    department = db.Column("department", db.Enum(*department))
-    division = db.Column("division", db.Enum(*division))    
+    department = db.Column("department", db.Enum(*department, name = "department"))
+    division = db.Column("division", db.Enum(*division, name = "division"))    
     __mapper_args__ = {'polymorphic_identity': 'professor'}
     id = db.Column(db.Integer, ForeignKey('user.id'), primary_key = True)
 
     @declared_attr
     def department(cls):
         "Department column, if not present already."
-        return User.__table__.c.get('department', Enum(*department))
+        return User.__table__.c.get('department', Enum(*department, name = "department"))
 
     @declared_attr
     def division(cls):
         "Division column, if not present already."
-        return User.__table__.c.get('division', Enum(*division))
+        return User.__table__.c.get('division', Enum(*division, name = "division"))
 
     def __init__(self, username, name, password, email, department, division):
         User.__init__(self, username, name, password, email)
@@ -65,20 +65,20 @@ class Prof(User):
         return '<%r>' % self.username
 
 class Stu(User):
-    department = db.Column("department", db.Enum(*department))
-    division = db.Column("division", db.Enum(*division))
+    department = db.Column("department", db.Enum(*department, name = "department"))
+    division = db.Column("division", db.Enum(*division, name = "division"))
     __mapper_args__ = {'polymorphic_identity': 'student'}
     id = db.Column(db.Integer, ForeignKey('user.id'), primary_key = True)
 
     @declared_attr
     def department(cls):
         "Department column, if not present already."
-        return User.__table__.c.get('department', Enum(*department))
+        return User.__table__.c.get('department', Enum(*department, name = "department"))
 
     @declared_attr
     def division(cls):
         "Division column, if not present already."
-        return User.__table__.c.get('division', Enum(*division))
+        return User.__table__.c.get('division', Enum(*division, name = "division"))
 
     def __init__(self, username, name, password, email, department, division):
         User.__init__(self, username, name, password, email)
@@ -96,7 +96,7 @@ class Event(db.Model):
     summary = db.Column(db.Text)
     dtstart = db.Column(db.DateTime, nullable = False)
     dtend = db.Column(db.DateTime, nullable = False)
-    status = db.Column(db.Enum('busy', 'free'))
+    status = db.Column(db.Enum('busy', 'free', name = 'status'))
     private = db.Column(db.Boolean)
     discriminator = db.Column('type', db.String(10))
     __mapper_args__ = {'polymorphic_on': discriminator}
@@ -121,7 +121,7 @@ class Oral(db.Model):
     __tablename__ = 'orals'
     __mapper_args__ = {'polymorphic_identity': 'oral'}
     id = db.Column(db.String(40), ForeignKey('events.id'), primary_key = True)
-    response = db.Column(db.Enum('Accepted', 'Declined', 'Tentative'))
+    response = db.Column(db.Enum('Accepted', 'Declined', 'Tentative', name = "response"))
 
     prof_id = db.Column(db.Integer, db.ForeignKey('prof.id'))
     prof = db.relationship('Prof', backref = db.backref('oral'))
