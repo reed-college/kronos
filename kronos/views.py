@@ -3,6 +3,7 @@ import datetime
 import flask
 import httplib2
 
+from flask import render_template
 from apiclient import discovery
 from oauth2client import client
 
@@ -11,7 +12,7 @@ from kronos import app
 
 @app.route('/')
 def index():
-    return app.config['SQLALCHEMY_DATABASE_URI']
+    return render_template("index.html") 
 
 
 @app.route('/gcal')
