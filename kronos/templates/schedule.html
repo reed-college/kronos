@@ -1,0 +1,138 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}Kronos{% endblock %}
+{% block styles %}
+{{super()}}
+<link rel="stylesheet"
+      href="{{url_for('.static', filename='schedule.css')}}">
+{% endblock %}
+{% block content %}
+<div class="well">
+  <div class="row form-group">
+    <div class="col-md-12">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button">
+            <span class="glyphicon glyphicon-plus"></span>
+          </button>
+        </span>
+      </div>
+      <div class="label-input-group">
+      	<span class="label label-primary" id="je">Jon Essick</span>
+        <span class="label label-danger" id="">Gail Sherman</span>
+      </div>
+    </div>
+  </div>
+  <div class="row form-group">
+    <div class="col-md-12">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Students">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button">
+            <span class="glyphicon glyphicon-plus"></span>
+          </button>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="row form-group">
+    <div class="col-md-6">
+      <select class="form-control">
+        <option selected="" disabled="">Department</option>
+        <option>Physics</option>
+        <option>Math</option>
+        <option>History</option>
+        <option>Art</option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <select class="form-control">
+        <option selected="" disabled="">Division</option>
+        <option>Math and Natural Sciences</option>
+        <option>Literature and Language</option>
+        <option>The Arts</option>
+        <option>History and Social Sciences</option>
+        <option>Philosophy, Religion, Psychology, and Linguistics</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-1"></div>
+  <div class="col-md-10">
+    <table class="table table-bordered">
+      <tr>
+        <th>MONDAY MAY 1<br>10:00-Noon</th>
+        <th>TUESDAY MAY 2<br>10:00-Noon</th>
+        <th>WEDNESDAY MAY 3<br>10:00-Noon</th>
+        <th>THURSDAY MAY 4<br>10:00-Noon</th>
+        <th>FRIDAY MAY 5<br>10:00-Noon</th>
+      </tr>
+      <tr>
+        <td>Laura Klinkner<br>Savery - Vollum 228<br>Minardi<br>Leibman<br>Rork</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </table>
+  </div>
+  <div class="col-md-1"></div>
+</div>
+{% endblock %}
