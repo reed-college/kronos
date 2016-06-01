@@ -63,3 +63,5 @@ target/
 
 client_secrets.json
 kronos/config.py
+#ignore virtualenv
+venv/*
