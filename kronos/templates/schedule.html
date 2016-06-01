@@ -4,9 +4,14 @@
 {{super()}}
 <link rel="stylesheet"
       href="{{url_for('.static', filename='schedule.css')}}">
+<style type="text/css" media="print">
+.dontprint {
+    display: none;
+}
+</style>
 {% endblock %}
 {% block content %}
-<div class="well">
+<div class="well dontprint">
   <div class="row form-group">
     <div class="col-md-12">
       <div class="input-group">
