@@ -8,11 +8,21 @@ from apiclient import discovery
 from oauth2client import client
 
 from kronos import app
+from .models import department, division, Event
 
 
 @app.route('/')
-def index():
-    return render_template("schedule.html") 
+def schedule():
+    start = datetime.datetime(2017, 5, 1)
+    timeslots = [datetime.timedelta(hours=10), datetime.timedelta(hours=13),
+                 datetime.timedelta(hours=15)]
+    orallength = datetime.timedelta(hours=2)
+    days = [datetime.timedelta(days=x) for x in range(0,6)]
+    events = Event.query.all()
+    return render_template(
+        "schedule.html", department=department, division=division,
+        events=events, start=start, timeslots=timeslots, 
+        orallength=orallength, days=days)
 
 
 @app.route('/gcal')

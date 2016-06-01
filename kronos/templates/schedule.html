@@ -44,20 +44,17 @@
     <div class="col-md-6">
       <select class="form-control">
         <option selected="" disabled="">Department</option>
-        <option>Physics</option>
-        <option>Math</option>
-        <option>History</option>
-        <option>Art</option>
+        {% for dept in department %}
+        <option>{{ dept }}</option>
+        {% endfor %}
       </select>
     </div>
     <div class="col-md-6">
       <select class="form-control">
         <option selected="" disabled="">Division</option>
-        <option>Math and Natural Sciences</option>
-        <option>Literature and Language</option>
-        <option>The Arts</option>
-        <option>History and Social Sciences</option>
-        <option>Philosophy, Religion, Psychology, and Linguistics</option>
+        {% for div in division %}
+        <option>{{ div }}</option>
+        {% endfor %}
       </select>
     </div>
   </div>
@@ -66,76 +63,21 @@
   <div class="col-md-1"></div>
   <div class="col-md-10">
     <table class="table table-bordered">
+    {% for slot in timeslots %}
       <tr>
-        <th>MONDAY MAY 1<br>10:00-Noon</th>
-        <th>TUESDAY MAY 2<br>10:00-Noon</th>
-        <th>WEDNESDAY MAY 3<br>10:00-Noon</th>
-        <th>THURSDAY MAY 4<br>10:00-Noon</th>
-        <th>FRIDAY MAY 5<br>10:00-Noon</th>
+      {% for day in days %}
+        <th>
+          {{ (start + slot + day).strftime("%A, %B %d <br> %I:%M -") |safe }}
+          {{ (start + slot + orallength).strftime("%I:%M") }}
+        </th>
+      {% endfor %}
       </tr>
       <tr>
+      {% for x in range(0,6) %}
         <td>Laura Klinkner<br>Savery - Vollum 228<br>Minardi<br>Leibman<br>Rork</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+      {% endfor %}
       </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
+    {% endfor %}
     </table>
   </div>
   <div class="col-md-1"></div>
