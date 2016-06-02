@@ -15,7 +15,7 @@
   <div class="row form-group">
     <div class="col-md-12">
       <div class="input-group">
-        <input type="text" class="form-control" placeholder="">
+        <input type="text" class="form-control" placeholder="" disabled>
         <span class="input-group-btn">
           <button class="btn btn-default" type="button">
             <span class="glyphicon glyphicon-plus"></span>
@@ -30,13 +30,16 @@
   </div>
   <div class="row form-group">
     <div class="col-md-12">
-      <div class="input-group">
-        <input type="text" class="form-control" placeholder="Students">
-        <span class="input-group-btn">
-          <button class="btn btn-default" type="button">
-            <span class="glyphicon glyphicon-plus"></span>
-          </button>
-        </span>
+      <div class="input-group my-group">
+        <input type="text" name="Students" class="form-control user-input" placeholder="Students">
+        <select id="stuselect" class="selectpicker form-control user-select" title="Students">
+          <option>something</option>
+          <option>another thing</option>
+          <option>something else</option>
+          <option>something</option>
+          <option>something</option>
+          <option>something</option>
+        </select>
       </div>
     </div>
   </div>

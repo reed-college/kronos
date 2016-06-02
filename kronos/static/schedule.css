@@ -18,3 +18,21 @@ td {
 .well {
 	border-radius: 0 !important;    
 }
+
+.chosen-disabled {
+            opacity: 1 !important;
+}
+
+.input-group.my-group{
+    width: 100%;
+}
+
+
+
+.form-control.user-select{
+    width: 25%;
+}
+
+.form-control.user-input{
+    width: 75%;
+}
