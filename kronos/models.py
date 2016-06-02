@@ -127,6 +127,12 @@ class Event(db.Model):
         else:
             return '<Not available>'
 
+attendees = db.Table(
+    'attendees',
+    db.Column('attendee_id', db.Integer, db.ForeignKey('prof.id')),
+    db.Column('oral_id', db.String(40), db.ForeignKey('orals.id'))
+    )
+
 
 class Oral(db.Model):
     __tablename__ = 'orals'
@@ -134,9 +140,9 @@ class Oral(db.Model):
     id = db.Column(db.String(40), ForeignKey('events.id'), primary_key=True)
     response = db.Column(db.Enum('Accepted', 'Declined', 'Tentative',
                                  name="response"))
-
-    prof_id = db.Column(db.Integer, db.ForeignKey('prof.id'))
-    prof = db.relationship('Prof', backref=db.backref('oral'))
+    attendees = db.relationship('Prof',
+                                secondary=attendees,
+                                backref=db.backref('oral'))
     stu_id = db.Column(db.Integer, db.ForeignKey('stu.id'))
     stu = db.relationship('Stu', backref=db.backref('oral'))
 
@@ -153,5 +159,5 @@ class Oral(db.Model):
 
 # Example:
 # Adding myself:
-# me = Stu('weij', 'Jiahui', 123, 'weij@reed.edu', 'Physics',
+# me = Stu('weij', 'Jiahui', “asd", 'weij@reed.edu', 'Physics',
 #          'Mathematics and Natural Sciences' )
