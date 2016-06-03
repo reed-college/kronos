@@ -79,7 +79,7 @@ $(document).ready(function() {
       {% for cell in row %}
       {% if cell == "h" or cell == "c" %}
       {% else %}
-        {% if row[0] == "h" %}<th>{{cell}}</th>
+        {% if row[0] == "h" %}<th>{{cell |safe}}</th>
         {% else %}<td>{{cell}}</td>{% endif %}
       {% endif %}
       {% endfor %}

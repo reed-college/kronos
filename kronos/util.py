@@ -43,8 +43,9 @@ def GetOralTable(orals):
         timerow = ["h"] # h for header
         delta = lastday - firstday
         for i in range(delta.days + 1):
-            timerow.append(str(firstday + timedelta(days=i)) + str(earliestStart) + str(earliestEnd))
+            timerow.append((firstday + timedelta(days=i)).strftime("%A, %B %d <br> ") + earliestStart.strftime("%I:%M - ") + earliestEnd.strftime("%I:%M"))
         oraltable.append(timerow)
+
         while currTimeslotOrals != []:
             oralrow = ["c"] # c for cell
             for i in range(delta.days + 1):
