@@ -30,24 +30,18 @@ $(document).ready(function() {
   <div class="row form-group">
     <div class="col-md-12">
       <select id="prof-select" class="user-select" multiple="multiple">
-        <option value="JE">Jon Essick</option>
-        <option value="PS">Pancho Savery</option>
-        <option value="MM">Margo Minardi</option>
-        <option value="LL">Laura Leibman</option>
-        <option value="JD">Jay Dickson</option>
-        <option value="DS">Darrel Schroder</option>
+        {% for prof in professors %}
+        <option value={{ prof.id }}>{{ prof.name }}</option>
+        {% endfor %}
       </select>
     </div>
   </div>
   <div class="row form-group">
     <div class="col-md-12">
       <select id="stu-select" class="user-select" multiple="multiple">
-        <option value="AG">Alex Grant</option>
-        <option value="LK">Laura Klinkner</option>
-        <option value="AC">Alex Chao</option>
-        <option value="LC">Lauren Cooper</option>
-        <option value="ES">Edmond Soun</option>
-        <option value="HT">Haley Tilt</option>
+        {% for stu in students %}
+        <option value={{ stu.id }}>{{ stu.name }}</option>
+        {% endfor %}
       </select>
     </div>
   </div>

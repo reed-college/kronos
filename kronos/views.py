@@ -8,7 +8,7 @@ from apiclient import discovery
 from oauth2client import client
 
 from kronos import app
-from .models import department, division, Oral
+from .models import department, division, Oral, Stu, Prof
 from kronos import util
 
 
@@ -17,10 +17,12 @@ def schedule():
 
     orals = Oral.query.order_by(Oral.dtstart).all()
     oraltable = util.GetOralTable(orals)
+    students = Stu.query.all()
+    professors = Prof.query.all()
 
     return render_template(
         "schedule.html", department=department, division=division,
-        oraltable=oraltable)
+        oraltable=oraltable, students=students, professors=professors)
 
 
 @app.route('/gcal')
