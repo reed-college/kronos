@@ -74,18 +74,14 @@ $(document).ready(function() {
   <div class="col-md-1"></div>
   <div class="col-md-10">
     <table class="table table-bordered">
-    {% for slot in timeslots %}
+    {% for row in oraltable %}
       <tr>
-      {% for day in days %}
-        <th>
-          {{ (start + slot + day).strftime("%A, %B %d <br> %I:%M -") |safe }}
-          {{ (start + slot + orallength).strftime("%I:%M") }}
-        </th>
-      {% endfor %}
-      </tr>
-      <tr>
-      {% for x in range(0,6) %}
-        <td>Laura Klinkner<br>Savery - Vollum 228<br>Minardi<br>Leibman<br>Rork</td>
+      {% for cell in row %}
+      {% if cell == "h" or cell == "c" %}
+      {% else %}
+        {% if row[0] == "h" %}<th>{{cell}}</th>
+        {% else %}<td>{{cell}}</td>{% endif %}
+      {% endif %}
       {% endfor %}
       </tr>
     {% endfor %}

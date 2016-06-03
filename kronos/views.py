@@ -3,26 +3,57 @@ import datetime
 import flask
 import httplib2
 
+from datetime import timedelta, datetime
 from flask import render_template
 from apiclient import discovery
 from oauth2client import client
 
 from kronos import app
-from .models import department, division, Event
+from .models import department, division, Oral
 
 
 @app.route('/')
 def schedule():
-    start = datetime.datetime(2017, 5, 1)
-    timeslots = [datetime.timedelta(hours=10), datetime.timedelta(hours=13),
-                 datetime.timedelta(hours=15)]
-    orallength = datetime.timedelta(hours=2)
-    days = [datetime.timedelta(days=x) for x in range(0,6)]
-    events = Event.query.all()
+    # I will assume that orals do not start before midnight and 
+    # end after midnight
+    orals = Oral.query.order_by(Oral.dtstart).all()
+    firstday = orals[0].dtstart.date()
+    lastday = orals[-1].dtstart.date()
+    #Creates the oral table
+    oraltable = []
+    while orals != []:
+        earliestStart = min(oral.dtstart.time() for oral in orals)
+        earliestEnd = orals[0].dtend.time()
+        for oral in orals:
+            if oral.dtstart.time() == earliestStart:
+                earliestEnd = oral.dtend.time()
+        currTimeslotOrals = [oral for oral in orals if oral.dtstart.time() == earliestStart and oral.dtend.time() == earliestEnd]
+        orals = [oral for oral in orals if not (oral in currTimeslotOrals)]
+        
+        timerow = ["h"] # h for header
+        delta = lastday - firstday
+        for i in range(delta.days + 1):
+            timerow.append(str(firstday + timedelta(days=i)) + str(earliestStart) + str(earliestEnd))
+        oraltable.append(timerow)
+        while currTimeslotOrals != []:
+            oralrow = ["c"] # c for cell
+            for i in range(delta.days + 1):
+                currday = firstday + timedelta(days=i)
+                currstart = datetime.combine(currday, earliestStart)
+                currend = datetime.combine(currday, earliestEnd)
+                for oral in currTimeslotOrals:
+                    if oral.dtstart == currstart and oral.dtend == currend:
+                        oralrow.append(oral.stu.name)
+                        currTimeslotOrals.remove(oral)
+                        break
+                else:
+                    oralrow.append("")
+            oraltable.append(oralrow)
+    print(oraltable)
+
     return render_template(
         "schedule.html", department=department, division=division,
-        events=events, start=start, timeslots=timeslots, 
-        orallength=orallength, days=days)
+        oraltable=oraltable)
 
 
 @app.route('/gcal')
