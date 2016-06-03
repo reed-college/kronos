@@ -17,7 +17,7 @@ division = ('The Arts', 'History and Social Sciences',
 
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(50), unique=True)
     name = db.Column(db.String(50), nullable=False)
     password = db.Column(db.Text, nullable=False)
@@ -101,7 +101,7 @@ class Stu(User):
 
 class Event(db.Model):
     __tablename__ = 'events'
-    id = db.Column(db.String(40), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     summary = db.Column(db.Text)
     dtstart = db.Column(db.DateTime, nullable=False)
     dtend = db.Column(db.DateTime, nullable=False)
@@ -130,14 +130,15 @@ class Event(db.Model):
 attendees = db.Table(
     'attendees',
     db.Column('attendee_id', db.Integer, db.ForeignKey('prof.id')),
-    db.Column('oral_id', db.String(40), db.ForeignKey('orals.id'))
+    db.Column('oral_id', db.Integer, db.ForeignKey('orals.id'))
     )
 
 
-class Oral(db.Model):
+class Oral(Event):
     __tablename__ = 'orals'
     __mapper_args__ = {'polymorphic_identity': 'oral'}
-    id = db.Column(db.String(40), ForeignKey('events.id'), primary_key=True)
+    id = db.Column(db.Integer, ForeignKey('events.id'),
+                   primary_key=True, autoincrement=True)
     response = db.Column(db.Enum('Accepted', 'Declined', 'Tentative',
                                  name="response"))
     attendees = db.relationship('Prof',
