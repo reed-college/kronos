@@ -36,6 +36,7 @@ class User(db.Model):
 
 
 class FAC(User):
+    __mapper_args__ = {'polymorphic_identity': 'FAC'}
     def __init__(self, username, name, password, email):
         User.__init__(self, username, name, password, email)
         self.type = 'FAC'
