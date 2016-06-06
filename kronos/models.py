@@ -127,27 +127,23 @@ class Event(db.Model):
             return '<Event %r>' % self.summary
         else:
             return '<Not available>'
-
-attendees = db.Table('attendees',
-    db.Column('attendee_id', db.Integer, db.ForeignKey('prof.id')),
-    db.Column('oral_id', db.Integer, db.ForeignKey('orals.id'))
+'''
+attendees = db.Table('attendees', db.metadata, 
+    db.Column('oral_id', db.Integer, db.ForeignKey('orals.id')),
+    db.Column('attendee_id', db.Integer, db.ForeignKey('prof.id'))
     )
-
-
+'''
 
 class Oral(Event):
     __tablename__ = 'orals'
     __mapper_args__ = {'polymorphic_identity': 'oral'}
     id = db.Column(db.Integer, ForeignKey('events.id'), primary_key=True, autoincrement=True)
-    response = db.Column(db.Enum('Accepted', 'Declined', 'Tentative',
-                                 name="response"))
-
-    attendees = db.relationship('Prof', 
-                                secondary = attendees, 
-                                backref = db.backref('oral'))
-    
     stu_id = db.Column(db.Integer, db.ForeignKey('stu.id'))
     stu = db.relationship('Stu', backref=db.backref('oral'))
+    prof_id = db.Column(db.Integer, db.ForeignKey('prof.id'))
+    prof = db.relationship('Prof', backref = db.backref('oral'))
+    response = db.Column(db.Enum('Accepted', 'Declined', 'Tentative',
+                                 name="response"))
 
     def __init__(self, stu, prof, summary, dtstart, dtend, user,
                  response=None):
