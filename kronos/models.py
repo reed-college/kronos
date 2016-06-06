@@ -11,6 +11,12 @@ division = ('The Arts', 'History and Social Sciences',
             'Literature and Languages', 'Mathematics and Natural Sciences',
             'Philosophy, Religion, Psychology and Linguistics')
 
+readers = db.Table('readers',
+       db.Column('prof_id', db.Integer, db.ForeignKey('prof.id')),
+       db.Column('oral_id', db.Integer, db.ForeignKey('orals.id'))
+       )
+
+
 # The User class contains professors and students,
 # but that does not mean that they are the actual "users" of this website
 # (at least not for now).
@@ -140,17 +146,16 @@ class Oral(Event):
     id = db.Column(db.Integer, ForeignKey('events.id'), primary_key=True, autoincrement=True)
     stu_id = db.Column(db.Integer, db.ForeignKey('stu.id'))
     stu = db.relationship('Stu', backref=db.backref('oral'))
-    prof_id = db.Column(db.Integer, db.ForeignKey('prof.id'))
-    prof = db.relationship('Prof', backref = db.backref('oral'))
     response = db.Column(db.Enum('Accepted', 'Declined', 'Tentative',
                                  name="response"))
+    readers = db.relationship('Prof', secondary=readers,
+           backref=db.backref('orals', lazy='dynamic'))
 
-    def __init__(self, stu, prof, summary, dtstart, dtend, user,
+    def __init__(self, stu, summary, dtstart, dtend, user,
                  response=None):
         Event.__init__(self, summary, dtstart, dtend, user)
         self.user = user
         self.stu = stu
-        self.prof = prof
 
     def __repr__(self):
         return '<%rs Oral>' % self.stu
