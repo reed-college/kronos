@@ -71,85 +71,38 @@ db.session.add(simpson)
 db.session.add(luker)
 
 # Orals
-oral11 = Oral(emma, pearson, 'Oral_Emma', '20160502 10:00:00 AM', '20160502 12:00:00 PM', griffinj)
-oral12 = Oral(emma, becker, 'Oral_Emma', '20160502 10:00:00 AM', '20160502 12:00:00 PM', griffinj)
-oral13 = Oral(emma, hovda, 'Oral_Emma', '20160502 10:00:00 AM', '20160502 12:00:00 PM', griffinj)
-oral14 = Oral(emma, somda, 'Oral_Emma', '20160502 10:00:00 AM', '20160502 12:00:00 PM', griffinj)
+oral1 = Oral(emma, 'Oral_Emma', '20160502 10:00:00 AM', '20160502 12:00:00 PM', griffinj)
+oral1.readers = [pearson, becker, hovda, somda]
 
-oral21 = Oral(richard, becker, 'Oral_Richard', '20160502 03:00:00 PM', '20160502 05:00:00 PM', griffinj)
-oral22 = Oral(richard, gruber, 'Oral_Richard', '20160502 03:00:00 PM', '20160502 05:00:00 PM', griffinj)
-oral23 = Oral(richard, minardi, 'Oral_Richard', '20160502 03:00:00 PM', '20160502 05:00:00 PM', griffinj)
-oral24 = Oral(richard, kroll, 'Oral_Richard', '20160502 03:00:00 PM', '20160502 05:00:00 PM', griffinj)
+oral2 = Oral(richard, 'Oral_Richard', '20160502 03:00:00 PM', '20160502 05:00:00 PM', griffinj)
+oral2.readers = [becker, gruber, minardi, kroll]
+ 
+oral3 = Oral(manon, 'Oral_Manon', '20160503 10:00:00 AM', '20160503 12:00:00 PM', griffinj)
+oral3.readers = [pearson, gruber, becker, witt]
+ 
+oral4 = Oral(knar, 'Oral_Knar', '20160503 01:00:00 PM', '20160503 03:00:00 PM', griffinj)
+oral4.readers = [gruber, pearson, khan, bershtein]
+ 
+oral5 = Oral(syd, 'Oral_Syd', '20160503 03:00:00 PM', '20160503 05:00:00 PM', griffinj)
+oral5.readers = [becker, pearson, ditter, makley]
+ 
+oral6 = Oral(miriam, 'Oral_Miriam', '20160504 01:00:00 PM', '20160504 03:00:00 PM', griffinj)
+oral6.readers = [gruber, becker, hancock, faletra]
+ 
+oral7 = Oral(sarah, 'Oral_Sarah', '20160505 10:00:00 AM', '20160505 12:00:00 PM', griffinj)
+oral7.readers = [pearson]
 
-oral31 = Oral(manon, pearson, 'Oral_Manon', '20160503 10:00:00 AM', '20160503 12:00:00 PM', griffinj)
-oral32 = Oral(manon, gruber, 'Oral_Manon', '20160503 10:00:00 AM', '20160503 12:00:00 PM', griffinj)
-oral33 = Oral(manon, becker, 'Oral_Manon', '20160503 10:00:00 AM', '20160503 12:00:00 PM', griffinj)
-oral34 = Oral(manon, witt, 'Oral_Manon', '20160503 10:00:00 AM', '20160503 12:00:00 PM', griffinj)
+oral8 = Oral(arthur, 'Oral_Arthur', '20160505 03:00:00 PM', '20160505 05:00:00 PM', griffinj)
+oral8.readers = [gruber, pearson, becker, luker]
 
-oral41 = Oral(knar, gruber, 'Oral_Knar', '20160503 01:00:00 PM', '20160503 03:00:00 PM', griffinj)
-oral42 = Oral(knar, pearson, 'Oral_Knar', '20160503 01:00:00 PM', '20160503 03:00:00 PM', griffinj)
-oral43 = Oral(knar, khan, 'Oral_Knar', '20160503 01:00:00 PM', '20160503 03:00:00 PM', griffinj)
-oral44 = Oral(knar, bershtein, 'Oral_Knar', '20160503 01:00:00 PM', '20160503 03:00:00 PM', griffinj)
-
-oral51 = Oral(syd, becker, 'Oral_Syd', '20160503 03:00:00 PM', '20160503 05:00:00 PM', griffinj)
-oral52 = Oral(syd, pearson, 'Oral_Syd', '20160503 03:00:00 PM', '20160503 05:00:00 PM', griffinj)
-oral53 = Oral(syd, ditter, 'Oral_Syd', '20160503 03:00:00 PM', '20160503 05:00:00 PM', griffinj)
-oral54 = Oral(syd, makley, 'Oral_Syd', '20160503 03:00:00 PM', '20160503 05:00:00 PM', griffinj)
-
-oral61 = Oral(miriam, gruber, 'Oral_Miriam', '20160504 01:00:00 PM', '20160504 03:00:00 PM', griffinj)
-oral62 = Oral(miriam, becker, 'Oral_Miriam', '20160504 01:00:00 PM', '20160504 03:00:00 PM', griffinj)
-oral63 = Oral(miriam, hancock, 'Oral_Miriam', '20160504 01:00:00 PM', '20160504 03:00:00 PM', griffinj)
-oral64 = Oral(miriam, faletra, 'Oral_Miriam', '20160504 01:00:00 PM', '20160504 03:00:00 PM', griffinj)
-
-oral71 = Oral(sarah, pearson, 'Oral_Sarah', '20160505 10:00:00 AM', '20160505 12:00:00 PM', griffinj)
-oral72 = Oral(sarah, gruber, 'Oral_Sarah', '20160505 10:00:00 AM', '20160505 12:00:00 PM', griffinj)
-oral73 = Oral(sarah, mckinney, 'Oral_Sarah', '20160505 10:00:00 AM', '20160505 12:00:00 PM', griffinj)
-oral74 = Oral(sarah, simpson, 'Oral_Sarah', '20160505 10:00:00 AM', '20160505 12:00:00 PM', griffinj)
-
-oral81 = Oral(arthur, gruber, 'Oral_Arthur', '20160505 03:00:00 PM', '20160505 05:00:00 PM', griffinj)
-oral82 = Oral(arthur, pearson, 'Oral_Arthur', '20160505 03:00:00 PM', '20160505 05:00:00 PM', griffinj)
-oral83 = Oral(arthur, becker, 'Oral_Arthur', '20160505 03:00:00 PM', '20160505 05:00:00 PM', griffinj)
-oral84 = Oral(arthur, luker, 'Oral_Arthur', '20160505 03:00:00 PM', '20160505 05:00:00 PM', griffinj)
-
-db.session.add(oral11)
-db.session.add(oral12)
-db.session.add(oral13)
-db.session.add(oral14)
-
-db.session.add(oral21)
-db.session.add(oral22)
-db.session.add(oral23)
-db.session.add(oral24)
-
-db.session.add(oral31)
-db.session.add(oral32)
-db.session.add(oral33)
-db.session.add(oral34)
-
-db.session.add(oral41)
-db.session.add(oral42)
-db.session.add(oral43)
-db.session.add(oral44)
-
-db.session.add(oral51)
-db.session.add(oral52)
-db.session.add(oral53)
-db.session.add(oral54)
-
-db.session.add(oral61)
-db.session.add(oral62)
-db.session.add(oral63)
-db.session.add(oral64)
-
-db.session.add(oral71)
-db.session.add(oral72)
-db.session.add(oral73)
-db.session.add(oral74)
-
-db.session.add(oral81)
-db.session.add(oral82)
-db.session.add(oral83)
-db.session.add(oral84)
+db.session.add(oral1)
+db.session.add(oral2)
+db.session.add(oral3)
+db.session.add(oral4)
+db.session.add(oral5)
+db.session.add(oral6)
+db.session.add(oral7)
+db.session.add(oral8)
 
 # Made-up Events
 
