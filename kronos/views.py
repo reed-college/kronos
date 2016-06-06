@@ -3,7 +3,7 @@ import datetime
 import flask
 import httplib2
 
-from flask import render_template
+from flask import render_template, request
 from apiclient import discovery
 from oauth2client import client
 
@@ -25,7 +25,11 @@ def schedule():
         oraltable=oraltable, students=students, professors=professors)
 
 
-@app.route('/gcal')
+@app.route('/getschedule')
+def get_filtered_schedule():
+    return str(request.args.getlist("professors[]"))
+
+app.route('/gcal')
 def get_gcal():
     """
     Shows the user what events they have during orals week

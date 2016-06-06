@@ -1,30 +1,28 @@
 {% extends "bootstrap/base.html" %}
 {% block title %}Kronos{% endblock %}
+
 {% block styles %}
 {{super()}}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 <link rel="stylesheet" href="{{url_for('.static', filename='schedule.css')}}">
+<link rel="stylesheet" href="{{url_for('.static', filename='fullcalendar.min.css')}}" >
+<link rel="stylesheet" href="{{url_for('.static', filename='fullcalendar.print.css')}}" media='print' >
 <style type="text/css" media="print">
 .dontprint {
     display: none;
 }
 </style>
 {% endblock %}
+
 {% block scripts %}
 {{super()}}
+<script src="{{url_for('.static', filename='moment.min.js')}}"></script>
+<script src="{{url_for('.static', filename='fullcalendar.min.js')}}" ></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-<script type="text/javascript">
-$(document).ready(function() {
-  $("#stu-select").select2({
-    placeholder: "Students"
-  });
-  $("#prof-select").select2({
-    placeholder: "Professors"
-  });
-});
-</script>
+<script src="{{url_for('.static', filename='schedule.js')}}"></script>
 {% endblock %}
+
 {% block content %}
 <div class="well dontprint">
   <div class="row form-group">
@@ -64,23 +62,7 @@ $(document).ready(function() {
     </div>
   </div>
 </div>
-<div class="row">
-  <div class="col-md-1"></div>
-  <div class="col-md-10">
-    <table class="table table-bordered">
-    {% for row in oraltable %}
-      <tr>
-      {% for cell in row %}
-      {% if cell == "h" or cell == "c" %}
-      {% else %}
-        {% if row[0] == "h" %}<th>{{cell |safe}}</th>
-        {% else %}<td>{{cell}}</td>{% endif %}
-      {% endif %}
-      {% endfor %}
-      </tr>
-    {% endfor %}
-    </table>
-  </div>
-  <div class="col-md-1"></div>
+<div class="container">
+  <div id='calendar'></div>
 </div>
 {% endblock %}
