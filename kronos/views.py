@@ -24,15 +24,19 @@ def schedule():
         "schedule.html", department=department, division=division,
         students=students, professors=professors, starttime=starttime)
 
-
+"""
 @app.route('/getschedule')
 def get_filtered_schedule():
     return str(request.args.getlist("professors[]"))
-
+"""
 
 @app.route('/eventsjson')
 def get_events_json():
-    eventobjs = Event.query.all()
+    print(request)
+    start = request.args.get("start")
+    end = request.args.get("end")
+    eventobjs = Event.query.filter(Event.dtstart <= end).\
+            filter(Event.dtend >= start)
     events = [{"id":event.id,"title":event.summary,"start":str(event.dtstart),"end":str(event.dtend)} for event in eventobjs]
     return json.dumps(events)
 
