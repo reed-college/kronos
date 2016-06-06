@@ -8,6 +8,8 @@ $(document).ready(function() {
     });
     //initializing fullCalendar
     $('#calendar').fullCalendar({
+       defaultDate: startday,
+       events: '/eventsjson',
        defaultView: 'agendaWeek',         
        weekends: false,
        allDaySlot: false,

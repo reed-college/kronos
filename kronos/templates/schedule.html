@@ -17,6 +17,7 @@
 
 {% block scripts %}
 {{super()}}
+<script>var startday = "{{starttime.strftime('%Y-%m-%d')}}";</script>
 <script src="{{url_for('.static', filename='moment.min.js')}}"></script>
 <script src="{{url_for('.static', filename='fullcalendar.min.js')}}" ></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>

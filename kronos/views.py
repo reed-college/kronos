@@ -8,26 +8,34 @@ from apiclient import discovery
 from oauth2client import client
 
 from kronos import app
-from .models import department, division, Oral, Stu, Prof
+from .models import department, division, Oral, Stu, Prof, Event
 from kronos import util
 
 
 @app.route('/')
 def schedule():
 
-    orals = Oral.query.order_by(Oral.dtstart).all()
-    oraltable = util.GetOralTable(orals)
+    #start time of first oral
+    starttime = Oral.query.order_by(Oral.dtstart).all()[0].dtstart
     students = Stu.query.all()
     professors = Prof.query.all()
 
     return render_template(
         "schedule.html", department=department, division=division,
-        oraltable=oraltable, students=students, professors=professors)
+        students=students, professors=professors, starttime=starttime)
 
 
 @app.route('/getschedule')
 def get_filtered_schedule():
     return str(request.args.getlist("professors[]"))
+
+
+@app.route('/eventsjson')
+def get_events_json():
+    eventobjs = Event.query.all()
+    events = [{"id":event.id,"title":event.summary,"start":str(event.dtstart),"end":str(event.dtend)} for event in eventobjs]
+    return json.dumps(events)
+
 
 app.route('/gcal')
 def get_gcal():
