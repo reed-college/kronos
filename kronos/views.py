@@ -35,20 +35,19 @@ def get_events_json():
     # getting querystring args
     start = request.args.get("start")
     end = request.args.get("end")
-    argdivision = str(request.args.get("division")).replace('"','')
+    div = str(request.args.get("division"))
+    dept = str(request.args.get("department"))
 
     eventobjs = Event.query
     # filtering by querystring args
-    print(argdivision)
-    print(division)
-    print(argdivision in division)
-    if argdivision in division:
-        eventobjs = eventobjs.filter(Event.user.division == argdivision)
-        print(eventobjs)
-        oralobjs = Oral.query.filter(Oral.stu.division == argdivision)
-        print(oralobjs)
-        eventobjs = eventobjs.union(oralobjs)
-        print(eventobjs)
+    if div in division:
+        st = eventobjs.join(Oral).join(Oral.stu).join(Stu).filter(Stu.division == div)
+        pf = eventobjs.join(Event.user).join(Prof).filter(Prof.division == div)
+        eventobjs = st.union(pf)
+    if dept in department:
+        st = eventobjs.join(Oral).join(Oral.stu).join(Stu).filter(Stu.department == dept)
+        pf = eventobjs.join(Event.user).join(Prof).filter(Prof.department == dept)
+        eventobjs = st.union(pf)
     if start != None:
         eventobjs = eventobjs.filter(Event.dtend >= start)
     if end != None:
