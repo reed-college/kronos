@@ -32,12 +32,34 @@ def get_filtered_schedule():
 
 @app.route('/eventsjson')
 def get_events_json():
-    print(request)
+    # getting querystring args
     start = request.args.get("start")
     end = request.args.get("end")
-    eventobjs = Event.query.filter(Event.dtstart <= end).\
-            filter(Event.dtend >= start)
-    events = [{"id":event.id,"title":event.summary,"start":str(event.dtstart),"end":str(event.dtend)} for event in eventobjs]
+    argdivision = str(request.args.get("division")).replace('"','')
+
+    eventobjs = Event.query
+    # filtering by querystring args
+    print(argdivision)
+    print(division)
+    print(argdivision in division)
+    if argdivision in division:
+        eventobjs = eventobjs.filter(Event.user.division == argdivision)
+        print(eventobjs)
+        oralobjs = Oral.query.filter(Oral.stu.division == argdivision)
+        print(oralobjs)
+        eventobjs = eventobjs.union(oralobjs)
+        print(eventobjs)
+    if start != None:
+        eventobjs = eventobjs.filter(Event.dtend >= start)
+    if end != None:
+        eventobjs = eventobjs.filter(Event.dtstart <= end)
+    # putting the events into the formal fullcalendar wants
+    events = [{
+        "id":event.id,
+        "title":event.summary,
+        "start":str(event.dtstart),
+        "end":str(event.dtend)} 
+        for event in eventobjs]
     return json.dumps(events)
 
 
