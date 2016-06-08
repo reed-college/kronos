@@ -38,13 +38,18 @@ def get_events_json():
     div = str(request.args.get("division"))
     dept = str(request.args.get("department"))
     profs = request.args.getlist("professors[]")
+    stus = request.args.getlist("students[]")
+
+    print(profs, type(profs))
 
     eventobjs = Event.query
     # filtering by querystring args
-    if profs != []:
+    if (profs != [] and profs != [''] and profs != None) or (stus != [] and stus != [''] and stus != None):
         #make the query empty
         eventobjs = eventobjs.except_(eventobjs)
     for profid in profs:
+        if profid == '':
+            break
         # Events that the professor owns
         pf = Event.query.filter(Event.userid == profid)
         # Orals that the professor is going to
@@ -53,6 +58,11 @@ def get_events_json():
                 filter(Prof.id == profid)
         profevents = pf.union(ora)
         eventobjs = eventobjs.union(profevents)
+    for stuid in stus:
+        if stuid == '':
+            break
+        ora = Event.query.join(Oral).filter(Oral.stu_id == stuid)
+        eventobjs = eventobjs.union(ora)
     if div in division:
         st = eventobjs.join(Oral).join(Oral.stu).join(Stu).filter(Stu.division == div)
         pf = eventobjs.join(Event.user).join(Prof).filter(Prof.division == div)

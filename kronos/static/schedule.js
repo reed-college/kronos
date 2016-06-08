@@ -1,10 +1,12 @@
 $(document).ready(function() {
     //initializing select2
     $("#stu-select").select2({
-        placeholder: "Students"
+        placeholder: "Students",
+        allowClear: true
     });
     $("#prof-select").select2({
-        placeholder: "Professors"
+        placeholder: "Professors",
+        allowClear: true
     });
     //initializing fullCalendar
     $('#calendar').fullCalendar({
@@ -18,7 +20,9 @@ $(document).ready(function() {
             data: function() { 
                 return {
                     department: $('#department option:selected').text(),
-                    division: $('#division option:selected').text()
+                    division: $('#division option:selected').text(),
+                    'professors[]': $('#prof-select').val(),
+                    'students[]': $('#stu-select').val()
                 };
             }
         }
