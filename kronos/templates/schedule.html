@@ -46,7 +46,7 @@
   </div>
   <div class="row form-group">
     <div class="col-md-6">
-      <select class="form-control">
+      <select id="department" class="form-control">
         <option selected="" disabled="">Department</option>
         {% for dept in department %}
         <option>{{ dept }}</option>
@@ -54,7 +54,7 @@
       </select>
     </div>
     <div class="col-md-6">
-      <select class="form-control">
+      <select id="division" class="form-control">
         <option selected="" disabled="">Division</option>
         {% for div in division %}
         <option>{{ div }}</option>

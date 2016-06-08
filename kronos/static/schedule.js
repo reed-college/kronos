@@ -8,11 +8,22 @@ $(document).ready(function() {
     });
     //initializing fullCalendar
     $('#calendar').fullCalendar({
-       defaultDate: startday,
-       events: '/eventsjson',
-       defaultView: 'agendaWeek',         
-       weekends: false,
-       allDaySlot: false,
-       header: false,
+        defaultDate: startday,
+        defaultView: 'agendaWeek',         
+        weekends: false,
+        allDaySlot: false,
+        header: false,
+        events: {
+            url: '/eventsjson',
+            data: function() { 
+                return {
+                    department: $('#department option:selected').text(),
+                    division: $('#division option:selected').text()
+                };
+            }
+        }
     });
+});
+$(document).on('change', 'select', function() {
+    $('#calendar').fullCalendar( 'refetchEvents');
 });
