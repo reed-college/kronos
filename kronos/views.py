@@ -37,9 +37,22 @@ def get_events_json():
     end = request.args.get("end")
     div = str(request.args.get("division"))
     dept = str(request.args.get("department"))
+    profs = request.args.getlist("professors[]")
 
     eventobjs = Event.query
     # filtering by querystring args
+    if profs != []:
+        #make the query empty
+        eventobjs = eventobjs.except_(eventobjs)
+    for profid in profs:
+        # Events that the professor owns
+        pf = Event.query.filter(Event.userid == profid)
+        # Orals that the professor is going to
+        ora = Event.query.join(Oral).\
+                join(Oral.readers).join(Prof).\
+                filter(Prof.id == profid)
+        profevents = pf.union(ora)
+        eventobjs = eventobjs.union(profevents)
     if div in division:
         st = eventobjs.join(Oral).join(Oral.stu).join(Stu).filter(Stu.division == div)
         pf = eventobjs.join(Event.user).join(Prof).filter(Prof.division == div)
