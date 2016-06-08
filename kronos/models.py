@@ -49,23 +49,10 @@ class FAC(User):
 
 
 class Prof(User):
-    department = db.Column("department",
-                           db.Enum(*department, name="department"))
-    division = db.Column("division", db.Enum(*division, name="division"))
+    department = db.Column(db.Enum(*department, name="department"))
+    division = db.Column(db.Enum(*division, name="division"))
     __mapper_args__ = {'polymorphic_identity': 'professor'}
     id = db.Column(db.Integer, ForeignKey('user.id'), primary_key=True)
-
-    @declared_attr
-    def department(cls):
-        "Department column, if not present already."
-        return User.__table__.c.get('department',
-                                    Enum(*department, name="department"))
-
-    @declared_attr
-    def division(cls):
-        "Division column, if not present already."
-        return User.__table__.c.get('division',
-                                    Enum(*division, name="division"))
 
     def __init__(self, username, name, password, email, department, division):
         User.__init__(self, username, name, password, email)
@@ -78,24 +65,11 @@ class Prof(User):
 
 
 class Stu(User):
-    department = db.Column("department",
-                           db.Enum(*department, name="department"))
-    division = db.Column("division", db.Enum(*division, name="division"))
+    department = db.Column(db.Enum(*department, name="department"))
+    division = db.Column(db.Enum(*division, name="division"))
     __mapper_args__ = {'polymorphic_identity': 'student'}
     id = db.Column(db.Integer, ForeignKey('user.id'), primary_key=True)
-
-    @declared_attr
-    def department(cls):
-        "Department column, if not present already."
-        return User.__table__.c.get('department',
-                                    Enum(*department, name="department"))
-
-    @declared_attr
-    def division(cls):
-        "Division column, if not present already."
-        return User.__table__.c.get('division',
-                                    Enum(*division, name="division"))
-
+    
     def __init__(self, username, name, password, email, department, division):
         User.__init__(self, username, name, password, email)
         self.department = department
@@ -133,12 +107,6 @@ class Event(db.Model):
             return '<Event %r>' % self.summary
         else:
             return '<Not available>'
-'''
-attendees = db.Table('attendees', db.metadata, 
-    db.Column('oral_id', db.Integer, db.ForeignKey('orals.id')),
-    db.Column('attendee_id', db.Integer, db.ForeignKey('prof.id'))
-    )
-'''
 
 class Oral(Event):
     __tablename__ = 'orals'

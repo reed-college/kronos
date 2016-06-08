@@ -1,0 +1,69 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}Kronos{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+<link rel="stylesheet" href="{{url_for('.static', filename='schedule.css')}}">
+<link rel="stylesheet" href="{{url_for('.static', filename='fullcalendar.min.css')}}" >
+<link rel="stylesheet" href="{{url_for('.static', filename='fullcalendar.print.css')}}" media='print' >
+<style type="text/css" media="print">
+.dontprint {
+    display: none;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+<script>var startday = "{{starttime.strftime('%Y-%m-%d')}}";</script>
+<script src="{{url_for('.static', filename='moment.min.js')}}"></script>
+<script src="{{url_for('.static', filename='fullcalendar.min.js')}}" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script src="{{url_for('.static', filename='schedule.js')}}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="well dontprint">
+  <div class="row form-group">
+    <div class="col-md-12">
+      <select id="prof-select" class="user-select" multiple="multiple">
+        {% for prof in professors %}
+        <option value={{ prof.id }}>{{ prof.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  <div class="row form-group">
+    <div class="col-md-12">
+      <select id="stu-select" class="user-select" multiple="multiple">
+        {% for stu in students %}
+        <option value={{ stu.id }}>{{ stu.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  <div class="row form-group">
+    <div class="col-md-6">
+      <select id="department" class="form-control">
+        <option selected="" disabled="">Department</option>
+        {% for dept in department %}
+        <option>{{ dept }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-6">
+      <select id="division" class="form-control">
+        <option selected="" disabled="">Division</option>
+        {% for div in division %}
+        <option>{{ div }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div id='calendar'></div>
+</div>
+{% endblock %}

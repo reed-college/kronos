@@ -1,0 +1,28 @@
+.label-input-group {
+    position: absolute;
+  	z-index: 1000;
+    left: 27px;
+    top: 6px;
+}
+
+td {
+  height: 50px;
+}
+  
+.time-text {
+    float: none;
+    display: table-cell;
+    vertical-align: bottom;
+}
+
+.well {
+	border-radius: 0 !important;    
+}
+
+.chosen-disabled {
+            opacity: 1 !important;
+}
+
+span.select2.select2-container {
+    width: 100% !important;
+}

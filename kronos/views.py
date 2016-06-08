@@ -3,15 +3,85 @@ import datetime
 import flask
 import httplib2
 
+from flask import render_template, request
 from apiclient import discovery
 from oauth2client import client
 
 from kronos import app
+from .models import department, division, Oral, Stu, Prof, Event
 
 
 @app.route('/')
-def index():
-    return app.config['SQLALCHEMY_DATABASE_URI']
+def schedule():
+
+    # start time of first oral
+    starttime = Oral.query.order_by(Oral.dtstart).all()[0].dtstart
+    students = Stu.query.all()
+    professors = Prof.query.all()
+
+    return render_template(
+        "schedule.html", department=department, division=division,
+        students=students, professors=professors, starttime=starttime)
+
+
+@app.route('/eventsjson')
+def get_events_json():
+    # getting querystring args
+    start = request.args.get("start")
+    end = request.args.get("end")
+    div = str(request.args.get("division"))
+    dept = str(request.args.get("department"))
+    profs = request.args.getlist("professors[]")
+    stus = request.args.getlist("students[]")
+
+    print(profs, type(profs))
+
+    eventobjs = Event.query
+    # filtering by querystring args
+    if ((profs != [] and profs != [''] and profs is not None) or
+       (stus != [] and stus != [''] and stus is not None)):
+        # make the query empty
+        eventobjs = eventobjs.except_(eventobjs)
+    for profid in profs:
+        if profid == '':
+            break
+        # Events that the professor owns
+        pf = Event.query.filter(Event.userid == profid)
+        # Orals that the professor is going to
+        ora = Event.query.join(Oral).\
+            join(Oral.readers).join(Prof).\
+            filter(Prof.id == profid)
+        profevents = pf.union(ora)
+        eventobjs = eventobjs.union(profevents)
+    for stuid in stus:
+        if stuid == '':
+            break
+        ora = Event.query.join(Oral).filter(Oral.stu_id == stuid)
+        eventobjs = eventobjs.union(ora)
+    if div in division:
+        st = eventobjs.join(Oral).join(Oral.stu).\
+           join(Stu).filter(Stu.division == div)
+        pf = eventobjs.join(Event.user).\
+           join(Prof).filter(Prof.division == div)
+        eventobjs = st.union(pf)
+    if dept in department:
+        st = eventobjs.join(Oral).join(Oral.stu).\
+                join(Stu).filter(Stu.department == dept)
+        pf = eventobjs.join(Event.user).\
+                join(Prof).filter(Prof.department == dept)
+        eventobjs = st.union(pf)
+    if start is not None:
+        eventobjs = eventobjs.filter(Event.dtend >= start)
+    if end is not None:
+        eventobjs = eventobjs.filter(Event.dtstart <= end)
+    # putting the events into the formal fullcalendar wants
+    events = [{
+        "id": event.id,
+        "title": event.summary,
+        "start": str(event.dtstart),
+        "end": str(event.dtend)}
+        for event in eventobjs]
+    return json.dumps(events)
 
 
 @app.route('/gcal')
