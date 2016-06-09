@@ -1,6 +1,9 @@
+import datetime
 from kronos import db
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy import Enum, ForeignKey
+from sqlalchemy import Enum, ForeignKey, DateTime
+from sqlalchemy.schema import CheckConstraint
+from sqlalchemy.orm import validates
 
 department = ('Anthropology', 'Art', 'Biology', 'Chemistry', 'Chinese',
               'Classics', 'Dance', 'Economics', 'English', 'French', 'German',
@@ -15,7 +18,6 @@ readers = db.Table('readers',
        db.Column('prof_id', db.Integer, db.ForeignKey('prof.id')),
        db.Column('oral_id', db.Integer, db.ForeignKey('orals.id'))
        )
-
 
 # The User class contains professors and students,
 # but that does not mean that they are the actual "users" of this website
@@ -49,23 +51,10 @@ class FAC(User):
 
 
 class Prof(User):
-    department = db.Column("department",
-                           db.Enum(*department, name="department"))
-    division = db.Column("division", db.Enum(*division, name="division"))
+    department = db.Column(db.Enum(*department, name="department"))
+    division = db.Column(db.Enum(*division, name="division"))
     __mapper_args__ = {'polymorphic_identity': 'professor'}
     id = db.Column(db.Integer, ForeignKey('user.id'), primary_key=True)
-
-    @declared_attr
-    def department(cls):
-        "Department column, if not present already."
-        return User.__table__.c.get('department',
-                                    Enum(*department, name="department"))
-
-    @declared_attr
-    def division(cls):
-        "Division column, if not present already."
-        return User.__table__.c.get('division',
-                                    Enum(*division, name="division"))
 
     def __init__(self, username, name, password, email, department, division):
         User.__init__(self, username, name, password, email)
@@ -78,23 +67,10 @@ class Prof(User):
 
 
 class Stu(User):
-    department = db.Column("department",
-                           db.Enum(*department, name="department"))
-    division = db.Column("division", db.Enum(*division, name="division"))
+    department = db.Column(db.Enum(*department, name="department"))
+    division = db.Column(db.Enum(*division, name="division"))
     __mapper_args__ = {'polymorphic_identity': 'student'}
     id = db.Column(db.Integer, ForeignKey('user.id'), primary_key=True)
-
-    @declared_attr
-    def department(cls):
-        "Department column, if not present already."
-        return User.__table__.c.get('department',
-                                    Enum(*department, name="department"))
-
-    @declared_attr
-    def division(cls):
-        "Division column, if not present already."
-        return User.__table__.c.get('division',
-                                    Enum(*division, name="division"))
 
     def __init__(self, username, name, password, email, department, division):
         User.__init__(self, username, name, password, email)
@@ -108,6 +84,7 @@ class Stu(User):
 
 class Event(db.Model):
     __tablename__ = 'events'
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     summary = db.Column(db.Text)
     dtstart = db.Column(db.DateTime, nullable=False)
@@ -116,6 +93,10 @@ class Event(db.Model):
     private = db.Column(db.Boolean)
     discriminator = db.Column('type', db.String(10))
     __mapper_args__ = {'polymorphic_on': discriminator}
+    __table_args__ = (
+        CheckConstraint('dtstart <= dtend'),
+        )
+
 
     userid = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', backref=db.backref('event'))  # lazy???
@@ -127,18 +108,13 @@ class Event(db.Model):
         self.dtend = dtend
         self.status = status
         self.user = user
+        self.private = private
 
     def __repr__(self):
         if self.private is False:
             return '<Event %r>' % self.summary
         else:
             return '<Not available>'
-'''
-attendees = db.Table('attendees', db.metadata, 
-    db.Column('oral_id', db.Integer, db.ForeignKey('orals.id')),
-    db.Column('attendee_id', db.Integer, db.ForeignKey('prof.id'))
-    )
-'''
 
 class Oral(Event):
     __tablename__ = 'orals'
