@@ -23,6 +23,10 @@ miriam = Stu('golzm', 'Miriam', 'asdf', 'golzm@reed.edu', 'Linguistics', 'Philos
 sarah = Stu('allens', 'Sarah', 'asdf', 'allens@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
 arthur = Stu('sillersa', 'Arthur', 'asdf', 'sillersa@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
 
+# 1 Russian Senior so that we have 2 orals at the same time
+
+edmond = Stu('eedmonds', 'Edmond Soun', 'pass', 'eedmonds@reed.edu', 'Russian', 'Literature and Languages')
+
 db.session.add(emma)
 db.session.add(richard)
 db.session.add(manon)
@@ -31,6 +35,7 @@ db.session.add(syd)
 db.session.add(miriam)
 db.session.add(sarah)
 db.session.add(arthur)
+db.session.add(edmond)
 
 # Profs
 
@@ -95,6 +100,9 @@ oral7.readers = [pearson]
 oral8 = Oral(arthur, 'Oral_Arthur', '20160505 03:00:00 PM', '20160505 05:00:00 PM', griffinj)
 oral8.readers = [gruber, pearson, becker, luker]
 
+oral9 = Oral(edmond, 'Oral_Edmond', '20160502 10:00:00 AM', '20160502 12:00:00 PM', griffinj)
+oral9.readers = [bershtein, gruber, faletra, minardi]
+
 db.session.add(oral1)
 db.session.add(oral2)
 db.session.add(oral3)
@@ -103,6 +111,7 @@ db.session.add(oral5)
 db.session.add(oral6)
 db.session.add(oral7)
 db.session.add(oral8)
+db.session.add(oral9)
 
 # Made-up Events
 
