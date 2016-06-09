@@ -26,3 +26,12 @@ td {
 span.select2.select2-container {
     width: 100% !important;
 }
+
+a:focus {
+    color: #fff;
+    text-decoration: none;
+}
+
+.popover {
+    white-space:pre-wrap;
+}

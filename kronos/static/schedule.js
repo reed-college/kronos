@@ -15,6 +15,7 @@ $(document).ready(function() {
         weekends: false,
         allDaySlot: false,
         header: false,
+        slotEventOverlap: false,
         events: {
             url: '/eventsjson',
             data: function() { 
@@ -25,6 +26,23 @@ $(document).ready(function() {
                     'students[]': $('#stu-select').val()
                 };
             }
+        },
+        eventRender: function(event, element, view) {
+            $(element).attr('tabindex', '0');
+            $(element).attr('data-toggle', 'popover');
+            $(element).attr('title', event.title);
+            $(element).attr('data-trigger', 'focus');
+            $(element).attr('data-container', 'body');
+            var content = "<div>";
+            if (event.type == "oral") {
+                content += "<b>" + event.student + "</b>\n";
+                for (let reader of event.readers){
+                    content += reader + "\n";
+                }
+            }
+            content += "</div>"
+            $(element).attr('data-content', content)
+            $(element).popover({html : true});
         }
     });
 });

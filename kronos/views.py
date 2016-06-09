@@ -34,8 +34,6 @@ def get_events_json():
     profs = request.args.getlist("professors[]")
     stus = request.args.getlist("students[]")
 
-    print(profs, type(profs))
-
     eventobjs = Event.query
     # filtering by querystring args
     if ((profs != [] and profs != [''] and profs is not None) or
@@ -75,12 +73,23 @@ def get_events_json():
     if end is not None:
         eventobjs = eventobjs.filter(Event.dtstart <= end)
     # putting the events into the formal fullcalendar wants
-    events = [{
+    events = []
+    for event in eventobjs:
+        evjson = {
         "id": event.id,
         "title": event.summary,
         "start": str(event.dtstart),
-        "end": str(event.dtend)}
-        for event in eventobjs]
+        "end": str(event.dtend),
+        "type": event.discriminator,
+        "user": event.user.name,
+        "student": "",
+        "readers": [],
+        }
+        if type(event) is Oral:
+            evjson["readers"] = [reader.name for reader in event.readers]
+            evjson["student"] = event.stu.name
+        events.append(evjson)
+        
     return json.dumps(events)
 
 
