@@ -3,7 +3,6 @@ from kronos import db
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy import Enum, ForeignKey, DateTime
 from sqlalchemy.schema import CheckConstraint
-from sqlalchemy.orm import validates
 
 department = ('Anthropology', 'Art', 'Biology', 'Chemistry', 'Chinese',
               'Classics', 'Dance', 'Economics', 'English', 'French', 'German',
@@ -16,7 +15,7 @@ division = ('The Arts', 'History and Social Sciences',
 
 readers = db.Table('readers',
        db.Column('prof_id', db.Integer, db.ForeignKey('prof.id')),
-       db.Column('oral_id', db.Integer, db.ForeignKey('orals.id'))
+       db.Column('oral_id', db.Integer, db.ForeignKey('oral.id'))
        )
 
 # The User class contains professors and students,
@@ -83,7 +82,6 @@ class Stu(User):
 
 
 class Event(db.Model):
-    __tablename__ = 'events'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     summary = db.Column(db.Text)
@@ -117,29 +115,23 @@ class Event(db.Model):
             return '<Not available>'
 
 class Oral(Event):
-    __tablename__ = 'orals'
+    __tablename__ = 'oral'
     __mapper_args__ = {'polymorphic_identity': 'oral'}
-    id = db.Column(db.Integer, ForeignKey('events.id'), primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, ForeignKey('event.id'), primary_key=True, autoincrement=True)
     stu_id = db.Column(db.Integer, db.ForeignKey('stu.id'))
     stu = db.relationship('Stu', backref=db.backref('oral'))
     response = db.Column(db.Enum('Accepted', 'Declined', 'Tentative',
                                  name="response"))
     readers = db.relationship('Prof', secondary=readers,
-           backref=db.backref('orals', lazy='dynamic'))
+           backref=db.backref('oral', lazy='dynamic'))
 
     def __init__(self, stu, summary, dtstart, dtend, user,
                  response=None):
         Event.__init__(self, summary, dtstart, dtend, user)
         self.user = user
         self.stu = stu
+        self.type = 'oral'
 
     def __repr__(self):
         return '<%rs Oral>' % self.stu
-
-
-
-
-# Example:
-# Adding myself:
-# me = Stu('weij', 'Jiahui', “asd", 'weij@reed.edu', 'Physics',
-#          'Mathematics and Natural Sciences' )
+    
