@@ -7,8 +7,8 @@ from flask import render_template, request
 from apiclient import discovery
 from oauth2client import client
 
-from kronos import app
-from .models import department, division, Oral, Stu, Prof, Event
+from kronos import app, db
+from .models import department, division, Oral, Stu, Prof, Event, User
 
 
 @app.route('/')
@@ -18,10 +18,20 @@ def schedule():
     starttime = Oral.query.order_by(Oral.dtstart).all()[0].dtstart
     students = Stu.query.all()
     professors = Prof.query.all()
+    # TODO when we're gonna need each POST request from fullcalendar/jeditable
+    # to be validated through ldap, because leaving it up to a javascript
+    # variable is super insercure.
+    # But we'll have to wait until someone gets around to helping us set up ldap
+    # to do that.
+    # and also hopefully the javascript variable will get set by ldap
+    # authentication and not a querysting
+    edit = request.args.get("edit") or "false" 
+    print(edit, type(edit))
 
     return render_template(
         "schedule.html", department=department, division=division,
-        students=students, professors=professors, starttime=starttime)
+        students=students, professors=professors, starttime=starttime,
+        edit=edit)
 
 
 @app.route('/eventsjson')
@@ -92,6 +102,29 @@ def get_events_json():
         
     return json.dumps(events)
 
+
+@app.route('/usersjson')
+def get_users_json():
+    """
+    Returns a json of users for jeditable to use for the selects
+    """
+    usrtype = request.args.get("type") or ""
+    usrqury = User.query.filter(User.discriminator.contains(usrtype))
+    users = {usr.id : usr.name for usr in usrqury} 
+    return json.dumps(users)
+
+
+@app.route('/submitevent', methods=['POST'])
+def update_event():
+    """
+    page for jeditable to send new event changes to the db
+    """
+    eventid = request.form.get("event_id")
+    stuid = request.form.get("stu_id")
+    event = Event.query.get_or_404(eventid)
+    event.stu_id = stuid
+    db.session.commit()
+    return event.stu.name
 
 @app.route('/gcal')
 def get_gcal():

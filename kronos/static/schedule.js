@@ -19,6 +19,7 @@ $(document).ready(function() {
         events: {
             url: '/eventsjson',
             data: function() { 
+                //gets data from the filters to send put in the events query
                 return {
                     department: $('#department option:selected').text(),
                     division: $('#division option:selected').text(),
@@ -28,7 +29,6 @@ $(document).ready(function() {
             }
         },
         eventRender: function(event, element, view) {
-            $(element).attr('name','event-popover');
             $(element).attr('tabindex', '0');
             $(element).attr('data-toggle', 'popover');
             $(element).attr('title', event.title);
@@ -42,6 +42,7 @@ $(document).ready(function() {
             var content = "";
             var eventtime = event.start.format("H:mm") + "-" + event.end.format("H:mm");
             if (event.type == "oral") {
+                //gets the hidden oral template div and replaces some data
                 var div = $("#popover-oral-template").html();
                 div = div.replace("{time}", eventtime);
                 div = div.replace("{student}", event.student);
@@ -57,17 +58,20 @@ $(document).ready(function() {
             }
             $(element).attr('data-content', content)
             $(element).popover({html : true});
-        },
-        eventAfterAllRender: function(view) {
-            $("[name='event-popover']").on('shown.bs.popover', function () {
-                console.log("editable!");
-                $('.edit').editable('/eventsjson');
+            //initializing jeditable
+            $(element).on('shown.bs.popover', function () {
+                if (edit){
+                    $('.edit').editable('/submitevent',{
+                        loadurl    : '/usersjson',
+                        loaddata   : {type: "student"},
+                        type       : 'select',
+                        submit     : '<button class="btn btn-success" type="submit" >Ok</button>',
+                        name       : 'stu_id',
+                        submitdata : {event_id: event.id},
+                    });
+                }
             });
         },
-    });
-    $("[name='event-popover']").on('shown.bs.popover', function () {
-        console.log("editable!");
-        $('.edit').editable('/eventsjson');
     });
 });
 $(document).on('change', 'select', function() {
