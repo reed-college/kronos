@@ -28,22 +28,46 @@ $(document).ready(function() {
             }
         },
         eventRender: function(event, element, view) {
+            $(element).attr('name','event-popover');
             $(element).attr('tabindex', '0');
             $(element).attr('data-toggle', 'popover');
             $(element).attr('title', event.title);
-            $(element).attr('data-trigger', 'focus');
-            $(element).attr('data-container', 'body');
-            var content = "<div>";
-            if (event.type == "oral") {
-                content += "<b>" + event.student + "</b>\n";
-                for (let reader of event.readers){
-                    content += reader + "\n";
-                }
+            //change this back to 'focus' when you're done with popover inspecting
+            $(element).attr('data-trigger', 'click');
+            $(element).attr('data-container', '.fc-time-grid');
+            //if the day is after wednesday
+            if (event.start.day() > 3) {
+                $(element).attr('data-placement', 'left');
             }
-            content += "</div>"
+            var content = "";
+            var eventtime = event.start.format("H:mm") + "-" + event.end.format("H:mm");
+            if (event.type == "oral") {
+                var div = $("#popover-oral-template").html();
+                div = div.replace("{time}", eventtime);
+                div = div.replace("{student}", event.student);
+                readers = "";
+                for (let reader of event.readers){
+                    readers += reader + ", ";
+                }
+                div = div.replace("{readers}", readers);
+                content += div;
+            }
+            else {
+                content += "Who: " + event.user + "\n";
+            }
             $(element).attr('data-content', content)
             $(element).popover({html : true});
-        }
+        },
+        eventAfterAllRender: function(view) {
+            $("[name='event-popover']").on('shown.bs.popover', function () {
+                console.log("editable!");
+                $('.edit').editable('/eventsjson');
+            });
+        },
+    });
+    $("[name='event-popover']").on('shown.bs.popover', function () {
+        console.log("editable!");
+        $('.edit').editable('/eventsjson');
     });
 });
 $(document).on('change', 'select', function() {

@@ -33,5 +33,10 @@ a:focus {
 }
 
 .popover {
-    white-space:pre-wrap;
+    max-width:none;
+    white-space: nowrap;
+}
+
+.hidden {
+    display: none;
 }

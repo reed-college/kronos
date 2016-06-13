@@ -21,6 +21,7 @@
 <script src="{{url_for('.static', filename='moment.min.js')}}"></script>
 <script src="{{url_for('.static', filename='fullcalendar.min.js')}}" ></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script src="{{url_for('.static', filename='jquery.jeditable.mini.js')}}" ></script>
 <script src="{{url_for('.static', filename='schedule.js')}}"></script>
 {% endblock %}
 
@@ -65,5 +66,31 @@
 </div>
 <div class="container">
   <div id='calendar'></div>
+</div>
+<div class="hidden" id="popover-oral-template">
+  <div class="row">
+    <div class="col-xs-2">
+      When:
+    </div>
+    <div class="col-xs-2">
+      {time}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-2">
+      Student:
+    </div>
+    <div class="col-xs-2">
+      <span class="edit">{student}</span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-2">
+      Readers:
+    </div>
+    <div class="col-xs-2">
+      {readers}
+    </div>
+  </div>
 </div>
 {% endblock %}
