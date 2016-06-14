@@ -119,6 +119,7 @@ def update_event():
     """
     page for jeditable to send new event changes to the db
     """
+    print(request.form)
     eventid = request.form.get("event_id")
     stuid = request.form.get("stu_id")
     event = Event.query.get_or_404(eventid)

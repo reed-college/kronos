@@ -30,6 +30,7 @@ $(document).ready(function() {
         },
         eventRender: function(event, element, view) {
             $(element).attr('tabindex', '0');
+            /*
             $(element).attr('data-toggle', 'popover');
             $(element).attr('title', event.title);
             //change this back to 'focus' when you're done with popover inspecting
@@ -39,6 +40,10 @@ $(document).ready(function() {
             if (event.start.day() > 3) {
                 $(element).attr('data-placement', 'left');
             }
+            $(element).attr('data-content', content)
+            $(element).popover({html : true});
+            */
+            //making the content to go in the qtip
             var content = "";
             var eventtime = event.start.format("H:mm") + "-" + event.end.format("H:mm");
             if (event.type == "oral") {
@@ -56,19 +61,34 @@ $(document).ready(function() {
             else {
                 content += "Who: " + event.user + "\n";
             }
-            $(element).attr('data-content', content)
-            $(element).popover({html : true});
-            //initializing jeditable
-            $(element).on('shown.bs.popover', function () {
-                if (edit){
-                    $('.edit').editable('/submitevent',{
-                        loadurl    : '/usersjson',
-                        loaddata   : {type: "student"},
-                        type       : 'select',
-                        submit     : '<button class="btn btn-success" type="submit" >Ok</button>',
-                        name       : 'stu_id',
-                        submitdata : {event_id: event.id},
-                    });
+            //initilizing the qtips
+            $(element).qtip({
+                show: 'click',
+                hide: 'unfocus',
+                style: 'qtip-bootstrap',
+                position: {
+                    my: 'left center',
+                    at: 'right center',
+                },
+                content: {
+                    text: content,
+                    title: event.title,
+                },
+                events: {
+                        render: function(qevent, api) {
+
+                            if (edit){
+                                //initializing jeditable
+                                $('.edit').editable('/submitevent',{
+                                    loadurl    : '/usersjson',
+                                    loaddata   : {type: "student"},
+                                    type       : 'select',
+                                    submit     : '<button class="btn btn-success" type="submit" >Ok</button>',
+                                    name       : 'stu_id',
+                                    submitdata : {event_id: event.id},
+                                });
+                            }
+                        }
                 }
             });
         },

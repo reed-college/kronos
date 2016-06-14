@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="{{url_for('.static', filename='schedule.css')}}">
 <link rel="stylesheet" href="{{url_for('.static', filename='fullcalendar.min.css')}}" >
 <link rel="stylesheet" href="{{url_for('.static', filename='fullcalendar.print.css')}}" media='print' >
+<link rel="stylesheet" href="{{url_for('.static', filename='jquery.qtip.min.css')}}" >
 <style type="text/css" media="print">
 .dontprint {
     display: none;
@@ -25,6 +26,7 @@ var edit = {{ edit }};
 <script src="{{url_for('.static', filename='fullcalendar.min.js')}}" ></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script src="{{url_for('.static', filename='jquery.jeditable.mini.js')}}" ></script>
+<script src="{{url_for('.static', filename='jquery.qtip.min.js')}}" ></script>
 <script src="{{url_for('.static', filename='schedule.js')}}"></script>
 {% endblock %}
 
@@ -72,26 +74,26 @@ var edit = {{ edit }};
 </div>
 <div class="hidden" id="popover-oral-template">
   <div class="row">
-    <div class="col-xs-2">
+    <div class="col-xs-6">
       When:
     </div>
-    <div class="col-xs-2">
+    <div class="col-xs-6">
       {time}
     </div>
   </div>
   <div class="row">
-    <div class="col-xs-2">
+    <div class="col-xs-6">
       Student:
     </div>
-    <div class="col-xs-2">
+    <div class="col-xs-6">
       <span class="edit">{student}</span>
     </div>
   </div>
   <div class="row">
-    <div class="col-xs-2">
+    <div class="col-xs-6">
       Readers:
     </div>
-    <div class="col-xs-2">
+    <div class="col-xs-6">
       {readers}
     </div>
   </div>
