@@ -36,10 +36,6 @@ $(document).ready(function() {
             //change this back to 'focus' when you're done with popover inspecting
             $(element).attr('data-trigger', 'click');
             $(element).attr('data-container', '.fc-time-grid');
-            //if the day is after wednesday
-            if (event.start.day() > 3) {
-                $(element).attr('data-placement', 'left');
-            }
             $(element).attr('data-content', content)
             $(element).popover({html : true});
             */
@@ -65,21 +61,25 @@ $(document).ready(function() {
             $(element).qtip({
                 show: 'click',
                 hide: 'unfocus',
-                style: 'qtip-bootstrap',
+                style: {
+                    classes: 'cal-qtip qtip-bootstrap',
+                },
                 position: {
                     my: 'left center',
                     at: 'right center',
-                },
+                    //makes sure that the qtips don't go outside fullcalendar
+                    viewport: $('.fc-time-grid'),
+                },   
                 content: {
                     text: content,
-                    title: event.title,
+                    title: "<span class='edit-title'>event.title</span>",
                 },
                 events: {
                         render: function(qevent, api) {
 
                             if (edit){
-                                //initializing jeditable
-                                $('.edit').editable('/submitevent',{
+                                //initializing jeditables
+                                $(api).children('.edit-student').editable('/submitevent',{
                                     loadurl    : '/usersjson',
                                     loaddata   : {type: "student"},
                                     type       : 'select',
@@ -87,6 +87,7 @@ $(document).ready(function() {
                                     name       : 'stu_id',
                                     submitdata : {event_id: event.id},
                                 });
+                                
                             }
                         }
                 }
