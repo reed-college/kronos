@@ -117,9 +117,11 @@ db.session.add(oral9)
 
 event1 = Event('at home', '20160502 08:00:00 AM', '20160502 10:00:00 AM', pearson)
 event2 = Event('out of town', '20160506 10:00:00 AM', '20160506 10:00:00 PM', pearson, private = False)
+event3 = Event('not doing much now', '20160506 11:00:00 AM', '20160506 10:00:00 AM', hovda, private = False)
 
 db.session.add(event1)
 db.session.add(event2)
+db.session.add(event3)
 
 db.session.commit()
 

@@ -3,6 +3,8 @@ from kronos import db
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy import Enum, ForeignKey, DateTime
 from sqlalchemy.schema import CheckConstraint
+from sqlalchemy import Enum, ForeignKey, event
+from sqlalchemy.orm import validates
 
 department = ('Anthropology', 'Art', 'Biology', 'Chemistry', 'Chinese',
               'Classics', 'Dance', 'Economics', 'English', 'French', 'German',
@@ -134,4 +136,16 @@ class Oral(Event):
 
     def __repr__(self):
         return '<%rs Oral>' % self.stu
-    
+
+    @validates('readers')
+    def validate_readers(self, key, reader):
+        for oral in reader.orals:
+            assert True
+        return reader
+
+
+
+# Example:
+# Adding myself:
+# me = Stu('weij', 'Jiahui', “asd", 'weij@reed.edu', 'Physics',
+#          'Mathematics and Natural Sciences' )
