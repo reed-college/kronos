@@ -1,9 +1,7 @@
 import datetime
 from kronos import db
-from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy import Enum, ForeignKey, DateTime
+from sqlalchemy import Enum, ForeignKey, DateTime, event
 from sqlalchemy.schema import CheckConstraint
-from sqlalchemy import Enum, ForeignKey, event
 from sqlalchemy.orm import validates
 
 department = ('Anthropology', 'Art', 'Biology', 'Chemistry', 'Chinese',
@@ -22,7 +20,6 @@ readers = db.Table('readers',
 
 # The User class contains professors and students,
 # but that does not mean that they are the actual "users" of this website
-# (at least not for now).
 
 
 class User(db.Model):
@@ -125,7 +122,7 @@ class Oral(Event):
     response = db.Column(db.Enum('Accepted', 'Declined', 'Tentative',
                                  name="response"))
     readers = db.relationship('Prof', secondary=readers,
-           backref=db.backref('oral', lazy='dynamic'))
+           backref=db.backref('orals', lazy='dynamic'))
 
     def __init__(self, stu, summary, dtstart, dtend, user,
                  response=None):
@@ -143,9 +140,3 @@ class Oral(Event):
             assert True
         return reader
 
-
-
-# Example:
-# Adding myself:
-# me = Stu('weij', 'Jiahui', “asd", 'weij@reed.edu', 'Physics',
-#          'Mathematics and Natural Sciences' )
