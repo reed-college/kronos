@@ -91,6 +91,13 @@ $(document).ready(function() {
                                     name       : 'summary',
                                     submitdata : {event_id: event.id},
                                 }); 
+                                $('.edit-readers').editable('/submitevent',{
+                                    loadurl    : '/usersjson',
+                                    loaddata   : {type: "professor"},
+                                    type       : 'select',
+                                    submitdata : {event_id: event.id},
+                                    onblur     : 'ignore', 
+                                });
                             }
                         }
                 }
