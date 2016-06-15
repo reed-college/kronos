@@ -1,6 +1,7 @@
 from kronos import db
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy import Enum, ForeignKey
+from sqlalchemy import Enum, ForeignKey, event
+from sqlalchemy.orm import validates
 
 department = ('Anthropology', 'Art', 'Biology', 'Chemistry', 'Chinese',
               'Classics', 'Dance', 'Economics', 'English', 'French', 'German',
@@ -108,6 +109,20 @@ class Event(db.Model):
         else:
             return '<Not available>'
 
+# Watch out for the difference between a SQLAlchemy 'event' (ie something
+# happening to the db) and our 'Event' (A model for our db)
+# @event.listens_for(Event, 'before_insert')
+# def receive_before_insert(mapper, connection, target):
+#    """
+#    Simple function to make sure an event does not end before it begins
+#    """
+#    print(target.dtstart, target.dtend)
+#    if target.dtstart > target.dtend:
+#        del target
+        
+
+
+
 class Oral(Event):
     __tablename__ = 'orals'
     __mapper_args__ = {'polymorphic_identity': 'oral'}
@@ -128,6 +143,11 @@ class Oral(Event):
     def __repr__(self):
         return '<%rs Oral>' % self.stu
 
+    @validates('readers')
+    def validate_readers(self, key, reader):
+        for oral in reader.orals.all():
+            assert  
+        return reader
 
 
 
