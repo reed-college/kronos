@@ -109,19 +109,6 @@ class Event(db.Model):
         else:
             return '<Not available>'
 
-# Watch out for the difference between a SQLAlchemy 'event' (ie something
-# happening to the db) and our 'Event' (A model for our db)
-# @event.listens_for(Event, 'before_insert')
-# def receive_before_insert(mapper, connection, target):
-#    """
-#    Simple function to make sure an event does not end before it begins
-#    """
-#    print(target.dtstart, target.dtend)
-#    if target.dtstart > target.dtend:
-#        del target
-        
-
-
 
 class Oral(Event):
     __tablename__ = 'orals'
@@ -145,8 +132,8 @@ class Oral(Event):
 
     @validates('readers')
     def validate_readers(self, key, reader):
-        for oral in reader.orals.all():
-            assert  
+        for oral in reader.orals:
+            assert True
         return reader
 
 
