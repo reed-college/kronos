@@ -121,11 +121,19 @@ def update_event():
     """
     print(request.form)
     eventid = request.form.get("event_id")
-    stuid = request.form.get("stu_id")
+    stuid = request.form.get("stu_id") or None
+    summary = request.form.get("summary") or None
     event = Event.query.get_or_404(eventid)
-    event.stu_id = stuid
-    db.session.commit()
-    return event.stu.name
+    if stuid is not None:
+        event.stu_id = stuid
+        db.session.commit()
+        return event.stu.name
+    elif summary is not None:
+        event.summary = summary
+        db.session.commit()
+        return event.summary
+    else:
+        return "Something went wrong!"
 
 @app.route('/gcal')
 def get_gcal():

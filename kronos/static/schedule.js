@@ -72,14 +72,14 @@ $(document).ready(function() {
                 },   
                 content: {
                     text: content,
-                    title: "<span class='edit-title'>event.title</span>",
+                    title: "<span class='edit-title'>" + event.title + "</span>",
                 },
                 events: {
                         render: function(qevent, api) {
 
                             if (edit){
                                 //initializing jeditables
-                                $(api).children('.edit-student').editable('/submitevent',{
+                                $('.edit-student').editable('/submitevent',{
                                     loadurl    : '/usersjson',
                                     loaddata   : {type: "student"},
                                     type       : 'select',
@@ -87,7 +87,10 @@ $(document).ready(function() {
                                     name       : 'stu_id',
                                     submitdata : {event_id: event.id},
                                 });
-                                
+                                $('.edit-title').editable('/submitevent',{
+                                    name       : 'summary',
+                                    submitdata : {event_id: event.id},
+                                }); 
                             }
                         }
                 }
