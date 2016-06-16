@@ -40,6 +40,10 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
+    @validates('email')
+    def validate_email(self, key, email):
+        assert '@' in email
+        return email
 
 class FAC(User):
     __mapper_args__ = {'polymorphic_identity': 'FAC'}
@@ -134,9 +138,20 @@ class Oral(Event):
     def __repr__(self):
         return '<%rs Oral>' % self.stu
 
-    @validates('readers')
-    def validate_readers(self, key, reader):
-        for oral in reader.orals:
-            assert True
-        return reader
+    # @validates('readers')
+    # def validate_readers(self, key, reader):
+    #     # make sure readers won't be assigned to conflicting orals.
+    #     ls = []
+    #     for oral in reader.orals:
+    #         if oral.dtstart not in ls:
+    #             ls.append(oral.dtstart)
+    #             if oral.dtstart.hour != (8 and 10 and 13 and 15 and 17):
+    #                 ls.remove(oral.dtstart)
+    #                 for dtstart in ls:
+    #                     assert oral.dtstart > dtstart+datetime.timedelta(hours=2) or oral.dtend < dtstart
+    #         else:
+    #             assert oral.dtstart not in ls
+    #     # for event in reader.event:
+    #     #     print(event.summary)
+    #     return reader
 
