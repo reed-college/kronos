@@ -104,6 +104,11 @@ oral8.readers = [gruber, pearson, becker, luker]
 oral9 = Oral(edmond, 'Oral_Edmond', datetime.datetime(2016,5,2,10), datetime.datetime(2016,5,2,12), griffinj)
 oral9.readers = [bershtein, gruber, faletra, minardi]
 
+# made-up oral just for testing
+oral10 = Oral(emma, 'Oral_test', datetime.datetime(2016,5,2,10), datetime.datetime(2016,5,2,12), griffinj)
+oral10.readers = [pearson, becker, hovda, somda]
+
+
 db.session.add(oral1)
 db.session.add(oral2)
 db.session.add(oral3)
@@ -113,6 +118,7 @@ db.session.add(oral6)
 db.session.add(oral7)
 db.session.add(oral8)
 db.session.add(oral9)
+db.session.add(oral10)
 
 # Made-up Events
 
