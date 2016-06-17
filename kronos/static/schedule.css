@@ -44,3 +44,7 @@ a:focus {
 .cal-qtip {
     min-width: 270px !important;
 }
+
+.select2-dropdown{
+    z-index: 9999999999999;
+}

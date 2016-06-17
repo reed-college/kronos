@@ -31,9 +31,9 @@ var edit = {{ edit }};
 {% endblock %}
 
 {% block content %}
-<div class="well dontprint">
+<div class="well dontprint" id="filter-well">
   <div class="row form-group">
-    <div class="col-md-12">
+    <div class="col-md-12" id="prof-select-container">
       <select id="prof-select" class="user-select" multiple="multiple">
         {% for prof in professors %}
         <option value={{ prof.id }}>{{ prof.name }}</option>
@@ -94,7 +94,7 @@ var edit = {{ edit }};
       Readers:
     </div>
     <div class="col-xs-8">
-      <span class="edit-readers">{readers}<span>
+      <span class="edit-readers">{readers}</span>
     </div>
   </div>
 </div>

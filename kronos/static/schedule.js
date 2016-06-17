@@ -49,7 +49,8 @@ $(document).ready(function() {
                 div = div.replace("{student}", event.student);
                 readers = "";
                 for (let reader of event.readers){
-                    readers += reader + ", ";
+                      readers += reader + ", ";
+                   // readers += "<span class='edit-reader'>" + reader + ", " + "</span>";
                 }
                 div = div.replace("{readers}", readers);
                 content += div;
@@ -91,12 +92,26 @@ $(document).ready(function() {
                                     name       : 'summary',
                                     submitdata : {event_id: event.id},
                                 }); 
-                                $('.edit-readers').editable('/submitevent',{
+                                /*$('.edit-readers').editable('/submitevent',{
                                     loadurl    : '/usersjson',
                                     loaddata   : {type: "professor"},
                                     type       : 'select',
                                     submitdata : {event_id: event.id},
-                                    onblur     : 'ignore', 
+                                });*/
+                                var readerselect = "<select id='reader-select' multiple='multiple'>" + $("#prof-select").html() + "</select>";
+                                $('.edit-readers').replaceWith(readerselect);
+                                $('#reader-select option').each(function(index,value){
+                                    //if a reader is in event.readers, the select them
+                                    if (event.readers.indexOf(value.text) >= 0){
+                                        value.setAttribute("selected", true);
+                                    }
+                                });
+                                $("#reader-select", this).select2({
+                                    placeholder: "Readers",
+                                    allowClear: true
+                                });
+                                $('#reader-select', this).on('change', function (evt) {
+                                   $.post( "/submitevent", { event_id: event.id, readers: $(this).val() } );
                                 });
                             }
                         }
@@ -105,6 +120,6 @@ $(document).ready(function() {
         },
     });
 });
-$(document).on('change', 'select', function() {
+$(document).on('change', '#filter-well select', function() {
     $('#calendar').fullCalendar( 'refetchEvents');
 });
