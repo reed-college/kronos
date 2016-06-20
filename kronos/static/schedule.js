@@ -14,6 +14,7 @@ $(document).ready(function() {
         defaultView: 'agendaWeek',         
         weekends: false,
         allDaySlot: false,
+        editable: edit,
         header: false,
         slotEventOverlap: false,
         events: {
@@ -28,17 +29,9 @@ $(document).ready(function() {
                 };
             }
         },
+        //most of what is in this function is for crating the qtip for the event
         eventRender: function(event, element, view) {
             $(element).attr('tabindex', '0');
-            /*
-            $(element).attr('data-toggle', 'popover');
-            $(element).attr('title', event.title);
-            //change this back to 'focus' when you're done with popover inspecting
-            $(element).attr('data-trigger', 'click');
-            $(element).attr('data-container', '.fc-time-grid');
-            $(element).attr('data-content', content)
-            $(element).popover({html : true});
-            */
             //making the content to go in the qtip
             var content = "";
             var eventtime = event.start.format("H:mm") + "-" + event.end.format("H:mm");
@@ -77,7 +70,7 @@ $(document).ready(function() {
                 },
                 events: {
                         render: function(qevent, api) {
-
+                            //making the fields on the qtip editable
                             if (edit){
                                 //initializing jeditables
                                 $('.edit-student').editable('/submitevent',{
@@ -117,6 +110,12 @@ $(document).ready(function() {
                         }
                 }
             });
+        },
+        eventResize: function(event, delta, revertFunc) {
+            $.post("/submitevent", { event_id: event.id, start: event.start.format('YMMDD hh:mm:ss A'), end: event.end.format('YMMDD hh:mm:ss A')});
+        },
+        eventDrop: function(event, delta, revertFunc) {
+            $.post("/submitevent", { event_id: event.id, start: event.start.format('YMMDD hh:mm:ss A'), end: event.end.format('YMMDD hh:mm:ss A')});
         },
     });
 });

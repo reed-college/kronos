@@ -124,7 +124,8 @@ def update_event():
     stuid = request.form.get("stu_id") or None
     summary = request.form.get("summary") or None
     readers = request.form.getlist("readers[]") or None
-    print(readers)
+    start = request.form.get("start") or None
+    end = request.form.get("end") or None
     event = Event.query.get_or_404(eventid)
     if stuid is not None:
         event.stu_id = stuid
@@ -139,6 +140,11 @@ def update_event():
         event.readers = readerobjs
         db.session.commit()
         return str(event.readers)
+    elif (start is not None) and (end is not None):
+        event.dtstart = start
+        event.dtend = end
+        db.session.commit()
+        return (str(event.dtstart.timestamp()), str(event.dtend.timestamp()))
     else:
         return "Something went wrong!"
 
