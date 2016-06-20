@@ -138,16 +138,20 @@ class Oral(Event):
     def __repr__(self):
         return '<%rs Oral>' % self.stu
 
+    
     @validates('readers')
-    def validate_readers(self, key, reader):
-        """
-        make sure readers won't be assigned to conflicting orals.
-        """
+    def validate(self, key, reader):
         for oral in reader.orals:
-            assert (not ((oral.dtstart > self.dtstart and oral.dtstart <= self.dtend) or
-                     (oral.dtend > self.dtstart and oral.dtend <= self.dtend) or
-                     (oral.dtstart <= self.dtstart and oral.dtend >= self.dtend)))
-        for event in reader.event:
-            print(event.summary)
+            # make sure readers won't be assigned to conflicting orals.
+            if (oral.dtstart > self.dtstart and oral.dtstart <= self.dtend) or (
+                oral.dtend > self.dtstart and oral.dtend <= self.dtend) or (
+                oral.dtstart <= self.dtstart and oral.dtend >= self.dtend):
+                raise ValueError('Conflicting orals are assigned to a reader.')
+            # make sure that each student is assigned for only one oral.
+            if self.stu == oral.stu:
+                    raise AssertionError('More than one oral are assigned to a student.')
+        # for event in reader.event:
+        #     print(event.summary)
         return reader
+    
 
