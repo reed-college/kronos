@@ -121,12 +121,17 @@ def update_event():
     """
     print(request.form)
     eventid = request.form.get("event_id")
+    userid = request.form.get("user_id") or None
     stuid = request.form.get("stu_id") or None
     summary = request.form.get("summary") or None
     readers = request.form.getlist("readers[]") or None
     start = request.form.get("start") or None
     end = request.form.get("end") or None
     event = Event.query.get_or_404(eventid)
+    if userid is not None:
+        event.userid = userid
+        db.session.commit()
+        return event.user.name
     if stuid is not None:
         event.stu_id = stuid
         db.session.commit()

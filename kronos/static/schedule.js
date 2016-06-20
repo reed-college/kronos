@@ -37,7 +37,7 @@ $(document).ready(function() {
             var eventtime = event.start.format("H:mm") + "-" + event.end.format("H:mm");
             if (event.type == "oral") {
                 //gets the hidden oral template div and replaces some data
-                var div = $("#popover-oral-template").html();
+                var div = $("#oral-qtip-template").html();
                 div = div.replace("{time}", eventtime);
                 div = div.replace("{student}", event.student);
                 readers = "";
@@ -49,7 +49,9 @@ $(document).ready(function() {
                 content += div;
             }
             else {
-                content += "Who: " + event.user + "\n";
+                var div = $('#event-qtip-template').html()
+                div = div.replace("{user}", event.user)
+                content += div;
             }
             //initilizing the qtips
             $(element).qtip({
@@ -73,6 +75,13 @@ $(document).ready(function() {
                             //making the fields on the qtip editable
                             if (edit){
                                 //initializing jeditables
+                                $('.edit-user').editable('/submitevent',{
+                                    loadurl    : '/usersjson',
+                                    type       : 'select',
+                                    submit     : '<button class="btn btn-success" type="submit" >Ok</button>',
+                                    name       : 'user_id',
+                                    submitdata : {event_id: event.id},
+                                });
                                 $('.edit-student').editable('/submitevent',{
                                     loadurl    : '/usersjson',
                                     loaddata   : {type: "student"},
