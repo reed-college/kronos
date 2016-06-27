@@ -148,10 +148,10 @@ class Oral(Event):
             if (oral.dtstart > self.dtstart and oral.dtstart <= self.dtend) or (
                 oral.dtend > self.dtstart and oral.dtend <= self.dtend) or (
                 oral.dtstart <= self.dtstart and oral.dtend >= self.dtend):
-                raise ValueError('Conflicting orals are assigned to a reader.')
+                raise ValueError('Conflicting orals are assigned to reader ' + str(reader) + ".")
             # make sure that each student is assigned for only one oral.
             if self.stu == oral.stu:
-                    raise AssertionError('More than one oral are assigned to a student.')
+                    raise AssertionError('More than one oral are assigned to student ' + str(oral.stu) + ".")
             # refuse to add orals that conflict with personal events.
             for reader in oral.readers:
                 if reader.events != []:
@@ -159,7 +159,7 @@ class Oral(Event):
                         if (oral.dtstart > event.dtstart and oral.dtstart <= event.dtend) or (
                             oral.dtend > event.dtstart and oral.dtend <= event.dtend) or (
                             oral.dtstart <= event.dtstart and oral.dtend >= event.dtend):
-                            raise ValueError('Conflicting oral and personal event are added.')
+                            raise ValueError("Conflicting oral '"+oral.summary+"' and "+str(event.user)+"'s personal event '"+event.summary+"' are added.")
         return reader
     
 
