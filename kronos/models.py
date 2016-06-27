@@ -18,6 +18,8 @@ readers = db.Table('readers',
        db.Column('oral_id', db.Integer, db.ForeignKey('oral.id'))
        )
 
+
+
 # The User class contains professors and students,
 # but that does not mean that they are the actual "users" of this website
 
@@ -100,7 +102,7 @@ class Event(db.Model):
 
 
     userid = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship('User', backref=db.backref('event'))  # lazy???
+    user = db.relationship('User', backref=db.backref('events'))  # lazy???
 
     def __init__(self, summary, dtstart, dtend, user,
                  private=True, status='busy'):
@@ -140,7 +142,7 @@ class Oral(Event):
 
     
     @validates('readers')
-    def validate(self, key, reader):
+    def validate_orals(self, key, reader):
         for oral in reader.orals:
             # make sure readers won't be assigned to conflicting orals.
             if (oral.dtstart > self.dtstart and oral.dtstart <= self.dtend) or (
@@ -150,8 +152,14 @@ class Oral(Event):
             # make sure that each student is assigned for only one oral.
             if self.stu == oral.stu:
                     raise AssertionError('More than one oral are assigned to a student.')
-        # for event in reader.event:
-        #     print(event.summary)
+            # refuse to add orals that conflict with personal events.
+            for reader in oral.readers:
+                if reader.events != []:
+                    for event in reader.events:
+                        if (oral.dtstart > event.dtstart and oral.dtstart <= event.dtend) or (
+                            oral.dtend > event.dtstart and oral.dtend <= event.dtend) or (
+                            oral.dtstart <= event.dtstart and oral.dtend >= event.dtend):
+                            raise ValueError('Conflicting oral and personal event are added.')
         return reader
     
 
