@@ -11,12 +11,13 @@ $(document).ready(function() {
     //initializing fullCalendar
     $('#calendar').fullCalendar({
         defaultDate: startday,
-        defaultView: 'agendaWeek',         
+        defaultView: 'basicWeek',         
         weekends: false,
         allDaySlot: false,
         editable: edit,
         header: false,
-        slotEventOverlap: false,
+        slotDuration: '00:15:00',
+        scrollTime: '10:00:00',
         events: {
             url: '/eventsjson',
             data: function() { 
@@ -43,7 +44,6 @@ $(document).ready(function() {
                 readers = "";
                 for (let reader of event.readers){
                       readers += reader + ", ";
-                   // readers += "<span class='edit-reader'>" + reader + ", " + "</span>";
                 }
                 div = div.replace("{readers}", readers);
                 content += div;
@@ -64,7 +64,7 @@ $(document).ready(function() {
                     my: 'left center',
                     at: 'right center',
                     //makes sure that the qtips don't go outside fullcalendar
-                    viewport: $('.fc-time-grid'),
+                    viewport: $('#calendar'),
                 },   
                 content: {
                     text: content,
@@ -94,12 +94,6 @@ $(document).ready(function() {
                                     name       : 'summary',
                                     submitdata : {event_id: event.id},
                                 }); 
-                                /*$('.edit-readers').editable('/submitevent',{
-                                    loadurl    : '/usersjson',
-                                    loaddata   : {type: "professor"},
-                                    type       : 'select',
-                                    submitdata : {event_id: event.id},
-                                });*/
                                 var readerselect = "<select id='reader-select' multiple='multiple'>" + $("#prof-select").html() + "</select>";
                                 $('.edit-readers').replaceWith(readerselect);
                                 $('#reader-select option').each(function(index,value){
