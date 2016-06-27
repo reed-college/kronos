@@ -76,6 +76,17 @@ db.session.add(mckinney)
 db.session.add(simpson)
 db.session.add(luker)
 
+# Made-up Events
+# Note that personal events must be added before orals in order to get the validator to work.
+
+event1 = Event('at home', datetime.datetime(2016,5,2,8), datetime.datetime(2016,5,2,12), pearson)
+event2 = Event('out of town', datetime.datetime(2016,5,6,10), datetime.datetime(2016,5,6,22), pearson, private = False)
+# event3 = Event('not doing much now', datetime.datetime(2016,5,6,11), datetime.datetime(2016,5,6,10), hovda, private = False)
+
+db.session.add(event1)
+db.session.add(event2)
+# db.session.add(event3)
+
 # Orals
 oral1 = Oral(emma, 'Oral_Emma', datetime.datetime(2016,5,2,10), datetime.datetime(2016,5,2,12), griffinj)
 oral1.readers = [pearson, becker, hovda, somda]
@@ -105,8 +116,8 @@ oral9 = Oral(edmond, 'Oral_Edmond', datetime.datetime(2016,5,2,10), datetime.dat
 oral9.readers = [bershtein, gruber, faletra, minardi]
 
 # made-up orals for testing validators.
-oral10 = Oral(emma, 'Oral_test', datetime.datetime(2016,5,2,10), datetime.datetime(2016,5,2,12), griffinj)
-oral10.readers = [pearson, becker, hovda, somda]
+# oral10 = Oral(emma, 'Oral_test', datetime.datetime(2016,5,2,10), datetime.datetime(2016,5,2,12), griffinj)
+# oral10.readers = [pearson, becker, hovda, somda]
 
 # oral11 = Oral(emma, 'Oral_test', datetime.datetime(2016,6,1,10), datetime.datetime(2016,6,1,12), griffinj)
 # oral11.readers = [pearson, ditter, minardi, witt]
@@ -121,18 +132,9 @@ db.session.add(oral6)
 db.session.add(oral7)
 db.session.add(oral8)
 db.session.add(oral9)
-db.session.add(oral10)
+# db.session.add(oral10)
 # db.session.add(oral11)
 
-# Made-up Events
-
-event1 = Event('at home', datetime.datetime(2016,5,2,8), datetime.datetime(2016,5,2,10), pearson)
-event2 = Event('out of town', datetime.datetime(2016,5,6,10), datetime.datetime(2016,5,6,22), pearson, private = False)
-# event3 = Event('not doing much now', datetime.datetime(2016,5,6,11), datetime.datetime(2016,5,6,10), hovda, private = False)
-
-db.session.add(event1)
-db.session.add(event2)
-# db.session.add(event3)
 
 db.session.commit()
 
