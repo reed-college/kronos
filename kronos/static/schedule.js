@@ -89,6 +89,9 @@ $(document).ready(function() {
                                     },{
                                     type       : 'time',
                                     submit     : '<button class="btn btn-success" type="submit" >Ok</button>',
+                                    callback   : function(value, settings){
+                                        $('#calendar').fullCalendar( 'refetchEvents');
+                                    },
                                 });
                                 $('.edit-end').editable(function(value, settings) {
                                         //editing time to include date
@@ -105,6 +108,9 @@ $(document).ready(function() {
                                     },{
                                     type       : 'time',
                                     submit     : '<button class="btn btn-success" type="submit" >Ok</button>',
+                                    callback   : function(value, settings){
+                                        $('#calendar').fullCalendar( 'refetchEvents');
+                                    },
                                 });
                                 $('.edit-user').editable('/submitevent',{
                                     loadurl    : '/usersjson',
@@ -124,6 +130,9 @@ $(document).ready(function() {
                                 $('.edit-title').editable('/submitevent',{
                                     name       : 'summary',
                                     submitdata : {event_id: event.id},
+                                    callback   : function(value, settings){
+                                        $('#calendar').fullCalendar( 'refetchEvents');
+                                    },
                                 }); 
                                 var readerselect = "<select id='reader-select' multiple='multiple'>" + $("#prof-select").html() + "</select>";
                                 $('.edit-readers').replaceWith(readerselect);
