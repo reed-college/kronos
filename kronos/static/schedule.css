@@ -1,0 +1,46 @@
+.label-input-group {
+    position: absolute;
+  	z-index: 1000;
+    left: 27px;
+    top: 6px;
+}
+  
+.time-text {
+    float: none;
+    display: table-cell;
+    vertical-align: bottom;
+}
+
+.well {
+	border-radius: 0 !important;    
+}
+
+.chosen-disabled {
+            opacity: 1 !important;
+}
+
+span.select2.select2-container {
+    width: 100% !important;
+}
+
+a:focus {
+    color: #fff;
+    text-decoration: none;
+}
+
+.popover {
+    max-width:none;
+    white-space: nowrap;
+}
+
+.hidden {
+    display: none;
+}
+
+.cal-qtip {
+    min-width: 270px !important;
+}
+
+.select2-dropdown{
+    z-index: 9999999999999;
+}
