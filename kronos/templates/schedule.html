@@ -27,6 +27,7 @@ var edit = {{ edit }};
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script src="{{url_for('.static', filename='jquery.jeditable.mini.js')}}" ></script>
 <script src="{{url_for('.static', filename='jquery.qtip.min.js')}}" ></script>
+<script src="{{url_for('.static', filename='jquery.jeditable.time.js')}}" ></script>
 <script src="{{url_for('.static', filename='schedule.js')}}"></script>
 {% endblock %}
 
@@ -78,7 +79,9 @@ var edit = {{ edit }};
       When:
     </div>
     <div class="col-xs-8">
-      {time}
+      <span class="edit-start">{start}</span>
+      -
+      <span class="edit-end">{end}</span>
     </div>
   </div>
   <div class="row">

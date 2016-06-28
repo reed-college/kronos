@@ -100,6 +100,12 @@ def get_events_json():
             evjson["student"] = event.stu.name
         events.append(evjson)
         
+#    events.append({
+#        "start": '2016-05-02 10:00:00',
+#        "end": '2016-05-02 12:00:00',
+#        "rendering": 'background',
+#    })
+
     return json.dumps(events)
 
 
@@ -150,6 +156,14 @@ def update_event():
         event.dtend = end
         db.session.commit()
         return (str(event.dtstart.timestamp()), str(event.dtend.timestamp()))
+    elif start is not None:
+        event.dtstart = start
+        db.session.commit()
+        return event.dtstart.strftime("%-H:%M")
+    elif end is not None:
+        event.dtend = end
+        db.session.commit()
+        return event.dtend.strftime("%-H:%M")
     else:
         return "Something went wrong!"
 

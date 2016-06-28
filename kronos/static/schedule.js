@@ -35,11 +35,12 @@ $(document).ready(function() {
             $(element).attr('tabindex', '0');
             //making the content to go in the qtip
             var content = "";
-            var eventtime = event.start.format("H:mm") + "-" + event.end.format("H:mm");
             if (event.type == "oral") {
                 //gets the hidden oral template div and replaces some data
                 var div = $("#oral-qtip-template").html();
-                div = div.replace("{time}", eventtime);
+                div = div.replace("{start}", event.start.format("H:mm"));
+                console.log(event.title);
+                div = div.replace("{end}", event.end.format("H:mm"));
                 div = div.replace("{student}", event.student);
                 readers = "";
                 for (let reader of event.readers){
@@ -75,6 +76,37 @@ $(document).ready(function() {
                             //making the fields on the qtip editable
                             if (edit){
                                 //initializing jeditables
+                                $('.edit-start').editable(function(value, settings) {
+                                        //editing time to include date
+                                        dt = event.start.format('YMMDD ') + value;
+                                        $.post("/submitevent", { 
+                                            event_id: event.id, 
+                                            start   : dt}, 
+                                            function(data){
+                                                $(this).text(data);
+                                                return data;
+                                            });
+                                        return value;
+                                    },{
+                                    type       : 'time',
+                                    submit     : '<button class="btn btn-success" type="submit" >Ok</button>',
+                                });
+                                $('.edit-end').editable(function(value, settings) {
+                                        //editing time to include date
+                                        //TODO abstract this function so it doesn't appear twice for both start and end
+                                        dt = event.end.format('YMMDD ') + value;
+                                        $.post("/submitevent", { 
+                                            event_id: event.id, 
+                                            end     : dt}, 
+                                            function(data){
+                                                $(this).text(data);
+                                                return data;
+                                            });
+                                        return value;
+                                    },{
+                                    type       : 'time',
+                                    submit     : '<button class="btn btn-success" type="submit" >Ok</button>',
+                                });
                                 $('.edit-user').editable('/submitevent',{
                                     loadurl    : '/usersjson',
                                     type       : 'select',
@@ -115,10 +147,16 @@ $(document).ready(function() {
             });
         },
         eventResize: function(event, delta, revertFunc) {
-            $.post("/submitevent", { event_id: event.id, start: event.start.format('YMMDD hh:mm:ss A'), end: event.end.format('YMMDD hh:mm:ss A')});
+            $.post("/submitevent", { event_id: event.id, 
+                                     start   : event.start.format('YMMDD hh:mm:ss A'), 
+                                     end     : event.end.format('YMMDD hh:mm:ss A'),
+            });
         },
         eventDrop: function(event, delta, revertFunc) {
-            $.post("/submitevent", { event_id: event.id, start: event.start.format('YMMDD hh:mm:ss A'), end: event.end.format('YMMDD hh:mm:ss A')});
+            $.post("/submitevent", { event_id: event.id, 
+                                     start   : event.start.format('YMMDD hh:mm:ss A'), 
+                                     end     : event.end.format('YMMDD hh:mm:ss A'),
+            });
         },
     });
 });
