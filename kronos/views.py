@@ -36,6 +36,10 @@ def schedule():
 
 @app.route('/eventsjson')
 def get_events_json():
+    """
+    Returns a json of events based on args in the querystring
+    all of the args are listed below
+    """
     # getting querystring args
     start = request.args.get("start")
     end = request.args.get("end")
