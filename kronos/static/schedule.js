@@ -38,22 +38,21 @@ $(document).ready(function() {
             if (event.type == "oral") {
                 //gets the hidden oral template div and replaces some data
                 var div = $("#oral-qtip-template").html();
-                div = div.replace("{start}", event.start.format("H:mm"));
-                console.log(event.title);
-                div = div.replace("{end}", event.end.format("H:mm"));
                 div = div.replace("{student}", event.student);
                 readers = "";
                 for (let reader of event.readers){
                       readers += reader + ", ";
                 }
                 div = div.replace("{readers}", readers);
-                content += div;
             }
             else {
                 var div = $('#event-qtip-template').html()
                 div = div.replace("{user}", event.user)
-                content += div;
             }
+            div = div.replace("{start}", event.start.format("H:mm"));
+            div = div.replace("{end}", event.end.format("H:mm"));
+            content += div;
+
             //initilizing the qtips
             $(element).qtip({
                 show: 'click',

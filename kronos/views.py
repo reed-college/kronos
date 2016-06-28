@@ -1,5 +1,6 @@
 import json
 import datetime
+from dateutil import parser
 import flask
 import httplib2
 
@@ -26,7 +27,6 @@ def schedule():
     # and also hopefully the javascript variable will get set by ldap
     # authentication and not a querysting
     edit = request.args.get("edit") or "false" 
-    print(edit, type(edit))
 
     return render_template(
         "schedule.html", department=department, division=division,
@@ -152,8 +152,13 @@ def update_event():
         db.session.commit()
         return str(event.readers)
     elif (start is not None) and (end is not None):
-        event.dtstart = start
-        event.dtend = end
+        # need to update start and end in the right order so the validators don't freak out
+        if parser.parse(end) < event.dtstart:
+            event.dtstart = start
+            event.dtend = end
+        else: 
+            event.dtend = end
+            event.dtstart = start
         db.session.commit()
         return (str(event.dtstart.timestamp()), str(event.dtend.timestamp()))
     elif start is not None:

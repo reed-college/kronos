@@ -126,9 +126,9 @@ class Event(db.Model):
             time = parser.parse(field)
         else:
             raise AsdsertionError(key + " must of type 'datetime.datetime' or type 'str'")
-        if key is "dtstart":
+        if key is "dtstart" and isinstance(self.dtend, datetime):
             assert time < self.dtend
-        else:
+        elif key is "dtend" and isinstance(self.dtstart, datetime):
             assert time > self.dtstart
         return field
 
