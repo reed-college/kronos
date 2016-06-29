@@ -4,16 +4,6 @@ import pytest
 from kronos import util
 
 
-@pytest.fixture(autouse=True)
-def mock_create_all(monkeypatch):
-    """
-    Making it so that when importing from kronos it doesn't try to make the db
-    """
-    def mockreturn(self):
-        return None
-    monkeypatch.setattr("flask_sqlalchemy.SQLAlchemy.create_all", mockreturn)
-
-
 class TestUtil:
     def test_FreeTimeCalc(self):
         """
