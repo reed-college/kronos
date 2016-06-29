@@ -1,4 +1,4 @@
-# Kronos
+# Kronos ![travisci-status](https://travis-ci.org/reed-college/kronos.svg?branch=test)
 flask site for scheduling and viewing orals
 
 ## Setup
