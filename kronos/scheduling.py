@@ -61,7 +61,54 @@ def all_avail(user1, user2, user3, user4):
                 for range4 in avail4:
                     latest_start = max(range1.start, range2.start, range3.start, range4.start)
                     earliest_end = min(range1.end, range2.end, range3.end, range4.end)
-                    if latest_start <= earliest_end:
+                    if latest_start <= earliest_end and (
+                        earliest_end - latest_start >= datetime.timedelta(hours=2)):
                         ls.append(Range(latest_start, earliest_end))
     return ls
 
+# Return possible oral times given less than 4 professors' schedule
+# Assume all orals take 2 hours
+
+# Given two lists of ranges, return the overlap ranges.
+
+def overlap(avail1, avail2):
+    ls = []
+    for range1 in avail1:
+        for range2 in avail2:
+            latest_start = max(range1.start, range2.start)
+            earliest_end = min(range1.end, range2.end)
+            if latest_start <= earliest_end:    # if they intersect
+                ls.append(Range(latest_start, earliest_end))
+    return ls
+
+    
+
+'''
+def possibletime(users):
+    i = 0
+    avails = []
+    while i < len(users):
+        avails.append(available(users[i]))
+        i += 1
+    for avail in avails:
+        overlap(avail)
+'''
+
+# users = [pearson, becker, hovda, somda]
+# possibletime(users)
+
+
+# Problem description:
+# Assume all orals take 2 hours
+# and the only starting times are 8am, 10am, 1pm, 3pm and 5pm.
+
+
+# Given the schedule of one person (thesis advisor who has to be in the oral),
+# return something like this:
+# Time | Profs
+#  8am | Hovda, Hancock, Pearson
+# 10am | Hovda, Somda, Becker, Witt
+
+
+
+events = Event.query.all()
