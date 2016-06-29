@@ -1,23 +1,25 @@
-from kronos import util
 from random import randint
 import datetime
 import pytest
+from kronos import util
 
 
 @pytest.fixture(autouse=True)
-def no_requests(monkeypatch):
+def mock_create_all(monkeypatch):
     """
     Making it so that when importing from kronos it doesn't try to make the db
     """
-    monkeypatch.delattr("flask_sqlalchemy.SQLAlchemy.create_all")
+    def mockreturn(self):
+        return None
+    monkeypatch.setattr("flask_sqlalchemy.SQLAlchemy.create_all", mockreturn)
+
 
 class TestUtil:
-    def test_FreeTimeCalc(self, monkeypatch):
+    def test_FreeTimeCalc(self):
         """
         Uses variously lengthed events and 2 hour orals placed throughout
         a week to test if FreeTimeCalc works as it should
         """
-
         events = []
         orals = []
         guess = []

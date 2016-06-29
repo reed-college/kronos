@@ -9,6 +9,5 @@ Bootstrap(app)
 db = SQLAlchemy(app)
 from kronos.models import db
 import kronos.models as models
-db.create_all()
 # importing the views
 import kronos.views
