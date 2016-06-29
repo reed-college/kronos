@@ -49,56 +49,53 @@ def available(user):
 
 # Given four professors' schedule, return time intervals when they are all available.
 
-def all_avail(user1, user2, user3, user4):
-    ls = []
-    avail1 = available(user1)
-    avail2 = available(user2)
-    avail3 = available(user3)
-    avail4 = available(user4)
-    for range1 in avail1:
-        for range2 in avail2:
-            for range3 in avail3:
-                for range4 in avail4:
-                    latest_start = max(range1.start, range2.start, range3.start, range4.start)
-                    earliest_end = min(range1.end, range2.end, range3.end, range4.end)
-                    if latest_start <= earliest_end and (
-                        earliest_end - latest_start >= datetime.timedelta(hours=2)):
-                        ls.append(Range(latest_start, earliest_end))
-    return ls
-
-# Return possible oral times given less than 4 professors' schedule
-# Assume all orals take 2 hours
-
-# Given two lists of ranges, return the overlap ranges.
-
 def overlap(avail1, avail2):
     ls = []
     for range1 in avail1:
         for range2 in avail2:
             latest_start = max(range1.start, range2.start)
             earliest_end = min(range1.end, range2.end)
-            if latest_start <= earliest_end:    # if they intersect
+            if latest_start <= earliest_end and (
+                earliest_end - latest_start >= datetime.timedelta(hours=2)):    # if they intersect
                 ls.append(Range(latest_start, earliest_end))
     return ls
 
-    
 
-'''
-def possibletime(users):
-    i = 0
-    avails = []
-    while i < len(users):
-        avails.append(available(users[i]))
-        i += 1
-    for avail in avails:
-        overlap(avail)
-'''
+def all_avail(user1, user2, user3, user4):
+    ls = []
+    avail1 = available(user1)
+    avail2 = available(user2)
+    avail3 = available(user3)
+    avail4 = available(user4)
+    r1 = overlap(avail1, avail2)
+    r2 = overlap(avail3, avail4)
+    return overlap(r1, r2)
+
+
+
+# Return possible oral times given less than 4 professors' schedule
+# Assume all orals take 2 hours
+
+# Given two lists of ranges, return the overlap ranges.
+
+
+
+# def possibletime(users):
+#     i = 0
+#     avails = []
+#     while i < len(users):
+#         avails.append(available(users[i]))
+#         i += 1
+#     for avail1, avail2 in zip(avails, avails):
+#         if avail1 != avail2:
+#             overlap(avail1, avail2)
+
 
 # users = [pearson, becker, hovda, somda]
 # possibletime(users)
 
 
-# Problem description:
+
 # Assume all orals take 2 hours
 # and the only starting times are 8am, 10am, 1pm, 3pm and 5pm.
 
