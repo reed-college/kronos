@@ -3,6 +3,7 @@ python: "3.5.1"
 install: 
   - pip install -r requirements.txt
   # copying config template and replacing the port in the db URI
+  # Need to include host:port so it doesn't replace the port in 'import'
   - cp kronos/config.py.template kronos/config.py
-  - sed -i 's/port/5432/g' kronos/config.py
+  - sed -i 's/host:port/localhost:5432/g' kronos/config.py
 script: py.test
