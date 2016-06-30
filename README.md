@@ -1,4 +1,4 @@
-# Kronos
+# Kronos ![travisci-status](https://travis-ci.org/reed-college/kronos.svg?branch=master)
 flask site for scheduling and viewing orals
 
 ## Setup
@@ -10,7 +10,7 @@ flask site for scheduling and viewing orals
 * run `cp kronos/config.py.template kronos/config.py`
 * edit `config.py` to have the correct postgres URI for the db you just created
   * Make sure the username and password you type in are for a user who can edit the db, like the owner
-* then you should be good to go, run `python runserver.py` and go to `localhos:5000/`
+* then you should be good to go, run `python runserver.py` and go to `localhost:5000/`
 
 ## More Detailed DB setup
 This is exactly how I set my db, you don't need to follow it exactly for it to work, but it may be useful if you're not used to postgres

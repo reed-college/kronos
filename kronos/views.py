@@ -1,5 +1,6 @@
 import json
 import datetime
+from dateutil import parser
 import flask
 import httplib2
 
@@ -7,8 +8,8 @@ from flask import render_template, request
 from apiclient import discovery
 from oauth2client import client
 
-from kronos import app
-from .models import department, division, Oral, Stu, Prof, Event
+from kronos import app, db
+from .models import department, division, Oral, Stu, Prof, Event, User
 
 
 @app.route('/')
@@ -18,14 +19,27 @@ def schedule():
     starttime = Oral.query.order_by(Oral.dtstart).all()[0].dtstart
     students = Stu.query.all()
     professors = Prof.query.all()
+    # TODO when we're gonna need each POST request from fullcalendar/jeditable
+    # to be validated through ldap, because leaving it up to a javascript
+    # variable is super insercure.
+    # But we'll have to wait until someone gets around to helping us set up ldap
+    # to do that.
+    # and also hopefully the javascript variable will get set by ldap
+    # authentication and not a querysting
+    edit = request.args.get("edit") or "false" 
 
     return render_template(
         "schedule.html", department=department, division=division,
-        students=students, professors=professors, starttime=starttime)
+        students=students, professors=professors, starttime=starttime,
+        edit=edit)
 
 
 @app.route('/eventsjson')
 def get_events_json():
+    """
+    Returns a json of events based on args in the querystring
+    all of the args are listed below
+    """
     # getting querystring args
     start = request.args.get("start")
     end = request.args.get("end")
@@ -33,8 +47,6 @@ def get_events_json():
     dept = str(request.args.get("department"))
     profs = request.args.getlist("professors[]")
     stus = request.args.getlist("students[]")
-
-    print(profs, type(profs))
 
     eventobjs = Event.query
     # filtering by querystring args
@@ -75,14 +87,94 @@ def get_events_json():
     if end is not None:
         eventobjs = eventobjs.filter(Event.dtstart <= end)
     # putting the events into the formal fullcalendar wants
-    events = [{
+    events = []
+    for event in eventobjs:
+        evjson = {
         "id": event.id,
         "title": event.summary,
         "start": str(event.dtstart),
-        "end": str(event.dtend)}
-        for event in eventobjs]
+        "end": str(event.dtend),
+        "type": event.discriminator,
+        "user": event.user.name,
+        "student": "",
+        "readers": [],
+        }
+        if type(event) is Oral:
+            evjson["readers"] = [reader.name for reader in event.readers]
+            evjson["student"] = event.stu.name
+        events.append(evjson)
+        
+#    events.append({
+#        "start": '2016-05-02 10:00:00',
+#        "end": '2016-05-02 12:00:00',
+#        "rendering": 'background',
+#    })
+
     return json.dumps(events)
 
+
+@app.route('/usersjson')
+def get_users_json():
+    """
+    Returns a json of users for jeditable to use for the selects
+    """
+    usrtype = request.args.get("type") or ""
+    usrqury = User.query.filter(User.discriminator.contains(usrtype))
+    users = {usr.id : usr.name for usr in usrqury} 
+    return json.dumps(users)
+
+
+@app.route('/submitevent', methods=['POST'])
+def update_event():
+    """
+    page for jeditable to send new event changes to the db
+    """
+    print(request.form)
+    eventid = request.form.get("event_id")
+    userid = request.form.get("user_id") or None
+    stuid = request.form.get("stu_id") or None
+    summary = request.form.get("summary") or None
+    readers = request.form.getlist("readers[]") or None
+    start = request.form.get("start") or None
+    end = request.form.get("end") or None
+    event = Event.query.get_or_404(eventid)
+    if userid is not None:
+        event.userid = userid
+        db.session.commit()
+        return event.user.name
+    if stuid is not None:
+        event.stu_id = stuid
+        db.session.commit()
+        return event.stu.name
+    elif summary is not None:
+        event.summary = summary
+        db.session.commit()
+        return event.summary
+    elif readers is not None:
+        readerobjs = [Prof.query.get(id) for id in readers]
+        event.readers = readerobjs
+        db.session.commit()
+        return str(event.readers)
+    elif (start is not None) and (end is not None):
+        # need to update start and end in the right order so the validators don't freak out
+        if parser.parse(end) < event.dtstart:
+            event.dtstart = start
+            event.dtend = end
+        else: 
+            event.dtend = end
+            event.dtstart = start
+        db.session.commit()
+        return (str(event.dtstart.timestamp()), str(event.dtend.timestamp()))
+    elif start is not None:
+        event.dtstart = start
+        db.session.commit()
+        return event.dtstart.strftime("%-H:%M")
+    elif end is not None:
+        event.dtend = end
+        db.session.commit()
+        return event.dtend.strftime("%-H:%M")
+    else:
+        return "Something went wrong!"
 
 @app.route('/gcal')
 def get_gcal():

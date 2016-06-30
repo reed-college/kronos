@@ -1,8 +1,12 @@
 import datetime
 from kronos import db
 from sqlalchemy import Enum, ForeignKey, DateTime, event
-from sqlalchemy.schema import CheckConstraint
 from sqlalchemy.orm import validates
+from sqlalchemy.schema import CheckConstraint
+from sqlalchemy.ext.declarative import declared_attr
+from dateutil import parser
+from datetime import datetime
+
 
 department = ('Anthropology', 'Art', 'Biology', 'Chemistry', 'Chinese',
               'Classics', 'Dance', 'Economics', 'English', 'French', 'German',
@@ -118,6 +122,26 @@ class Event(db.Model):
             return '<Event %r>' % self.summary
         else:
             return '<Not available>'
+
+    @validates('dtstart', 'dtend')
+    def validate_end_after_start(self, key, field):
+        """
+        Checks 2 things
+        1. That either a string or a datetime was set to either dtstart or dtend
+        2. That the end of this event is after the start
+        """
+        #if a string is submitted, it will now be converted to a datetime
+        if type(field) is datetime:
+            time = field
+        elif type(field) is str:
+            time = parser.parse(field)
+        else:
+            raise AsdsertionError(key + " must of type 'datetime.datetime' or type 'str'")
+        if key is "dtstart" and isinstance(self.dtend, datetime):
+            assert time < self.dtend
+        elif key is "dtend" and isinstance(self.dtstart, datetime):
+            assert time > self.dtstart
+        return field
 
 class Oral(Event):
     __tablename__ = 'oral'
