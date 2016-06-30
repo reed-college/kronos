@@ -1,3 +1,4 @@
+import datetime
 from kronos import db
 from kronos.models import FAC, Stu, Prof, Oral, Event
 
@@ -75,33 +76,52 @@ db.session.add(mckinney)
 db.session.add(simpson)
 db.session.add(luker)
 
+# Made-up Events
+# Note that personal events must be added before orals in order to get the validator to work.
+
+event1 = Event('at home', datetime.datetime(2016,5,2,8), datetime.datetime(2016,5,2,9), pearson)
+event2 = Event('out of town', datetime.datetime(2016,5,6,10), datetime.datetime(2016,5,6,22), pearson, private = False)
+# event3 = Event('not doing much now', datetime.datetime(2016,5,6,11), datetime.datetime(2016,5,6,10), hovda, private = False)
+
+db.session.add(event1)
+db.session.add(event2)
+# db.session.add(event3)
+
 # Orals
-oral1 = Oral(emma, 'Oral_Emma', '20160502 10:00:00 AM', '20160502 12:00:00 PM', griffinj)
+oral1 = Oral(emma, 'Oral_Emma', datetime.datetime(2016,5,2,10), datetime.datetime(2016,5,2,12), griffinj)
 oral1.readers = [pearson, becker, hovda, somda]
 
-oral2 = Oral(richard, 'Oral_Richard', '20160502 03:00:00 PM', '20160502 05:00:00 PM', griffinj)
+oral2 = Oral(richard, 'Oral_Richard', datetime.datetime(2016,5,2,15), datetime.datetime(2016,5,2,17), griffinj)
 oral2.readers = [becker, gruber, minardi, kroll]
  
-oral3 = Oral(manon, 'Oral_Manon', '20160503 10:00:00 AM', '20160503 12:00:00 PM', griffinj)
+oral3 = Oral(manon, 'Oral_Manon', datetime.datetime(2016,5,3,10), datetime.datetime(2016,5,3,12), griffinj)
 oral3.readers = [pearson, gruber, becker, witt]
  
-oral4 = Oral(knar, 'Oral_Knar', '20160503 01:00:00 PM', '20160503 03:00:00 PM', griffinj)
+oral4 = Oral(knar, 'Oral_Knar', datetime.datetime(2016,5,3,13), datetime.datetime(2016,5,3,15), griffinj)
 oral4.readers = [gruber, pearson, khan, bershtein]
  
-oral5 = Oral(syd, 'Oral_Syd', '20160503 03:00:00 PM', '20160503 05:00:00 PM', griffinj)
+oral5 = Oral(syd, 'Oral_Syd', datetime.datetime(2016,5,3,15), datetime.datetime(2016,5,3,17), griffinj)
 oral5.readers = [becker, pearson, ditter, makley]
  
-oral6 = Oral(miriam, 'Oral_Miriam', '20160504 01:00:00 PM', '20160504 03:00:00 PM', griffinj)
+oral6 = Oral(miriam, 'Oral_Miriam', datetime.datetime(2016,5,4,13), datetime.datetime(2016,5,4,15), griffinj)
 oral6.readers = [gruber, becker, hancock, faletra]
  
-oral7 = Oral(sarah, 'Oral_Sarah', '20160505 10:00:00 AM', '20160505 12:00:00 PM', griffinj)
+oral7 = Oral(sarah, 'Oral_Sarah', datetime.datetime(2016,5,5,10), datetime.datetime(2016,5,5,12), griffinj)
 oral7.readers = [pearson]
 
-oral8 = Oral(arthur, 'Oral_Arthur', '20160505 03:00:00 PM', '20160505 05:00:00 PM', griffinj)
+oral8 = Oral(arthur, 'Oral_Arthur', datetime.datetime(2016,5,5,15), datetime.datetime(2016,5,5,17), griffinj)
 oral8.readers = [gruber, pearson, becker, luker]
 
-oral9 = Oral(edmond, 'Oral_Edmond', '20160502 10:00:00 AM', '20160502 12:00:00 PM', griffinj)
+oral9 = Oral(edmond, 'Oral_Edmond', datetime.datetime(2016,5,2,10), datetime.datetime(2016,5,2,12), griffinj)
 oral9.readers = [bershtein, gruber, faletra, minardi]
+
+# made-up orals for testing validators.
+# oral10 = Oral(emma, 'Oral_test', datetime.datetime(2016,5,2,10), datetime.datetime(2016,5,2,12), griffinj)
+# oral10.readers = [pearson, becker, hovda, somda]
+
+# oral11 = Oral(emma, 'Oral_test', datetime.datetime(2016,6,1,10), datetime.datetime(2016,6,1,12), griffinj)
+# oral11.readers = [pearson, ditter, minardi, witt]
+
 
 db.session.add(oral1)
 db.session.add(oral2)
@@ -111,14 +131,10 @@ db.session.add(oral5)
 db.session.add(oral6)
 db.session.add(oral7)
 db.session.add(oral8)
+db.session.add(oral9)
+# db.session.add(oral10)
+# db.session.add(oral11)
 
-# Made-up Events
-
-event1 = Event('at home', '20160502 08:00:00 AM', '20160502 10:00:00 AM', pearson)
-event2 = Event('out of town', '20160506 10:00:00 AM', '20160506 10:00:00 PM', pearson, private = False)
-
-db.session.add(event1)
-db.session.add(event2)
 
 db.session.commit()
 
