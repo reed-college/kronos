@@ -79,7 +79,7 @@ db.session.add(luker)
 # Made-up Events
 # Note that personal events must be added before orals in order to get the validator to work.
 
-event1 = Event('at home', datetime.datetime(2016,5,2,8), datetime.datetime(2016,5,2,12), pearson)
+event1 = Event('at home', datetime.datetime(2016,5,2,8), datetime.datetime(2016,5,2,9), pearson)
 event2 = Event('out of town', datetime.datetime(2016,5,6,10), datetime.datetime(2016,5,6,22), pearson, private = False)
 # event3 = Event('not doing much now', datetime.datetime(2016,5,6,11), datetime.datetime(2016,5,6,10), hovda, private = False)
 
