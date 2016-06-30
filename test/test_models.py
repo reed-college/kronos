@@ -27,4 +27,6 @@ class TestEvent:
             else:
                 raise AssertionError("Validator did not throw an AssertionError or TypeError when receiving and integer")
 
-
+        def test_validator_rejects_malformed_strings(self):
+            pass
+    
