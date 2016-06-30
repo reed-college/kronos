@@ -16,7 +16,10 @@ from .models import department, division, Oral, Stu, Prof, Event, User
 def schedule():
 
     # start time of first oral
-    starttime = Oral.query.order_by(Oral.dtstart).all()[0].dtstart
+    if Oral.query.all() != []:
+        starttime = Oral.query.order_by(Oral.dtstart).all()[0].dtstart
+    else:
+        starttime = datetime.datetime(2016,5,2,8)
     students = Stu.query.all()
     professors = Prof.query.all()
     # TODO when we're gonna need each POST request from fullcalendar/jeditable
