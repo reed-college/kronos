@@ -1,6 +1,5 @@
 from random import randint
 import datetime
-import pytest
 from dateutil import parser
 from kronos import util
 from kronos.models import Oral, Stu, Prof
@@ -28,7 +27,11 @@ class TestUtil:
         assert guess == util.FreeTimeCalc(events,orals)
     
     def test_GetOralTable(self):
-        
+        """
+        Makes sure that the oral table has header and cell tags in the 
+        first column of each row and that the orals are placed below the
+        headers for their time slots
+        """
         hovda = Prof('hovdap', 'Paul Hovda', 'asdf', 'hovdap@reed.edu', 'Philosophy', 'Philosophy, Religion, Psychology and Linguistics')
         pearson = Prof('pearson', 'Pearson', 'asdf', 'pearson@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
         emma = Stu('erennie', 'Emma Rennie', '123', 'erennie@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
