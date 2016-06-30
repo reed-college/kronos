@@ -17,7 +17,7 @@ def schedule():
 
     # start time of first oral
     if Oral.query.all() != []:
-        starttime = Oral.query.order_by(Oral.dtstart).all()[0].dtstart
+        starttime = Oral.query.order_by(Oral.dtstart).first().dtstart
     else:
         starttime = datetime.datetime(2016,5,2,8)
     students = Stu.query.all()
