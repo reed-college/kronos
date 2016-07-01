@@ -1,9 +1,11 @@
 language: python
 python: "3.5.1"
+services: postgresql
 install: 
   - pip install -r requirements.txt
+before_script: 
   # copying config template and replacing the port in the db URI
   # Need to include host:port so it doesn't replace the port in 'import'
   - cp kronos/config.py.template kronos/config.py
-  - sed -i 's/host:port/localhost:5432/g' kronos/config.py
+  - psql -c 'CREATE DATABASE kronos_test;' -U postgres
 script: py.test

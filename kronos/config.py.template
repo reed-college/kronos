@@ -8,3 +8,7 @@ class Config(object):
 
 class DevelopmentConfig(Config):
     DEBUG = True
+
+class TestConfig(Config):
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://postgres@localhost:5432/kronos_test'
+    
