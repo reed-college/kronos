@@ -12,6 +12,11 @@ flask site for scheduling and viewing orals
   * Make sure the username and password you type in are for a user who can edit the db, such as the owner
 * then you should be good to go, run `python runserver.py` and go to `localhost:5000/`
 
+## Running Tests
+* Run `py.test` in the home directory
+  * make sure you have a test database set up (see under 'More Detailed DB setup)
+* If you're a contributor you don't *need* to do that as your tests will get run on Travis ([travis-ci.org](https://travis-ci.org/)), but that usually takes about a minute longer than running them locally
+
 ## More Detailed DB setup
 This is exactly how I set my db, you don't need to follow it exactly for it to work, but it may be useful if you're not used to postgres
 * launch `psql` in the command line
@@ -22,5 +27,5 @@ This is exactly how I set my db, you don't need to follow it exactly for it to w
 * enter in `CREATE DATABASE kronos_dev WITH OWNER kronos_dev_user;`
   * in this case the `/mydatabase` part of the URI should be `/kronos_dev`
 * If you followed this guide exactly and used the default postgres port, the full URI would be, `postgresql+psycopg2://kronos_dev_user:password@localhost:5432/kronos_dev`
-* You also need to make a test database and enter its URI under `TestConfig` in `config.py`
+* You also should make a test database and enter its URI under `TestConfig` in `config.py`
   * if you type `CREATE DATABASE kronos_test WITH OWNER kronos_dev_user;` into psql, then the URI should be `postgresql+psycopg2://kronos_dev_user:password@localhost:5432/kronos_test`, assuming you did everything else in this guide the same
