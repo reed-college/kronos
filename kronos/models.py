@@ -87,6 +87,11 @@ class User(db.Model):
         assert '@' in email
         return email
 
+    @validates('password')
+    def _validate_password(self, key, password):
+        return getattr(type(self), key).type.validator(password)
+
+
 class FAC(User):
     __mapper_args__ = {'polymorphic_identity': 'FAC'}
     def __init__(self, username, name, password, email):
