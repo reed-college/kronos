@@ -1,6 +1,7 @@
+import bcrypt
 import datetime
 from kronos import db
-from sqlalchemy import Enum, ForeignKey, DateTime, event
+from sqlalchemy import Enum, ForeignKey, DateTime, event, Text, TypeDecorator
 from sqlalchemy.orm import validates
 from sqlalchemy.schema import CheckConstraint
 from sqlalchemy.ext.declarative import declared_attr
@@ -24,6 +25,41 @@ readers = db.Table('readers',
 
 
 
+class Password(TypeDecorator):
+    # reference: http://variable-scope.com/posts/storing-and-verifying-passwords-with-sqlalchemy
+
+    impl = Text
+
+    def __init__(self, rounds=12, **kwds):
+        self.rounds = rounds
+        super(Password, self).__init__(**kwds)
+
+    def process_bind_param(self, value, dialect):
+        return self._convert(value).hash
+
+    def process_result_value(self, value, dialect):
+        if value is not None:
+            return PasswordHash(value, rounds=self.rounds)
+
+    def validator(self, password):
+        return self._convert(password)
+
+    def _convert(self, value):
+        """Returns a PasswordHash from the given string.
+
+        PasswordHash instances or None values will return unchanged.
+        Strings will be hashed and the resulting PasswordHash returned.
+        Any other input will result in a TypeError.
+        """
+        if isinstance(value, PasswordHash):
+            return value
+        elif isinstance(value, basestring):
+            return PasswordHash.new(value, self.rounds)
+        elif value is not None:
+            raise TypeError(
+                'Cannot convert {} to a PasswordHash'.format(type(value)))
+
+
 # The User class contains professors and students,
 # but that does not mean that they are the actual "users" of this website
 
@@ -32,7 +68,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(50), unique=True)
     name = db.Column(db.String(50), nullable=False)
-    password = db.Column(db.Text, nullable=False)
+    password = db.Column(Password, nullable=False)
     email = db.Column(db.String(120), unique=True)
     discriminator = db.Column('type', db.String(20))
     __mapper_args__ = {'polymorphic_on': discriminator}
