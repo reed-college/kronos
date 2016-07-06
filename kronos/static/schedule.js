@@ -166,6 +166,14 @@ $(document).ready(function() {
                                      end     : event.end.format('YMMDD hh:mm:ss A'),
             });
         },
+        dayClick: function(date, jsEvent, view) {
+            if (edit){
+                $.post("/submitevent", { start   : date.format('YMMDD hh:mm:ss A'), 
+                                         end     : date.add(2, 'hours').format('YMMDD hh:mm:ss A'),
+                });
+                $('#calendar').fullCalendar( 'refetchEvents');
+            }
+        }
     });
 });
 $(document).on('change', '#filter-well select', function() {
