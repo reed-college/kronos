@@ -56,7 +56,9 @@ $(document).ready(function() {
             //initilizing the qtips
             $(element).qtip({
                 show: 'click',
-                hide: 'unfocus',
+                hide: {
+                    event: 'click unfocus',
+                },
                 style: {
                     classes: 'cal-qtip qtip-bootstrap',
                 },
@@ -149,9 +151,15 @@ $(document).ready(function() {
                                 $('#reader-select', this).on('change', function (evt) {
                                    $.post( "/submitevent", { event_id: event.id, readers: $(this).val() } );
                                 });
+                                $('.edit-delete-event').removeClass('hidden');
+                                $('.edit-delete-event').click(function() {
+                                    $.post( "deletevent", { event_id: event.id} );
+                                    $('#calendar').fullCalendar( 'refetchEvents');
+                                    $(".qtip").remove();
+                                });
                             }
                         }
-                }
+                },
             });
         },
         eventResize: function(event, delta, revertFunc) {

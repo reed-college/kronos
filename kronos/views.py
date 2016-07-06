@@ -187,6 +187,18 @@ def update_event():
     else:
         return "Something went wrong!"
 
+
+@app.route('/deletevent', methods=['POST'])
+def delete_event():
+    print(request.form)
+    eventid = request.form.get("event_id") or None
+    event = Event.query.get_or_404(eventid)
+    name = event.summary
+    db.session.delete(event)
+    db.session.commit()
+    return "Event '" + name + "' deleted"
+     
+
 @app.route('/gcal')
 def get_gcal():
     """
