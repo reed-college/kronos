@@ -140,7 +140,7 @@ db.session.add(oral6)
 db.session.add(oral7)
 db.session.add(oral8)
 db.session.add(oral9)
-# db.session.add(oral10)
+db.session.add(oral10)
 # db.session.add(oral11)
 
 
