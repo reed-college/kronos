@@ -56,7 +56,9 @@ $(document).ready(function() {
             //initilizing the qtips
             $(element).qtip({
                 show: 'click',
-                hide: 'unfocus',
+                hide: {
+                    event: 'click unfocus',
+                },
                 style: {
                     classes: 'cal-qtip qtip-bootstrap',
                 },
@@ -69,6 +71,7 @@ $(document).ready(function() {
                 content: {
                     text: content,
                     title: "<span class='edit-title'>" + event.title + "</span>",
+                    button: true,
                 },
                 events: {
                         render: function(qevent, api) {
@@ -149,9 +152,15 @@ $(document).ready(function() {
                                 $('#reader-select', this).on('change', function (evt) {
                                    $.post( "/submitevent", { event_id: event.id, readers: $(this).val() } );
                                 });
+                                $('.edit-delete-event').removeClass('hidden');
+                                $('.edit-delete-event').click(function() {
+                                    $.post( "deletevent", { event_id: event.id} );
+                                    $('#calendar').fullCalendar( 'refetchEvents');
+                                    $(".qtip").remove();
+                                });
                             }
                         }
-                }
+                },
             });
         },
         eventResize: function(event, delta, revertFunc) {
@@ -166,6 +175,14 @@ $(document).ready(function() {
                                      end     : event.end.format('YMMDD hh:mm:ss A'),
             });
         },
+        dayClick: function(date, jsEvent, view) {
+            if (edit){
+                $.post("/submitevent", { start   : date.format('YMMDD hh:mm:ss A'), 
+                                         end     : date.add(2, 'hours').format('YMMDD hh:mm:ss A'),
+                });
+                $('#calendar').fullCalendar( 'refetchEvents');
+            }
+        }
     });
 });
 $(document).on('change', '#filter-well select', function() {
