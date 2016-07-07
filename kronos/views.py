@@ -8,7 +8,7 @@ from flask import render_template, request
 from apiclient import discovery
 from oauth2client import client
 
-from kronos import app, db
+from kronos import app, db, util
 from .models import department, division, Oral, Stu, Prof, Event, User
 
 
@@ -36,6 +36,14 @@ def schedule():
         students=students, professors=professors, starttime=starttime,
         edit=edit)
 
+
+@app.route('/print')
+def print_schedule():
+    """
+    Gives a schedule table of orals that will look nice when printed
+    """
+    oraltable = util.GetOralTable(Oral.query.order_by(Oral.dtstart).all())
+    return render_template('printsched.html', oraltable=oraltable)
 
 @app.route('/eventsjson')
 def get_events_json():

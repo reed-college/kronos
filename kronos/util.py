@@ -27,6 +27,7 @@ def FreeTimeCalc(events, orals):
 def GetOralTable(orals):
     """
     This function takes a list of orals objects(ordered by start time)
+    (VERY IMPORTANT THAT ITS ORDERED BY START TIME)
     and gives back a 2D array of strings that make a very pretty table
     This function assumes that orals do not start before midnight and
     end after midnight

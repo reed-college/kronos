@@ -28,6 +28,10 @@ arthur = Stu('sillersa', 'Arthur', 'asdf', 'sillersa@reed.edu', 'Linguistics', '
 
 edmond = Stu('eedmonds', 'Edmond Soun', 'pass', 'eedmonds@reed.edu', 'Russian', 'Literature and Languages')
 
+# Made up Senior
+
+jon = Stu('snowj', 'Jon Snow', 'pass', 'snowj@reed.edu', 'Physics', 'Mathematics and Natural Sciences')
+
 db.session.add(emma)
 db.session.add(richard)
 db.session.add(manon)
@@ -37,6 +41,7 @@ db.session.add(miriam)
 db.session.add(sarah)
 db.session.add(arthur)
 db.session.add(edmond)
+db.session.add(jon)
 
 # Profs
 
@@ -114,6 +119,9 @@ oral8.readers = [gruber, pearson, becker, luker]
 
 oral9 = Oral(edmond, 'Oral_Edmond', datetime.datetime(2016,5,2,10), datetime.datetime(2016,5,2,12), griffinj)
 oral9.readers = [bershtein, gruber, faletra, minardi]
+
+oral10 = Oral(jon, 'Oral_Jon', datetime.datetime(2016,5,6,10), datetime.datetime(2016,5,6,12), griffinj)
+oral10.readers = [hovda]
 
 # made-up orals for testing validators.
 # oral10 = Oral(emma, 'Oral_test', datetime.datetime(2016,5,2,10), datetime.datetime(2016,5,2,12), griffinj)
