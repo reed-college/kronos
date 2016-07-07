@@ -71,6 +71,7 @@ $(document).ready(function() {
                 content: {
                     text: content,
                     title: "<span class='edit-title'>" + event.title + "</span>",
+                    button: true,
                 },
                 events: {
                         render: function(qevent, api) {
