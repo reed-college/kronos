@@ -42,7 +42,11 @@ def print_schedule():
     """
     Gives a schedule table of orals that will look nice when printed
     """
-    oraltable = util.GetOralTable(Oral.query.order_by(Oral.dtstart).all())
+    events = util.filter_events(Event.query, request.args)
+    # This needs to be after filter_events because filter_events sometimes
+    # adds non-oral events to the query
+    orals = events.filter(Event.discriminator == 'oral')
+    oraltable = util.GetOralTable(orals.order_by(Oral.dtstart).all())
     return render_template('printsched.html', oraltable=oraltable)
 
 @app.route('/eventsjson')

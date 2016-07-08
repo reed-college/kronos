@@ -33,42 +33,49 @@ var edit = {{ edit }};
 
 {% block content %}
 <div class="well dontprint" id="filter-well">
-  <div class="row form-group">
-    <div class="col-md-12" id="prof-select-container">
-      <select id="prof-select" class="user-select" multiple="multiple">
-        {% for prof in professors %}
-        <option value={{ prof.id }}>{{ prof.name }}</option>
-        {% endfor %}
-      </select>
+  <form action="{{ url_for('print_schedule') }}">
+    <div class="row form-group">
+      <div class="col-md-12" id="prof-select-container">
+        <select id="prof-select" name='professors[]' class="user-select" multiple="multiple">
+          {% for prof in professors %}
+          <option value={{ prof.id }}>{{ prof.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
     </div>
-  </div>
-  <div class="row form-group">
-    <div class="col-md-12">
-      <select id="stu-select" class="user-select" multiple="multiple">
-        {% for stu in students %}
-        <option value={{ stu.id }}>{{ stu.name }}</option>
-        {% endfor %}
-      </select>
+    <div class="row form-group">
+      <div class="col-md-12">
+        <select id="stu-select" name='students[]' class="user-select" multiple="multiple">
+          {% for stu in students %}
+          <option value={{ stu.id }}>{{ stu.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
     </div>
-  </div>
-  <div class="row form-group">
-    <div class="col-md-6">
-      <select id="department" class="form-control">
-        <option selected="" disabled="">Department</option>
-        {% for dept in department %}
-        <option>{{ dept }}</option>
-        {% endfor %}
-      </select>
+    <div class="row form-group">
+      <div class="col-md-6">
+        <select id="department" name='department' class="form-control">
+          <option selected="" disabled="">Department</option>
+          {% for dept in department %}
+          <option>{{ dept }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <select id="division" name='division' class="form-control">
+          <option selected="" disabled="">Division</option>
+          {% for div in division %}
+          <option>{{ div }}</option>
+          {% endfor %}
+        </select>
+      </div>
     </div>
-    <div class="col-md-6">
-      <select id="division" class="form-control">
-        <option selected="" disabled="">Division</option>
-        {% for div in division %}
-        <option>{{ div }}</option>
-        {% endfor %}
-      </select>
+    <div class="row">
+      <div class='col-md-12'>
+        <button id='print-button' formmethod='get' class="btn btn-default pull-right">Print</button>
+      </div>
     </div>
-  </div>
+  </form>
 </div>
 <div class="container">
   <div id='calendar'></div>
