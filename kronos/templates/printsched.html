@@ -1,23 +1,44 @@
+{% extends "bootstrap/base.html" %}
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{url_for('.static', filename='printsched.css')}}">
+{% endblock %}
 {% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-10">
-      <table class="table table-bordered">
-      {% for row in oraltable %}
-        <tr>
-        {% for cell in row %}
-        {% if cell == "h" or cell == "c" %}
-        {% else %}
-          {% if row[0] == "h" %}<th class="success">{{cell |safe}}</th>
-          {% else %}<td>{{cell}}</td>{% endif %}
-        {% endif %}
-        {% endfor %}
-        </tr>
-      {% endfor %}
-      </table>
+<body onload="window.print()">
+  <div class="container">
+    <div class='row'>
+      <div class='col-xs-6'>
+        <h5>
+          <b>
+            {% if department != 'NONE'%}
+              DEPARTMENT OF {{ department }}
+            {% elif division != 'NONE'%}
+              DIVISION OF {{ division }}
+            {% endif %}
+          </b>
+        <h5>
+      </div>
+      <div class='col-xs-6'>
+        <h5 class='pull-right'><b>THESIS ORAL SCHEDULE - {{ time }}</b><h5>
+      </div>
     </div>
-    <div class="col-md-1"></div>
+    <div class="row">
+      <div class="col-xs-12">
+        <table class="table table-bordered">
+        {% for row in oraltable %}
+          <tr>
+          {% for cell in row %}
+          {% if cell == "h" or cell == "c" %}
+          {% else %}
+            {% if row[0] == "h" %}<th>{{cell |safe}}</th>
+            {% else %}<td>{{cell |safe}}</td>{% endif %}
+          {% endif %}
+          {% endfor %}
+          </tr>
+        {% endfor %}
+        </table>
+      </div>
+    </div>
   </div>
-</div>
+</body>
 {% endblock %}

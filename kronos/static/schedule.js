@@ -20,15 +20,7 @@ $(document).ready(function() {
         scrollTime: '10:00:00',
         events: {
             url: '/eventsjson',
-            data: function() { 
-                //gets data from the filters to send put in the events query
-                return {
-                    department: $('#department option:selected').text(),
-                    division: $('#division option:selected').text(),
-                    'professors[]': $('#prof-select').val(),
-                    'students[]': $('#stu-select').val()
-                };
-            }
+            data: getFilters,
         },
         //most of what is in this function is for crating the qtip for the event
         eventRender: function(event, element, view) {
@@ -187,4 +179,18 @@ $(document).ready(function() {
 });
 $(document).on('change', '#filter-well select', function() {
     $('#calendar').fullCalendar( 'refetchEvents');
+    $('#print-link').attr('data', getFilters()); 
 });
+
+
+
+function getFilters(){
+    //gets data from the filters to send put in the events query
+    return {
+        department: $('#department option:selected').text(),
+        division: $('#division option:selected').text(),
+        'professors[]': $('#prof-select').val(),
+        'students[]': $('#stu-select').val()
+    };
+} 
+
