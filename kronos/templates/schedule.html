@@ -9,11 +9,6 @@
 <link rel="stylesheet" href="{{url_for('.static', filename='fullcalendar.min.css')}}" >
 <link rel="stylesheet" href="{{url_for('.static', filename='fullcalendar.print.css')}}" media='print' >
 <link rel="stylesheet" href="{{url_for('.static', filename='jquery.qtip.min.css')}}" >
-<style type="text/css" media="print">
-.dontprint {
-    display: none;
-}
-</style>
 {% endblock %}
 
 {% block scripts %}
@@ -32,7 +27,7 @@ var edit = {{ edit }};
 {% endblock %}
 
 {% block content %}
-<div class="well dontprint" id="filter-well">
+<div class="well hidden-print" id="filter-well">
   <form action="{{ url_for('print_schedule') }}">
     <div class="row form-group">
       <div class="col-md-12" id="prof-select-container">

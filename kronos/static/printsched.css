@@ -1,0 +1,12 @@
+
+.table th {
+    background-color: #90C695 !important;
+    color: #151515 !important;
+    -webkit-print-color-adjust: exact;
+
+}
+
+.table table, .table th, .table td {
+    border-color: #151515 !important;
+}
+
