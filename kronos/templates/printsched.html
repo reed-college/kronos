@@ -8,7 +8,15 @@
   <div class="container">
     <div class='row'>
       <div class='col-xs-6'>
-        <h5><b>DIVISION OF PHILOSOPHY, RELIGION, PSYCHOLOGY AND LINGUISTICS</b><h5>
+        <h5>
+          <b>
+            {% if department != 'NONE'%}
+              DEPARTMENT OF {{ department }}
+            {% elif division != 'NONE'%}
+              DIVISION OF {{ division }}
+            {% endif %}
+          </b>
+        <h5>
       </div>
       <div class='col-xs-6'>
         <h5 class='pull-right'><b>THESIS ORAL SCHEDULE - SPRING 2016</b><h5>

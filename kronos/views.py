@@ -47,7 +47,11 @@ def print_schedule():
     # adds non-oral events to the query
     orals = events.filter(Event.discriminator == 'oral')
     oraltable = util.GetOralTable(orals.order_by(Oral.dtstart).all())
-    return render_template('printsched.html', oraltable=oraltable)
+    div = str(request.args.get("division")).upper() or None
+    dept = str(request.args.get("department")).upper() or None
+    
+    return render_template('printsched.html', oraltable=oraltable, 
+                           division=div, department=dept)
 
 @app.route('/eventsjson')
 def get_events_json():

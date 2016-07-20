@@ -32,6 +32,8 @@ def GetOralTable(orals):
     This function assumes that orals do not start before midnight and
     end after midnight
     """
+    if len(orals) == 0:
+        return [[]]
     firstday = orals[0].dtstart.date()
     lastday = orals[-1].dtstart.date()
     # Creates the oral table
