@@ -31,7 +31,7 @@
           {% if cell == "h" or cell == "c" %}
           {% else %}
             {% if row[0] == "h" %}<th>{{cell |safe}}</th>
-            {% else %}<td>{{cell}}</td>{% endif %}
+            {% else %}<td>{{cell |safe}}</td>{% endif %}
           {% endif %}
           {% endfor %}
           </tr>

@@ -66,7 +66,10 @@ def GetOralTable(orals):
                 currend = datetime.combine(currday, earliestEnd)
                 for oral in currTimeslotOrals:
                     if oral.dtstart == currstart and oral.dtend == currend:
-                        oralrow.append(oral.stu.name)
+                        info = '<b>' + oral.stu.name + '</b><br>'
+                        for reader in oral.readers:
+                            info += reader.name + '<br>'
+                        oralrow.append(info)
                         currTimeslotOrals.remove(oral)
                         break
                 else:
