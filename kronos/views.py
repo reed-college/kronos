@@ -49,9 +49,19 @@ def print_schedule():
     oraltable = util.GetOralTable(orals.order_by(Oral.dtstart).all())
     div = str(request.args.get("division")).upper() or None
     dept = str(request.args.get("department")).upper() or None
-    
+    # Getting the semester and year
+    if orals.all() != []:
+        starttime = orals.first().dtstart
+        year = starttime.date().year
+        if starttime.date().month <= 7:
+            semester = 'SPRING'
+        else:
+            semester = 'FALL'
+        time = semester + ' ' + str(year)
+    else:
+        time = ''
     return render_template('printsched.html', oraltable=oraltable, 
-                           division=div, department=dept)
+                           division=div, department=dept, time=time)
 
 @app.route('/eventsjson')
 def get_events_json():
