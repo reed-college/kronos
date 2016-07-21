@@ -155,6 +155,7 @@ class Oral(Event):
     def __init__(self, stu, summary, dtstart, dtend, user,
                  response=None):
         Event.__init__(self, summary, dtstart, dtend, user)
+        self.private = False
         self.user = user
         self.stu = stu
         self.type = 'oral'
