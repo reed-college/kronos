@@ -49,7 +49,8 @@ class TestViews:
     class Test_with_empty_db(LiveServerTest):
         def test_schedule_works_with_empty_db(self):
             rv = self.client.get('/')    
-            assert rv.status_code == 200
+            #greater than 400 are error codes
+            assert rv.status_code < 400
         
         def test_events_json_returns_none(self):
             rv = self.client.get('/eventsjson')

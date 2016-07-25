@@ -4,7 +4,7 @@ from dateutil import parser
 import flask
 import httplib2
 
-from flask import render_template, request
+from flask import render_template, request, redirect
 from apiclient import discovery
 from oauth2client import client
 
@@ -14,6 +14,9 @@ from .models import department, division, Oral, Stu, Prof, Event, User, OralStar
 
 @app.route('/')
 def schedule():
+
+    if OralStartDay.query.all() == []:
+        return redirect('/oralweeks')
 
     startday = OralStartDay.query.\
                filter(OralStartDay.start >= (datetime.date.today() - datetime.timedelta(days=7))).\
@@ -36,6 +39,10 @@ def schedule():
         edit=edit)
 
 
+@app.route('/oralweeks')
+def edit_start_days():
+    return 'You need to add the day orals week starts'
+ 
 @app.route('/print')
 def print_schedule():
     """
