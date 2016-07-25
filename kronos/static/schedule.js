@@ -177,11 +177,23 @@ $(document).ready(function() {
         }
     });
 });
-$(document).on('change', '#filter-well select', function() {
-    $('#calendar').fullCalendar( 'refetchEvents');
-    $('#print-link').attr('data', getFilters()); 
+$(document).on('change', '#filter-well select', updateQuery);
+
+$(".clr-btn").click(function() {
+    select = $(this).data("select"); //gets id of the select attached to this button
+    $(select +  " > .default").prop('selected', true);
+    updateQuery();
 });
 
+function updateQuery() {
+    /*
+    This Function gets called whenever the filters get changed and it updates
+    the data in the calendar and the querystring that gets sent to printsched
+    so that they reflect the filters
+    */
+    $('#calendar').fullCalendar( 'refetchEvents');
+    $('#print-link').attr('data', getFilters()); 
+}
 
 
 function getFilters(){
