@@ -187,3 +187,18 @@ class Oral(Event):
         return reader
     
 
+class OralStartDay(db.Model):
+    """
+    Contains a description and a start day to select whichever oral week
+    the user would want to see
+    """
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    description = db.Column(db.String(50), unique=True) # ie 'Fall 2016'
+    start = db.Column(db.Date, nullable=False)
+
+    def __init__(self, desc, start):
+        self.description = desc
+        self.start = start
+
+    def __repr__(self):
+        return '<%r>' % self.description

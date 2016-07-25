@@ -1,6 +1,6 @@
 import datetime
 from kronos import db
-from kronos.models import FAC, Stu, Prof, Oral, Event
+from kronos.models import FAC, Stu, Prof, Oral, Event, OralStartDay
 
 db.create_all()
 
@@ -143,6 +143,17 @@ db.session.add(oral9)
 db.session.add(oral10)
 # db.session.add(oral11)
 
+s16 = OralStartDay("Spring 2016", datetime.date(2016, 5,  2)) 
+f16 = OralStartDay("Fall 2016",   datetime.date(2016, 12, 8))
+s17 = OralStartDay("Spring 2017", datetime.date(2017, 5,  1)) 
+f17 = OralStartDay("Fall 2017",   datetime.date(2017, 12, 7))
+s18 = OralStartDay("Spring 2018", datetime.date(2018, 4,  30)) 
+
+db.session.add(s16)
+db.session.add(f16)
+db.session.add(s17)
+db.session.add(f17)
+db.session.add(s18)
 
 db.session.commit()
 
