@@ -94,7 +94,6 @@ class Event(db.Model):
     summary = db.Column(db.Text)
     dtstart = db.Column(db.DateTime, nullable=False)
     dtend = db.Column(db.DateTime, nullable=False)
-    status = db.Column(db.Enum('busy', 'free', name='status'))
     private = db.Column(db.Boolean)
     discriminator = db.Column('type', db.String(10))
     __mapper_args__ = {'polymorphic_on': discriminator}
@@ -104,14 +103,13 @@ class Event(db.Model):
 
 
     userid = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship('User', backref=db.backref('events'))  # lazy???
+    user = db.relationship('User', backref=db.backref('events'))
 
     def __init__(self, summary, dtstart, dtend, user,
-                 private=True, status='busy'):
+                 private=True):
         self.summary = summary
         self.dtstart = dtstart
         self.dtend = dtend
-        self.status = status
         self.user = user
         self.private = private
 
