@@ -9,17 +9,16 @@ from apiclient import discovery
 from oauth2client import client
 
 from kronos import app, db, util
-from .models import department, division, Oral, Stu, Prof, Event, User
+from .models import department, division, Oral, Stu, Prof, Event, User, OralStartDay
 
 
 @app.route('/')
 def schedule():
 
-    # start time of first oral
-    if Oral.query.all() != []:
-        starttime = Oral.query.order_by(Oral.dtstart).first().dtstart
-    else:
-        starttime = datetime.datetime(2016,5,2,8)
+    startday = OralStartDay.query.\
+               filter(OralStartDay.start >= (datetime.date.today() - datetime.timedelta(days=7))).\
+               order_by(OralStartDay.start).first().start
+
     students = Stu.query.all()
     professors = Prof.query.all()
     # TODO when we're gonna need each POST request from fullcalendar/jeditable
@@ -33,7 +32,7 @@ def schedule():
 
     return render_template(
         "schedule.html", department=department, division=division,
-        students=students, professors=professors, starttime=starttime,
+        students=students, professors=professors, startday=startday,
         edit=edit)
 
 

@@ -14,7 +14,7 @@
 {% block scripts %}
 {{super()}}
 <script>
-var startday = "{{starttime.strftime('%Y-%m-%d')}}";
+var startday = "{{startday.strftime('%Y-%m-%d')}}";
 var edit = {{ edit }};
 </script>
 <script src="{{url_for('.static', filename='moment.min.js')}}"></script>
