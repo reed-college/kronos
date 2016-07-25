@@ -49,20 +49,34 @@ var edit = {{ edit }};
     </div>
     <div class="row form-group">
       <div class="col-md-6">
-        <select id="department" name='department' class="form-control">
-          <option selected="" disabled="">Department</option>
-          {% for dept in department %}
-          <option>{{ dept }}</option>
-          {% endfor %}
-        </select>
+        <div class='input-group'>
+          <select id="department" name='department' class="form-control">
+            <option selected="" disabled="" class="default">Department</option>
+            {% for dept in department %}
+            <option>{{ dept }}</option>
+            {% endfor %}
+          </select>
+          <span class="input-group-btn">
+            <button class="btn btn-default clr-btn" type="button" data-select='#department'>
+              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+          </span>
+        </div>
       </div>
       <div class="col-md-6">
-        <select id="division" name='division' class="form-control">
-          <option selected="" disabled="">Division</option>
-          {% for div in division %}
-          <option>{{ div }}</option>
-          {% endfor %}
-        </select>
+        <div class="input-group">
+          <select id="division" name='division' class="form-control">
+            <option selected="" disabled="" class="default">Division</option>
+            {% for div in division %}
+            <option>{{ div }}</option>
+            {% endfor %}
+          </select>
+          <span class="input-group-btn">
+            <button class="btn btn-default clr-btn" type="button" data-select="#division">
+              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+          </span>
+        </div>
       </div>
     </div>
     <div class="row">
