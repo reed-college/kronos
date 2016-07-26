@@ -39,9 +39,20 @@ def schedule():
         edit=edit)
 
 
-@app.route('/oralweeks')
+@app.route('/oralweeks', methods=['GET', 'POST'])
 def edit_start_days():
-    return 'You need to add the day orals week starts'
+    if request.method == 'POST':
+        i = 0
+        while request.form.get("desc-"+str(i)) is not None:
+            desc = request.form.get("desc-"+str(i))
+            date = request.form.get("date-"+str(i))
+            day = OralStartDay(desc, date)
+            db.session.add(day)
+            i += 1
+        db.session.commit()
+        return redirect('/oralweeks')
+    else:
+        return render_template("oralweeks.html")
  
 @app.route('/print')
 def print_schedule():
