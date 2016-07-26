@@ -41,9 +41,23 @@ def schedule():
 
 @app.route('/oralweeks', methods=['GET', 'POST'])
 def edit_start_days():
+    """
+    This page is for editing the oral start days so that the schedule page
+    knows what week to go to for orals week
+    """
     if request.method == 'POST':
+        print(request.form)
+        for day in OralStartDay.query.all():
+            desc = request.form.get("desc--" + str(day.id))
+            date = request.form.get("date--" + str(day.id))
+            if desc is not None and date is not None:
+                day.description = desc
+                day.start = date
+                db.session.commit()
         i = 0
-        while request.form.get("desc-"+str(i)) is not None:
+        desc = request.form.get("desc-"+str(i))
+        date = request.form.get("date-"+str(i))
+        while desc is not None and desc is not "" and date is not None and date is not "":
             desc = request.form.get("desc-"+str(i))
             date = request.form.get("date-"+str(i))
             day = OralStartDay(desc, date)
@@ -52,7 +66,8 @@ def edit_start_days():
         db.session.commit()
         return redirect('/oralweeks')
     else:
-        return render_template("oralweeks.html")
+        oralstarts = OralStartDay.query.order_by(OralStartDay.start).all()
+        return render_template("oralweeks.html", oralstarts=oralstarts)
  
 @app.route('/print')
 def print_schedule():
