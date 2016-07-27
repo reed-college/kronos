@@ -30,7 +30,7 @@ edmond = Stu('eedmonds', 'Edmond Soun', 'eedmonds@reed.edu', 'Russian', 'Literat
 
 # Made up Senior
 
-jon = Stu('snowj', 'Jon Snow', 'pass', 'snowj@reed.edu', 'Physics', 'Mathematics and Natural Sciences')
+jon = Stu('snowj', 'Jon Snow', 'snowj@reed.edu', 'Physics', 'Mathematics and Natural Sciences')
 
 db.session.add(emma)
 db.session.add(richard)
