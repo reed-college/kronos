@@ -122,6 +122,7 @@ def get_events_json():
         "user": event.user.name,
         "student": "",
         "readers": [],
+        "location": event.location,
         }
         if type(event) is Oral:
             evjson["readers"] = [reader.name for reader in event.readers]
@@ -153,6 +154,7 @@ def update_event():
     stuid = request.form.get("stu_id") or None
     summary = request.form.get("summary") or None
     readers = request.form.getlist("readers[]") or None
+    location = request.form.get("location") or None
     start = request.form.get("start") or None
     end = request.form.get("end") or None
     # TODO: get current user from ldap
@@ -163,7 +165,7 @@ def update_event():
         event = Event('New Event', start, end, user)
         db.session.add(event)
         db.session.commit()
-        return event.summary
+        return event.summmary
     if userid is not None:
         event.userid = userid
         db.session.commit()
@@ -181,6 +183,10 @@ def update_event():
         event.readers = readerobjs
         db.session.commit()
         return str(event.readers)
+    elif location is not None:
+        event.location = location
+        db.session.commit()
+        return event.location
     elif (start is not None) and (end is not None):
         # need to update start and end in the right order so the validators don't freak out
         if parser.parse(end) < event.dtstart:

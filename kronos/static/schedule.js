@@ -43,6 +43,7 @@ $(document).ready(function() {
             }
             div = div.replace("{start}", event.start.format("H:mm"));
             div = div.replace("{end}", event.end.format("H:mm"));
+            div = div.replace("{location}", event.location);
             content += div;
 
             //initilizing the qtips
@@ -124,6 +125,13 @@ $(document).ready(function() {
                                 });
                                 $('.edit-title').editable('/submitevent',{
                                     name       : 'summary',
+                                    submitdata : {event_id: event.id},
+                                    callback   : function(value, settings){
+                                        $('#calendar').fullCalendar( 'refetchEvents');
+                                    },
+                                }); 
+                                $('.edit-location').editable('/submitevent',{
+                                    name       : 'location',
                                     submitdata : {event_id: event.id},
                                     callback   : function(value, settings){
                                         $('#calendar').fullCalendar( 'refetchEvents');
