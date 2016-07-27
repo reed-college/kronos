@@ -130,6 +130,13 @@ $(document).ready(function() {
                                         $('#calendar').fullCalendar( 'refetchEvents');
                                     },
                                 }); 
+                                $('.edit-location').editable('/submitevent',{
+                                    name       : 'location',
+                                    submitdata : {event_id: event.id},
+                                    callback   : function(value, settings){
+                                        $('#calendar').fullCalendar( 'refetchEvents');
+                                    },
+                                }); 
                                 var readerselect = "<select id='reader-select' multiple='multiple'>" + $("#prof-select").html() + "</select>";
                                 $('.edit-readers').replaceWith(readerselect);
                                 $('#reader-select option').each(function(index,value){
