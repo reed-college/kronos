@@ -4,22 +4,31 @@ from dateutil import parser
 import flask
 import httplib2
 
-from flask import render_template, request
+from flask import render_template, request, redirect
 from apiclient import discovery
 from oauth2client import client
 
 from kronos import app, db, util
-from .models import department, division, Oral, Stu, Prof, Event, User
+from .models import department, division, Oral, Stu, Prof, Event, User, OralStartDay
 
 
 @app.route('/')
 def schedule():
 
-    # start time of first oral
-    if Oral.query.all() != []:
-        starttime = Oral.query.order_by(Oral.dtstart).first().dtstart
+    startdays = OralStartDay.query.all()
+    if startdays  == []:
+        return redirect('/oralweeks')
+
+    startdayid = request.args.get("startday") or None
+    if startdayid is not None:
+        startday = OralStartDay.query.get(startdayid).start 
     else:
-        starttime = datetime.datetime(2016,5,2,8)
+        startday = OralStartDay.query.\
+                   filter(OralStartDay.start >= 
+                          (datetime.date.today() - 
+                           datetime.timedelta(days=7))).\
+                   order_by(OralStartDay.start).first().start
+
     students = Stu.query.all()
     professors = Prof.query.all()
     # TODO when we're gonna need each POST request from fullcalendar/jeditable
@@ -33,10 +42,41 @@ def schedule():
 
     return render_template(
         "schedule.html", department=department, division=division,
-        students=students, professors=professors, starttime=starttime,
-        edit=edit)
+        students=students, professors=professors, startday=startday,
+        edit=edit, startdays=startdays)
 
 
+@app.route('/oralweeks', methods=['GET', 'POST'])
+def edit_start_days():
+    """
+    This page is for editing the oral start days so that the schedule page
+    knows what week to go to for orals week
+    """
+    if request.method == 'POST':
+        for day in OralStartDay.query.all():
+            desc = request.form.get("desc--" + str(day.id))
+            date = request.form.get("date--" + str(day.id))
+            remove = request.form.get("remove--" + str(day.id)) 
+            if desc is not None and date is not None:
+                day.description = desc
+                day.start = date
+            elif remove is "True":
+                db.session.remove(day)
+        i = 0
+        desc = request.form.get("desc-"+str(i))
+        date = request.form.get("date-"+str(i))
+        while desc is not None and desc is not "" and date is not None and date is not "":
+            desc = request.form.get("desc-"+str(i))
+            date = request.form.get("date-"+str(i))
+            day = OralStartDay(desc, date)
+            db.session.add(day)
+            i += 1
+        db.session.commit()
+        return redirect('/oralweeks')
+    else:
+        oralstarts = OralStartDay.query.order_by(OralStartDay.start).all()
+        return render_template("oralweeks.html", oralstarts=oralstarts)
+ 
 @app.route('/print')
 def print_schedule():
     """

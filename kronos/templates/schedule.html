@@ -14,7 +14,7 @@
 {% block scripts %}
 {{super()}}
 <script>
-var startday = "{{starttime.strftime('%Y-%m-%d')}}";
+var startday = "{{startday.strftime('%Y-%m-%d')}}";
 var edit = {{ edit }};
 </script>
 <script src="{{url_for('.static', filename='moment.min.js')}}"></script>
@@ -87,7 +87,32 @@ var edit = {{ edit }};
   </form>
 </div>
 <div class="container">
-  <div id='calendar'></div>
+  <div class="row">
+    <div class="col-md-12">
+      <div id='calendar'></div>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row"><div class="col-md-12"></div></div>
+  <div class="row">
+    <div class="col-sm-12">
+      <form class="form-inline" method="GET">
+        <div class="form-group">
+          <label for="yearpicker">View another year:</label>
+          <select name="startday" id="yearpicker" class="form-control input-sm">
+            {% for day in startdays %}
+              <option value={{day.id}}>{{day.description}}</option>
+            {% endfor %}
+          </select>
+        </div> 
+        <div class="form-group">
+          <button type="submit" class="btn btn-default btn-sm">Go!</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row"><div class="col-md-12"></div></div>
 </div>
 <div class="hidden" id="oral-qtip-template">
   <div class="row">
