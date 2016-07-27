@@ -63,6 +63,6 @@ end = getdtend(cal)
 df = pd.DataFrame(dict(summary = s, dtstart = start, dtend = end, private = True))
 df.to_sql('event', engine, if_exists='append', index=False)   
 
-
+assert df.query('dtstart > dtend').empty
 
 
