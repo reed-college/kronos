@@ -8,7 +8,7 @@ class TestEvent:
         @classmethod
         def setup_class(cls):
             random.seed()
-            pearson = Prof('pearson', 'Pearson', 'asdf', 'pearson@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+            pearson = Prof('pearson', 'Pearson', 'pearson@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
             cls.event1 = Event('at home', dtparse('20160502 08:00:00 AM'), dtparse('20160502 10:00:00 AM'), pearson)
             # for tests where it doesn't matter if the field is a dtstart or dtend
             cls.key = random.choice(['dtend','dtstart'])
