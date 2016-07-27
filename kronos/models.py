@@ -98,6 +98,7 @@ class Event(db.Model):
     dtend = db.Column(db.DateTime, nullable=False)
     status = db.Column(db.Enum('busy', 'free', name='status'))
     private = db.Column(db.Boolean)
+    location = db.Column(db.String(50))
     discriminator = db.Column('type', db.String(10))
     __mapper_args__ = {'polymorphic_on': discriminator}
     __table_args__ = (
@@ -109,13 +110,14 @@ class Event(db.Model):
     user = db.relationship('User', backref=db.backref('events'))  # lazy???
 
     def __init__(self, summary, dtstart, dtend, user,
-                 private=True, status='busy'):
+                 private=True, status='busy', location=None):
         self.summary = summary
         self.dtstart = dtstart
         self.dtend = dtend
         self.status = status
         self.user = user
         self.private = private
+        self.loaction = location
 
     def __repr__(self):
         if self.private is False:

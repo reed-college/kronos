@@ -43,6 +43,7 @@ $(document).ready(function() {
             }
             div = div.replace("{start}", event.start.format("H:mm"));
             div = div.replace("{end}", event.end.format("H:mm"));
+            div = div.replace("{location}", event.location);
             content += div;
 
             //initilizing the qtips

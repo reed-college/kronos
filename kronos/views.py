@@ -122,6 +122,7 @@ def get_events_json():
         "user": event.user.name,
         "student": "",
         "readers": [],
+        "location": event.location,
         }
         if type(event) is Oral:
             evjson["readers"] = [reader.name for reader in event.readers]
