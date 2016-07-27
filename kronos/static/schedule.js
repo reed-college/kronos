@@ -20,15 +20,7 @@ $(document).ready(function() {
         scrollTime: '10:00:00',
         events: {
             url: '/eventsjson',
-            data: function() { 
-                //gets data from the filters to send put in the events query
-                return {
-                    department: $('#department option:selected').text(),
-                    division: $('#division option:selected').text(),
-                    'professors[]': $('#prof-select').val(),
-                    'students[]': $('#stu-select').val()
-                };
-            }
+            data: getFilters,
         },
         //most of what is in this function is for crating the qtip for the event
         eventRender: function(event, element, view) {
@@ -51,12 +43,15 @@ $(document).ready(function() {
             }
             div = div.replace("{start}", event.start.format("H:mm"));
             div = div.replace("{end}", event.end.format("H:mm"));
+            div = div.replace("{location}", event.location);
             content += div;
 
             //initilizing the qtips
             $(element).qtip({
                 show: 'click',
-                hide: 'unfocus',
+                hide: {
+                    event: 'click unfocus',
+                },
                 style: {
                     classes: 'cal-qtip qtip-bootstrap',
                 },
@@ -69,6 +64,7 @@ $(document).ready(function() {
                 content: {
                     text: content,
                     title: "<span class='edit-title'>" + event.title + "</span>",
+                    button: true,
                 },
                 events: {
                         render: function(qevent, api) {
@@ -134,6 +130,13 @@ $(document).ready(function() {
                                         $('#calendar').fullCalendar( 'refetchEvents');
                                     },
                                 }); 
+                                $('.edit-location').editable('/submitevent',{
+                                    name       : 'location',
+                                    submitdata : {event_id: event.id},
+                                    callback   : function(value, settings){
+                                        $('#calendar').fullCalendar( 'refetchEvents');
+                                    },
+                                }); 
                                 var readerselect = "<select id='reader-select' multiple='multiple'>" + $("#prof-select").html() + "</select>";
                                 $('.edit-readers').replaceWith(readerselect);
                                 $('#reader-select option').each(function(index,value){
@@ -149,9 +152,15 @@ $(document).ready(function() {
                                 $('#reader-select', this).on('change', function (evt) {
                                    $.post( "/submitevent", { event_id: event.id, readers: $(this).val() } );
                                 });
+                                $('.edit-delete-event').removeClass('hidden');
+                                $('.edit-delete-event').click(function() {
+                                    $.post( "deletevent", { event_id: event.id} );
+                                    $('#calendar').fullCalendar( 'refetchEvents');
+                                    $(".qtip").remove();
+                                });
                             }
                         }
-                }
+                },
             });
         },
         eventResize: function(event, delta, revertFunc) {
@@ -166,8 +175,42 @@ $(document).ready(function() {
                                      end     : event.end.format('YMMDD hh:mm:ss A'),
             });
         },
+        dayClick: function(date, jsEvent, view) {
+            if (edit){
+                $.post("/submitevent", { start   : date.format('YMMDD hh:mm:ss A'), 
+                                         end     : date.add(2, 'hours').format('YMMDD hh:mm:ss A'),
+                });
+                $('#calendar').fullCalendar( 'refetchEvents');
+            }
+        }
     });
 });
-$(document).on('change', '#filter-well select', function() {
-    $('#calendar').fullCalendar( 'refetchEvents');
+$(document).on('change', '#filter-well select', updateQuery);
+
+$(".clr-btn").click(function() {
+    select = $(this).data("select"); //gets id of the select attached to this button
+    $(select +  " > .default").prop('selected', true);
+    updateQuery();
 });
+
+function updateQuery() {
+    /*
+    This Function gets called whenever the filters get changed and it updates
+    the data in the calendar and the querystring that gets sent to printsched
+    so that they reflect the filters
+    */
+    $('#calendar').fullCalendar( 'refetchEvents');
+    $('#print-link').attr('data', getFilters()); 
+}
+
+
+function getFilters(){
+    //gets data from the filters to send put in the events query
+    return {
+        department: $('#department option:selected').text(),
+        division: $('#division option:selected').text(),
+        'professors[]': $('#prof-select').val(),
+        'students[]': $('#stu-select').val()
+    };
+} 
+

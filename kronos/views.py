@@ -4,22 +4,31 @@ from dateutil import parser
 import flask
 import httplib2
 
-from flask import render_template, request
+from flask import render_template, request, redirect
 from apiclient import discovery
 from oauth2client import client
 
-from kronos import app, db
-from .models import department, division, Oral, Stu, Prof, Event, User
+from kronos import app, db, util
+from .models import department, division, Oral, Stu, Prof, Event, User, OralStartDay
 
 
 @app.route('/')
 def schedule():
 
-    # start time of first oral
-    if Oral.query.all() != []:
-        starttime = Oral.query.order_by(Oral.dtstart).first().dtstart
+    startdays = OralStartDay.query.all()
+    if startdays  == []:
+        return redirect('/oralweeks')
+
+    startdayid = request.args.get("startday") or None
+    if startdayid is not None:
+        startday = OralStartDay.query.get(startdayid).start 
     else:
-        starttime = datetime.datetime(2016,5,2,8)
+        startday = OralStartDay.query.\
+                   filter(OralStartDay.start >= 
+                          (datetime.date.today() - 
+                           datetime.timedelta(days=7))).\
+                   order_by(OralStartDay.start).first().start
+
     students = Stu.query.all()
     professors = Prof.query.all()
     # TODO when we're gonna need each POST request from fullcalendar/jeditable
@@ -33,9 +42,66 @@ def schedule():
 
     return render_template(
         "schedule.html", department=department, division=division,
-        students=students, professors=professors, starttime=starttime,
-        edit=edit)
+        students=students, professors=professors, startday=startday,
+        edit=edit, startdays=startdays)
 
+
+@app.route('/oralweeks', methods=['GET', 'POST'])
+def edit_start_days():
+    """
+    This page is for editing the oral start days so that the schedule page
+    knows what week to go to for orals week
+    """
+    if request.method == 'POST':
+        for day in OralStartDay.query.all():
+            desc = request.form.get("desc--" + str(day.id))
+            date = request.form.get("date--" + str(day.id))
+            remove = request.form.get("remove--" + str(day.id)) 
+            if desc is not None and date is not None:
+                day.description = desc
+                day.start = date
+            elif remove is "True":
+                db.session.remove(day)
+        i = 0
+        desc = request.form.get("desc-"+str(i))
+        date = request.form.get("date-"+str(i))
+        while desc is not None and desc is not "" and date is not None and date is not "":
+            desc = request.form.get("desc-"+str(i))
+            date = request.form.get("date-"+str(i))
+            day = OralStartDay(desc, date)
+            db.session.add(day)
+            i += 1
+        db.session.commit()
+        return redirect('/oralweeks')
+    else:
+        oralstarts = OralStartDay.query.order_by(OralStartDay.start).all()
+        return render_template("oralweeks.html", oralstarts=oralstarts)
+ 
+@app.route('/print')
+def print_schedule():
+    """
+    Gives a schedule table of orals that will look nice when printed
+    """
+    events = util.filter_events(Event.query, request.args)
+    # This needs to be after filter_events because filter_events sometimes
+    # adds non-oral events to the query
+    orals = events.filter(Event.discriminator == 'oral')
+    oraltable = util.GetOralTable(orals.order_by(Oral.dtstart).all())
+    div = str(request.args.get("division")).upper() or None
+    dept = str(request.args.get("department")).upper() or None
+    # Getting the semester and year
+    if orals.all() != []:
+        starttime = orals.first().dtstart
+        year = starttime.date().year
+        if starttime.date().month <= 7:
+            semester = 'SPRING'
+        else:
+            semester = 'FALL'
+        time = semester + ' ' + str(year)
+    else:
+        time = ''
+    return render_template('printsched.html', oraltable=oraltable, 
+                           division=div, department=dept, time=time)
 
 @app.route('/eventsjson')
 def get_events_json():
@@ -43,52 +109,7 @@ def get_events_json():
     Returns a json of events based on args in the querystring
     all of the args are listed below
     """
-    # getting querystring args
-    start = request.args.get("start")
-    end = request.args.get("end")
-    div = str(request.args.get("division"))
-    dept = str(request.args.get("department"))
-    profs = request.args.getlist("professors[]")
-    stus = request.args.getlist("students[]")
-
-    eventobjs = Event.query
-    # filtering by querystring args
-    if ((profs != [] and profs != [''] and profs is not None) or
-       (stus != [] and stus != [''] and stus is not None)):
-        # make the query empty
-        eventobjs = eventobjs.except_(eventobjs)
-    for profid in profs:
-        if profid == '':
-            break
-        # Events that the professor owns
-        pf = Event.query.filter(Event.userid == profid)
-        # Orals that the professor is going to
-        ora = Event.query.join(Oral).\
-            join(Oral.readers).join(Prof).\
-            filter(Prof.id == profid)
-        profevents = pf.union(ora)
-        eventobjs = eventobjs.union(profevents)
-    for stuid in stus:
-        if stuid == '':
-            break
-        ora = Event.query.join(Oral).filter(Oral.stu_id == stuid)
-        eventobjs = eventobjs.union(ora)
-    if div in division:
-        st = eventobjs.join(Oral).join(Oral.stu).\
-           join(Stu).filter(Stu.division == div)
-        pf = eventobjs.join(Event.user).\
-           join(Prof).filter(Prof.division == div)
-        eventobjs = st.union(pf)
-    if dept in department:
-        st = eventobjs.join(Oral).join(Oral.stu).\
-                join(Stu).filter(Stu.department == dept)
-        pf = eventobjs.join(Event.user).\
-                join(Prof).filter(Prof.department == dept)
-        eventobjs = st.union(pf)
-    if start is not None:
-        eventobjs = eventobjs.filter(Event.dtend >= start)
-    if end is not None:
-        eventobjs = eventobjs.filter(Event.dtstart <= end)
+    eventobjs = util.filter_events(Event.query, request.args)
     # putting the events into the formal fullcalendar wants
     events = []
     for event in eventobjs:
@@ -101,18 +122,13 @@ def get_events_json():
         "user": event.user.name,
         "student": "",
         "readers": [],
+        "location": event.location,
         }
         if type(event) is Oral:
             evjson["readers"] = [reader.name for reader in event.readers]
             evjson["student"] = event.stu.name
         events.append(evjson)
         
-#    events.append({
-#        "start": '2016-05-02 10:00:00',
-#        "end": '2016-05-02 12:00:00',
-#        "rendering": 'background',
-#    })
-
     return json.dumps(events)
 
 
@@ -133,14 +149,23 @@ def update_event():
     page for jeditable to send new event changes to the db
     """
     print(request.form)
-    eventid = request.form.get("event_id")
+    eventid = request.form.get("event_id") or None
     userid = request.form.get("user_id") or None
     stuid = request.form.get("stu_id") or None
     summary = request.form.get("summary") or None
     readers = request.form.getlist("readers[]") or None
+    location = request.form.get("location") or None
     start = request.form.get("start") or None
     end = request.form.get("end") or None
-    event = Event.query.get_or_404(eventid)
+    # TODO: get current user from ldap
+    user = User.query.first()
+    if eventid is not None:
+        event = Event.query.get_or_404(eventid)
+    elif (start is not None) and (end is not None):
+        event = Event('New Event', start, end, user)
+        db.session.add(event)
+        db.session.commit()
+        return event.summmary
     if userid is not None:
         event.userid = userid
         db.session.commit()
@@ -158,6 +183,10 @@ def update_event():
         event.readers = readerobjs
         db.session.commit()
         return str(event.readers)
+    elif location is not None:
+        event.location = location
+        db.session.commit()
+        return event.location
     elif (start is not None) and (end is not None):
         # need to update start and end in the right order so the validators don't freak out
         if parser.parse(end) < event.dtstart:
@@ -178,6 +207,18 @@ def update_event():
         return event.dtend.strftime("%-H:%M")
     else:
         return "Something went wrong!"
+
+
+@app.route('/deletevent', methods=['POST'])
+def delete_event():
+    print(request.form)
+    eventid = request.form.get("event_id") or None
+    event = Event.query.get_or_404(eventid)
+    name = event.summary
+    db.session.delete(event)
+    db.session.commit()
+    return "Event '" + name + "' deleted"
+     
 
 @app.route('/gcal')
 def get_gcal():

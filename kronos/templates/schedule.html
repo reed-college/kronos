@@ -9,17 +9,12 @@
 <link rel="stylesheet" href="{{url_for('.static', filename='fullcalendar.min.css')}}" >
 <link rel="stylesheet" href="{{url_for('.static', filename='fullcalendar.print.css')}}" media='print' >
 <link rel="stylesheet" href="{{url_for('.static', filename='jquery.qtip.min.css')}}" >
-<style type="text/css" media="print">
-.dontprint {
-    display: none;
-}
-</style>
 {% endblock %}
 
 {% block scripts %}
 {{super()}}
 <script>
-var startday = "{{starttime.strftime('%Y-%m-%d')}}";
+var startday = "{{startday.strftime('%Y-%m-%d')}}";
 var edit = {{ edit }};
 </script>
 <script src="{{url_for('.static', filename='moment.min.js')}}"></script>
@@ -32,46 +27,92 @@ var edit = {{ edit }};
 {% endblock %}
 
 {% block content %}
-<div class="well dontprint" id="filter-well">
-  <div class="row form-group">
-    <div class="col-md-12" id="prof-select-container">
-      <select id="prof-select" class="user-select" multiple="multiple">
-        {% for prof in professors %}
-        <option value={{ prof.id }}>{{ prof.name }}</option>
-        {% endfor %}
-      </select>
+<div class="well hidden-print" id="filter-well">
+  <form action="{{ url_for('print_schedule') }}">
+    <div class="row form-group">
+      <div class="col-md-12" id="prof-select-container">
+        <select id="prof-select" name='professors[]' class="user-select" multiple="multiple">
+          {% for prof in professors %}
+          <option value={{ prof.id }}>{{ prof.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
     </div>
-  </div>
-  <div class="row form-group">
+    <div class="row form-group">
+      <div class="col-md-12">
+        <select id="stu-select" name='students[]' class="user-select" multiple="multiple">
+          {% for stu in students %}
+          <option value={{ stu.id }}>{{ stu.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-6">
+        <div class='input-group'>
+          <select id="department" name='department' class="form-control">
+            <option selected="" disabled="" class="default">Department</option>
+            {% for dept in department %}
+            <option>{{ dept }}</option>
+            {% endfor %}
+          </select>
+          <span class="input-group-btn">
+            <button class="btn btn-default clr-btn" type="button" data-select='#department'>
+              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="input-group">
+          <select id="division" name='division' class="form-control">
+            <option selected="" disabled="" class="default">Division</option>
+            {% for div in division %}
+            <option>{{ div }}</option>
+            {% endfor %}
+          </select>
+          <span class="input-group-btn">
+            <button class="btn btn-default clr-btn" type="button" data-select="#division">
+              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class='col-md-12'>
+        <button id='print-button' formmethod='get' class="btn btn-default pull-right">Print</button>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="container">
+  <div class="row">
     <div class="col-md-12">
-      <select id="stu-select" class="user-select" multiple="multiple">
-        {% for stu in students %}
-        <option value={{ stu.id }}>{{ stu.name }}</option>
-        {% endfor %}
-      </select>
-    </div>
-  </div>
-  <div class="row form-group">
-    <div class="col-md-6">
-      <select id="department" class="form-control">
-        <option selected="" disabled="">Department</option>
-        {% for dept in department %}
-        <option>{{ dept }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    <div class="col-md-6">
-      <select id="division" class="form-control">
-        <option selected="" disabled="">Division</option>
-        {% for div in division %}
-        <option>{{ div }}</option>
-        {% endfor %}
-      </select>
+      <div id='calendar'></div>
     </div>
   </div>
 </div>
 <div class="container">
-  <div id='calendar'></div>
+  <div class="row"><div class="col-md-12"></div></div>
+  <div class="row">
+    <div class="col-sm-12">
+      <form class="form-inline" method="GET">
+        <div class="form-group">
+          <label for="yearpicker">View another year:</label>
+          <select name="startday" id="yearpicker" class="form-control input-sm">
+            {% for day in startdays %}
+              <option value={{day.id}}>{{day.description}}</option>
+            {% endfor %}
+          </select>
+        </div> 
+        <div class="form-group">
+          <button type="submit" class="btn btn-default btn-sm">Go!</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row"><div class="col-md-12"></div></div>
 </div>
 <div class="hidden" id="oral-qtip-template">
   <div class="row">
@@ -100,6 +141,19 @@ var edit = {{ edit }};
       <span class="edit-readers">{readers}</span>
     </div>
   </div>
+  <div class="row">
+    <div class="col-xs-4">
+      Where:
+    </div>
+    <div class="col-xs-8">
+      <span class="edit-location">{location}</span>
+    </div>
+  </div>
+  <div class="row">
+    <div class='col-xs-12'>
+      <button class="hidden edit-delete-event btn btn-danger">Delete</button>
+    </div>
+  </div>
 </div>
 <div class="hidden" id="event-qtip-template">
   <div class="row">
@@ -118,6 +172,19 @@ var edit = {{ edit }};
     </div>
     <div class="col-xs-8">
       <span class="edit-user">{user}</span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-4">
+      Where:
+    </div>
+    <div class="col-xs-8">
+      <span class="edit-location">{location}</span>
+    </div>
+  </div>
+  <div class="row">
+    <div class='col-xs-12'>
+      <button class="hidden edit-delete-event btn btn-danger">Delete</button>
     </div>
   </div>
 </div>

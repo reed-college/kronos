@@ -95,6 +95,7 @@ class Event(db.Model):
     dtstart = db.Column(db.DateTime, nullable=False)
     dtend = db.Column(db.DateTime, nullable=False)
     private = db.Column(db.Boolean)
+    location = db.Column(db.String(50))
     discriminator = db.Column('type', db.String(10))
     __mapper_args__ = {'polymorphic_on': discriminator}
     __table_args__ = (
@@ -106,12 +107,13 @@ class Event(db.Model):
     user = db.relationship('User', backref=db.backref('events'))
 
     def __init__(self, summary, dtstart, dtend, user,
-                 private=True):
+                 private=True, location=None):
         self.summary = summary
         self.dtstart = dtstart
         self.dtend = dtend
         self.user = user
         self.private = private
+        self.loaction = location
 
     def __repr__(self):
         if self.private is False:
@@ -132,7 +134,7 @@ class Event(db.Model):
         elif type(field) is str:
             time = parser.parse(field)
         else:
-            raise AsdsertionError(key + " must of type 'datetime.datetime' or type 'str'")
+            raise AssertionError(key + " must of type 'datetime.datetime' or type 'str'")
         if key is "dtstart" and isinstance(self.dtend, datetime):
             assert time < self.dtend
         elif key is "dtend" and isinstance(self.dtstart, datetime):
@@ -184,3 +186,18 @@ class Oral(Event):
         return reader
     
 
+class OralStartDay(db.Model):
+    """
+    Contains a description and a start day to select whichever oral week
+    the user would want to see
+    """
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    description = db.Column(db.String(50), unique=True) # ie 'Fall 2016'
+    start = db.Column(db.Date, nullable=False)
+
+    def __init__(self, desc, start):
+        self.description = desc
+        self.start = start
+
+    def __repr__(self):
+        return '<%r>' % self.description

@@ -8,3 +8,10 @@ class Config(object):
 
 class DevelopmentConfig(Config):
     DEBUG = True
+
+class TestConfig(Config):
+    # This URI is preconfigured to work with travis, so don't change it
+    # (in kronos/config.py.template) without changing .travis.yml
+    # do whatever you want in kronos/config.py, that files not source controlled
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://postgres@localhost:5432/kronos_test'
+    
