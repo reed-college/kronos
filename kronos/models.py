@@ -32,15 +32,13 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(50), unique=True)
     name = db.Column(db.String(50), nullable=False)
-    password = db.Column(db.Text, nullable=False)
     email = db.Column(db.String(120), unique=True)
     discriminator = db.Column('type', db.String(20))
     __mapper_args__ = {'polymorphic_on': discriminator}
 
-    def __init__(self, username, name, password, email):
+    def __init__(self, username, name, email):
         self.username = username
         self.name = name
-        self.password = password
         self.email = email
 
     def __repr__(self):
@@ -53,8 +51,8 @@ class User(db.Model):
 
 class FAC(User):
     __mapper_args__ = {'polymorphic_identity': 'FAC'}
-    def __init__(self, username, name, password, email):
-        User.__init__(self, username, name, password, email)
+    def __init__(self, username, name, email):
+        User.__init__(self, username, name, email)
         self.type = 'FAC'
 
 
@@ -64,8 +62,8 @@ class Prof(User):
     __mapper_args__ = {'polymorphic_identity': 'professor'}
     id = db.Column(db.Integer, ForeignKey('user.id'), primary_key=True)
 
-    def __init__(self, username, name, password, email, department, division):
-        User.__init__(self, username, name, password, email)
+    def __init__(self, username, name, email, department, division):
+        User.__init__(self, username, name, email)
         self.department = department
         self.division = division
         self.type = 'professor'
@@ -80,8 +78,8 @@ class Stu(User):
     __mapper_args__ = {'polymorphic_identity': 'student'}
     id = db.Column(db.Integer, ForeignKey('user.id'), primary_key=True)
 
-    def __init__(self, username, name, password, email, department, division):
-        User.__init__(self, username, name, password, email)
+    def __init__(self, username, name, email, department, division):
+        User.__init__(self, username, name, email)
         self.department = department
         self.division = division
         self.type = 'student'
@@ -96,7 +94,6 @@ class Event(db.Model):
     summary = db.Column(db.Text)
     dtstart = db.Column(db.DateTime, nullable=False)
     dtend = db.Column(db.DateTime, nullable=False)
-    status = db.Column(db.Enum('busy', 'free', name='status'))
     private = db.Column(db.Boolean)
     discriminator = db.Column('type', db.String(10))
     __mapper_args__ = {'polymorphic_on': discriminator}
@@ -106,14 +103,13 @@ class Event(db.Model):
 
 
     userid = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship('User', backref=db.backref('events'))  # lazy???
+    user = db.relationship('User', backref=db.backref('events'))
 
     def __init__(self, summary, dtstart, dtend, user,
-                 private=True, status='busy'):
+                 private=True):
         self.summary = summary
         self.dtstart = dtstart
         self.dtend = dtend
-        self.status = status
         self.user = user
         self.private = private
 
@@ -157,6 +153,7 @@ class Oral(Event):
     def __init__(self, stu, summary, dtstart, dtend, user,
                  response=None):
         Event.__init__(self, summary, dtstart, dtend, user)
+        self.private = False
         self.user = user
         self.stu = stu
         self.type = 'oral'
