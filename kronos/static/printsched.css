@@ -5,6 +5,15 @@
     -webkit-print-color-adjust: exact;
 
 }
+th {
+    font-size: small;
+}
+td {
+    font-size: x-small;
+}
+b {
+    font-size: small;
+}
 
 .table table, .table th, .table td {
     border-color: #151515 !important;
