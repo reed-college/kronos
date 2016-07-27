@@ -15,12 +15,19 @@ from .models import department, division, Oral, Stu, Prof, Event, User, OralStar
 @app.route('/')
 def schedule():
 
-    if OralStartDay.query.all() == []:
+    startdays = OralStartDay.query.all()
+    if startdays  == []:
         return redirect('/oralweeks')
 
-    startday = OralStartDay.query.\
-               filter(OralStartDay.start >= (datetime.date.today() - datetime.timedelta(days=7))).\
-               order_by(OralStartDay.start).first().start
+    startdayid = request.args.get("startday") or None
+    if startdayid is not None:
+        startday = OralStartDay.query.get(startdayid).start 
+    else:
+        startday = OralStartDay.query.\
+                   filter(OralStartDay.start >= 
+                          (datetime.date.today() - 
+                           datetime.timedelta(days=7))).\
+                   order_by(OralStartDay.start).first().start
 
     students = Stu.query.all()
     professors = Prof.query.all()
@@ -36,7 +43,7 @@ def schedule():
     return render_template(
         "schedule.html", department=department, division=division,
         students=students, professors=professors, startday=startday,
-        edit=edit)
+        edit=edit, startdays=startdays)
 
 
 @app.route('/oralweeks', methods=['GET', 'POST'])
@@ -46,14 +53,15 @@ def edit_start_days():
     knows what week to go to for orals week
     """
     if request.method == 'POST':
-        print(request.form)
         for day in OralStartDay.query.all():
             desc = request.form.get("desc--" + str(day.id))
             date = request.form.get("date--" + str(day.id))
+            remove = request.form.get("remove--" + str(day.id)) 
             if desc is not None and date is not None:
                 day.description = desc
                 day.start = date
-                db.session.commit()
+            elif remove is "True":
+                db.session.remove(day)
         i = 0
         desc = request.form.get("desc-"+str(i))
         date = request.form.get("date-"+str(i))
