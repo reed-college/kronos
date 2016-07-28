@@ -177,12 +177,35 @@ $(document).ready(function() {
         },
         dayClick: function(date, jsEvent, view) {
             if (edit){
+               /* 
                 $.post("/submitevent", { start   : date.format('YMMDD hh:mm:ss A'), 
                                          end     : date.add(2, 'hours').format('YMMDD hh:mm:ss A'),
                 });
                 $('#calendar').fullCalendar( 'refetchEvents');
+                */
             }
-        }
+            $(this).qtip({
+                show: {
+                    ready: true,
+                    event: "click",
+                },
+                style: {
+                    classes: 'new-event-qtip qtip-bootstrap',
+                },
+                position: {
+                    target: 'mouse',
+                    my: 'bottom center',
+                    at: 'top center',
+                    adjust: {
+                        mouse: false,
+                    },
+                    //makes sure that the qtips don't go outside fullcalendar
+                    viewport: $('#calendar'),
+                },
+                content: $("#add-event-oral-qtip-template").html(),
+            });
+            
+        },
     });
 });
 $(document).on('change', '#filter-well select', updateQuery);

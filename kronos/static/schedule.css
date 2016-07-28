@@ -41,6 +41,20 @@ a:focus {
     min-width: 270px !important;
 }
 
+.new-event-qtip {
+    padding: 0px !important;
+}
+
+.new-event-qtip > .qtip-content {
+    padding: 0px !important;
+}
+
+.new-event-qtip > .qtip-content > .list-group {
+    margin-bottom: 0px !important;
+}
+
+
 .select2-dropdown{
     z-index: 9999999999999;
 }
+
