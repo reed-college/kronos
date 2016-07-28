@@ -53,7 +53,16 @@ a:focus {
     margin-bottom: 0px !important;
 }
 
+.new-event-qtip > .qtip-content > .list-group > .list-group-item {
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 0px;
+}
 
+.new-event-qtip > .qtip-content > .list-group > #new-event {
+    /* since new-event is at the top */
+    border-top-width: 0px; 
+}
 .select2-dropdown{
     z-index: 9999999999999;
 }

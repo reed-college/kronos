@@ -190,9 +190,9 @@ var edit = {{ edit }};
 </div>
 <div class="hidden" id="add-event-oral-qtip-template">
   <div class="list-group">
-    <button type="button" class="list-group-item">New Event</button>
-    <button type="button" class="list-group-item">New Oral</button>
-    <button type="button" class="list-group-item">Cancel</button>
+    <button id="new-event" type="button" class="list-group-item" onclick="addEvent({start},{end},'event');">New Event</button>
+    <button id="new-oral"  type="button" class="list-group-item" onclick="addEvent({start},{end},'oral');">New Oral</button>
+    <button id="cancel"    type="button" class="list-group-item">Cancel</button>
   </div>  
 </div>
 {% endblock %}
