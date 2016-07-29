@@ -188,8 +188,7 @@ $(document).ready(function() {
                         event: "click",
                     },
                     hide: {
-                        target: $('.list-group-item'),
-                        event: "click unfocus",
+                        event: false,
                     },
                     style: {
                         classes: 'new-event-qtip qtip-bootstrap',
@@ -202,9 +201,16 @@ $(document).ready(function() {
                             mouse: false,
                         },
                         //makes sure that the qtips don't go outside fullcalendar
-                viewport: $('#calendar'),
+                        viewport: $('#calendar'),
                     },
-                    content: content,
+                    content:{
+                        text: content,
+                        button: true,
+                    },
+                    events: {
+                        render: function(event, api) {
+                        }
+                    },
                 });
             }
         },
@@ -241,6 +247,11 @@ function addEvent(start, end, type) {
                              type  : type,
     });
     $('#calendar').fullCalendar( 'refetchEvents');
+    cancel();
+}
+
+function cancel(){
+    $('.qtip', window.parent.document).qtip("hide");
 }
 
 function getFilters(){
