@@ -14,7 +14,7 @@
 {% block scripts %}
 {{super()}}
 <script>
-var startday = "{{starttime.strftime('%Y-%m-%d')}}";
+var startday = "{{startday.strftime('%Y-%m-%d')}}";
 var edit = {{ edit }};
 </script>
 <script src="{{url_for('.static', filename='moment.min.js')}}"></script>
@@ -49,22 +49,39 @@ var edit = {{ edit }};
     </div>
     <div class="row form-group">
       <div class="col-md-6">
-        <select id="department" name='department' class="form-control">
-          <option selected="" disabled="">Department</option>
-          {% for dept in department %}
-          <option>{{ dept }}</option>
-          {% endfor %}
-        </select>
+        <div class='input-group'>
+          <select id="department" name='department' class="form-control">
+            <option selected="" disabled="" class="default">Department</option>
+            {% for dept in department %}
+            <option>{{ dept }}</option>
+            {% endfor %}
+          </select>
+          <span class="input-group-btn">
+            <button class="btn btn-default clr-btn" type="button" data-select='#department'>
+              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+          </span>
+        </div>
       </div>
       <div class="col-md-6">
-        <select id="division" name='division' class="form-control">
-          <option selected="" disabled="">Division</option>
-          {% for div in division %}
-          <option>{{ div }}</option>
-          {% endfor %}
-        </select>
+        <div class="input-group">
+          <select id="division" name='division' class="form-control">
+            <option selected="" disabled="" class="default">Division</option>
+            {% for div in division %}
+            <option>{{ div }}</option>
+            {% endfor %}
+          </select>
+          <span class="input-group-btn">
+            <button class="btn btn-default clr-btn" type="button" data-select="#division">
+              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+          </span>
+        </div>
       </div>
     </div>
+    {# hidden formfields so print page gets date range from fullcalendar #}
+    <input id="filter-start" name="start"type="hidden"></input>
+    <input id="filter-end" name="end" type="hidden"></input>
     <div class="row">
       <div class='col-md-12'>
         <button id='print-button' formmethod='get' class="btn btn-default pull-right">Print</button>
@@ -73,7 +90,32 @@ var edit = {{ edit }};
   </form>
 </div>
 <div class="container">
-  <div id='calendar'></div>
+  <div class="row">
+    <div class="col-md-12">
+      <div id='calendar'></div>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row"><div class="col-md-12"></div></div>
+  <div class="row">
+    <div class="col-sm-12">
+      <form class="form-inline" method="GET">
+        <div class="form-group">
+          <label for="yearpicker">View another year:</label>
+          <select name="startday" id="yearpicker" class="form-control input-sm">
+            {% for day in startdays %}
+              <option value={{day.id}}>{{day.description}}</option>
+            {% endfor %}
+          </select>
+        </div> 
+        <div class="form-group">
+          <button type="submit" class="btn btn-default btn-sm">Go!</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row"><div class="col-md-12"></div></div>
 </div>
 <div class="hidden" id="oral-qtip-template">
   <div class="row">
@@ -103,6 +145,14 @@ var edit = {{ edit }};
     </div>
   </div>
   <div class="row">
+    <div class="col-xs-4">
+      Where:
+    </div>
+    <div class="col-xs-8">
+      <span class="edit-location">{location}</span>
+    </div>
+  </div>
+  <div class="row">
     <div class='col-xs-12'>
       <button class="hidden edit-delete-event btn btn-danger">Delete</button>
     </div>
@@ -128,9 +178,24 @@ var edit = {{ edit }};
     </div>
   </div>
   <div class="row">
+    <div class="col-xs-4">
+      Where:
+    </div>
+    <div class="col-xs-8">
+      <span class="edit-location">{location}</span>
+    </div>
+  </div>
+  <div class="row">
     <div class='col-xs-12'>
       <button class="hidden edit-delete-event btn btn-danger">Delete</button>
     </div>
   </div>
+</div>
+<div class="hidden" id="add-event-oral-qtip-template">
+  <div class="list-group">
+    <button id="new-event" type="button" class="list-group-item" onclick="addEvent({start},{end},'event');">New Event</button>
+    <button id="new-oral"  type="button" class="list-group-item" onclick="addEvent({start},{end},'oral');">New Oral</button>
+    <button id="cancel"    type="button" class="list-group-item" onclick="cancel();">Cancel</button>
+  </div>  
 </div>
 {% endblock %}

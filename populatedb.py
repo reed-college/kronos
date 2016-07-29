@@ -1,36 +1,36 @@
 import datetime
 from kronos import db
-from kronos.models import FAC, Stu, Prof, Oral, Event
+from kronos.models import FAC, Stu, Prof, Oral, Event, OralStartDay
 
 db.create_all()
 
 
 # FACs
 
-gonyerk = FAC('gonyerk', 'Kristy', 'asdf', 'gonyerk@reed.edu')
-griffinj = FAC('griffinj', 'Jolie', 'asdf', 'griffinj@reed.edu')
+gonyerk = FAC('gonyerk', 'Kristy', 'gonyerk@reed.edu')
+griffinj = FAC('griffinj', 'Jolie', 'griffinj@reed.edu')
 
 db.session.add(gonyerk)
 db.session.add(griffinj)
 
 # Linguistic Seniors
 
-emma = Stu('erennie', 'Emma Rennie', '123', 'erennie@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-richard = Stu('adcockr', 'Richard Adcock', 'asd', 'adcockr@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-manon = Stu('gilmorem', 'Manon Gilmore', 'sdf', 'gilmorem@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-knar = Stu('knhovakim', 'Knar', 'asdf', 'knhovakim@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-syd = Stu('lows', 'Syd', 'asdf', 'lows@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-miriam = Stu('golzm', 'Miriam', 'asdf', 'golzm@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-sarah = Stu('allens', 'Sarah', 'asdf', 'allens@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-arthur = Stu('sillersa', 'Arthur', 'asdf', 'sillersa@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+emma = Stu('erennie', 'Emma Rennie', 'erennie@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+richard = Stu('adcockr', 'Richard Adcock', 'adcockr@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+manon = Stu('gilmorem', 'Manon Gilmore', 'gilmorem@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+knar = Stu('knhovakim', 'Knar', 'knhovakim@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+syd = Stu('lows', 'Syd', 'lows@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+miriam = Stu('golzm', 'Miriam', 'golzm@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+sarah = Stu('allens', 'Sarah', 'allens@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+arthur = Stu('sillersa', 'Arthur', 'sillersa@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
 
 # 1 Russian Senior so that we have 2 orals at the same time
 
-edmond = Stu('eedmonds', 'Edmond Soun', 'pass', 'eedmonds@reed.edu', 'Russian', 'Literature and Languages')
+edmond = Stu('eedmonds', 'Edmond Soun', 'eedmonds@reed.edu', 'Russian', 'Literature and Languages')
 
 # Made up Senior
 
-jon = Stu('snowj', 'Jon Snow', 'pass', 'snowj@reed.edu', 'Physics', 'Mathematics and Natural Sciences')
+jon = Stu('snowj', 'Jon Snow', 'snowj@reed.edu', 'Physics', 'Mathematics and Natural Sciences')
 
 db.session.add(emma)
 db.session.add(richard)
@@ -45,23 +45,23 @@ db.session.add(jon)
 
 # Profs
 
-hovda = Prof('hovdap', 'Paul Hovda', 'asdf', 'hovdap@reed.edu', 'Philosophy', 'Philosophy, Religion, Psychology and Linguistics')
-hancock = Prof('hancockv', 'Ginny', 'asdf', 'hancockv@reed.edu', 'Music', 'The Arts')
-pearson = Prof('pearson', 'Pearson', 'asdf', 'pearson@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-becker = Prof('becker', 'becker', 'asdf', 'becker@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-somda = Prof('somda', 'Somda', 'asdf', 'somda@reed.edu', 'English', 'Literature and Languages')
-gruber = Prof('guber', 'Gruber', 'asdf', 'gruber@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-faletra = Prof('faletra', 'Faletra', 'asdf', 'faletra@reed.edu', 'English', 'Literature and Languages')
-minardi = Prof('minardi', 'Margot', 'asdf', 'minardi@reed.edu', 'History', 'Literature and Languages')
-kroll = Prof('chkroll', 'Christian', 'asdf', 'chkroll@reed.edu', 'Spanish', 'Literature and Languages')
-witt = Prof('wittc', 'Catherine', 'asdf', 'wittc@reed.edu', 'French', 'Literature and Languages')
-khan = Prof('skhan', 'Sameer', 'asdf', 'skhan@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-bershtein = Prof('bershtee', 'Zhenya', 'asdf', 'bershtee@reed.edu', 'Russian', 'Literature and Languages')
-ditter = Prof('dittera', 'Alexei', 'asdf', 'dittera@reed.edu', 'Chinese', 'Literature and Languages')
-makley = Prof('makleyc', 'Charlene', 'asdf', 'makleyc@reed.edu', 'Anthropology', 'History and Social Sciences')
-mckinney = Prof('mckinnek', 'Katy', 'asdf', 'mckinnek@reed.edu', 'English', 'Literature and Languages')
-simpson = Prof('dsimpson', 'Dustin', 'asdf', 'dsimpson@reed.edu', 'English', 'Literature and Languages')
-luker = Prof('mluker', 'Morgan', 'asdf', 'mluker@reed.edu', 'Music', 'The Arts')
+hovda = Prof('hovdap', 'Paul Hovda', 'hovdap@reed.edu', 'Philosophy', 'Philosophy, Religion, Psychology and Linguistics')
+hancock = Prof('hancockv', 'Ginny', 'hancockv@reed.edu', 'Music', 'The Arts')
+pearson = Prof('pearson', 'Pearson', 'pearson@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+becker = Prof('becker', 'becker', 'becker@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+somda = Prof('somda', 'Somda', 'somda@reed.edu', 'English', 'Literature and Languages')
+gruber = Prof('guber', 'Gruber', 'gruber@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+faletra = Prof('faletra', 'Faletra', 'faletra@reed.edu', 'English', 'Literature and Languages')
+minardi = Prof('minardi', 'Margot', 'minardi@reed.edu', 'History', 'Literature and Languages')
+kroll = Prof('chkroll', 'Christian', 'chkroll@reed.edu', 'Spanish', 'Literature and Languages')
+witt = Prof('wittc', 'Catherine', 'wittc@reed.edu', 'French', 'Literature and Languages')
+khan = Prof('skhan', 'Sameer', 'skhan@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+bershtein = Prof('bershtee', 'Zhenya', 'bershtee@reed.edu', 'Russian', 'Literature and Languages')
+ditter = Prof('dittera', 'Alexei', 'dittera@reed.edu', 'Chinese', 'Literature and Languages')
+makley = Prof('makleyc', 'Charlene', 'makleyc@reed.edu', 'Anthropology', 'History and Social Sciences')
+mckinney = Prof('mckinnek', 'Katy', 'mckinnek@reed.edu', 'English', 'Literature and Languages')
+simpson = Prof('dsimpson', 'Dustin', 'dsimpson@reed.edu', 'English', 'Literature and Languages')
+luker = Prof('mluker', 'Morgan', 'mluker@reed.edu', 'Music', 'The Arts')
 
 db.session.add(hovda)
 db.session.add(hancock)
@@ -143,6 +143,17 @@ db.session.add(oral9)
 db.session.add(oral10)
 # db.session.add(oral11)
 
+s16 = OralStartDay("Spring 2016", datetime.date(2016, 5,  2)) 
+f16 = OralStartDay("Fall 2016",   datetime.date(2016, 12, 8))
+s17 = OralStartDay("Spring 2017", datetime.date(2017, 5,  1)) 
+f17 = OralStartDay("Fall 2017",   datetime.date(2017, 12, 7))
+s18 = OralStartDay("Spring 2018", datetime.date(2018, 4,  30)) 
+
+db.session.add(s16)
+db.session.add(f16)
+db.session.add(s17)
+db.session.add(f17)
+db.session.add(s18)
 
 db.session.commit()
 

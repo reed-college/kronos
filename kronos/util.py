@@ -69,6 +69,12 @@ def GetOralTable(orals):
                         info = '<b>' + oral.stu.name + '</b><br>'
                         for reader in oral.readers:
                             info += reader.name + '<br>'
+                        for i in range(len(oral.readers)+1,5):
+                            info += ordinalize(i) + " Reader: <br>"
+                        if oral.location is not None:
+                            info += oral.location
+                        else:
+                            info += "Location:"
                         oralrow.append(info)
                         currTimeslotOrals.remove(oral)
                         break
@@ -131,3 +137,10 @@ def filter_events(eventobjs, args):
         eventobjs = eventobjs.filter(Event.dtstart <= end)
 
     return eventobjs
+
+
+"""    
+I stole this function from here: 
+http://codegolf.stackexchange.com/a/74047
+"""
+ordinalize = lambda n:str(n)+'tsnrhtdd'[n%5*(n%100^15>4>n%10)::4]

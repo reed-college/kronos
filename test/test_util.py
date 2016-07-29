@@ -34,10 +34,10 @@ class TestUtil:
         first column of each row and that the orals are placed below the
         headers for their time slots
         """
-        hovda = Prof('hovdap', 'Paul Hovda', 'asdf', 'hovdap@reed.edu', 'Philosophy', 'Philosophy, Religion, Psychology and Linguistics')
-        pearson = Prof('pearson', 'Pearson', 'asdf', 'pearson@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-        emma = Stu('erennie', 'Emma Rennie', '123', 'erennie@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-        richard = Stu('adcockr', 'Richard Adcock', 'asd', 'adcockr@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+        hovda = Prof('hovdap', 'Paul Hovda', 'hovdap@reed.edu', 'Philosophy', 'Philosophy, Religion, Psychology and Linguistics')
+        pearson = Prof('pearson', 'Pearson', 'pearson@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+        emma = Stu('erennie', 'Emma Rennie', 'erennie@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+        richard = Stu('adcockr', 'Richard Adcock', 'adcockr@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
 
         oral1 = Oral(emma, 'Oral_Emma', parser.parse('20160502 10:00:00 AM'), parser.parse('20160502 12:00:00 PM'), pearson)
         oral1.readers = [pearson]

@@ -1,4 +1,4 @@
-from populatedb import *
+import populatedb
 from kronos import db
 from collections import namedtuple
 

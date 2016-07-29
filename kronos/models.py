@@ -32,15 +32,13 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(50), unique=True)
     name = db.Column(db.String(50), nullable=False)
-    password = db.Column(db.Text, nullable=False)
     email = db.Column(db.String(120), unique=True)
     discriminator = db.Column('type', db.String(20))
     __mapper_args__ = {'polymorphic_on': discriminator}
 
-    def __init__(self, username, name, password, email):
+    def __init__(self, username, name, email):
         self.username = username
         self.name = name
-        self.password = password
         self.email = email
 
     def __repr__(self):
@@ -53,8 +51,8 @@ class User(db.Model):
 
 class FAC(User):
     __mapper_args__ = {'polymorphic_identity': 'FAC'}
-    def __init__(self, username, name, password, email):
-        User.__init__(self, username, name, password, email)
+    def __init__(self, username, name, email):
+        User.__init__(self, username, name, email)
         self.type = 'FAC'
 
 
@@ -64,8 +62,8 @@ class Prof(User):
     __mapper_args__ = {'polymorphic_identity': 'professor'}
     id = db.Column(db.Integer, ForeignKey('user.id'), primary_key=True)
 
-    def __init__(self, username, name, password, email, department, division):
-        User.__init__(self, username, name, password, email)
+    def __init__(self, username, name, email, department, division):
+        User.__init__(self, username, name, email)
         self.department = department
         self.division = division
         self.type = 'professor'
@@ -80,8 +78,8 @@ class Stu(User):
     __mapper_args__ = {'polymorphic_identity': 'student'}
     id = db.Column(db.Integer, ForeignKey('user.id'), primary_key=True)
 
-    def __init__(self, username, name, password, email, department, division):
-        User.__init__(self, username, name, password, email)
+    def __init__(self, username, name, email, department, division):
+        User.__init__(self, username, name, email)
         self.department = department
         self.division = division
         self.type = 'student'
@@ -96,8 +94,8 @@ class Event(db.Model):
     summary = db.Column(db.Text)
     dtstart = db.Column(db.DateTime, nullable=False)
     dtend = db.Column(db.DateTime, nullable=False)
-    status = db.Column(db.Enum('busy', 'free', name='status'))
     private = db.Column(db.Boolean)
+    location = db.Column(db.String(50))
     discriminator = db.Column('type', db.String(10))
     __mapper_args__ = {'polymorphic_on': discriminator}
     __table_args__ = (
@@ -106,16 +104,16 @@ class Event(db.Model):
 
 
     userid = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship('User', backref=db.backref('events'))  # lazy???
+    user = db.relationship('User', backref=db.backref('events'))
 
     def __init__(self, summary, dtstart, dtend, user,
-                 private=True, status='busy'):
+                 private=True, location=None):
         self.summary = summary
         self.dtstart = dtstart
         self.dtend = dtend
-        self.status = status
         self.user = user
         self.private = private
+        self.loaction = location
 
     def __repr__(self):
         if self.private is False:
@@ -157,6 +155,7 @@ class Oral(Event):
     def __init__(self, stu, summary, dtstart, dtend, user,
                  response=None):
         Event.__init__(self, summary, dtstart, dtend, user)
+        self.private = False
         self.user = user
         self.stu = stu
         self.type = 'oral'
@@ -173,13 +172,16 @@ class Oral(Event):
                 oral.dtend > self.dtstart and oral.dtend <= self.dtend) or (
                 oral.dtstart <= self.dtstart and oral.dtend >= self.dtend):
                 raise ValueError('Conflicting orals are assigned to reader ' + str(reader) + ".")
+            """
+            TODO: move this to validate_stu
             # make sure that each student is assigned for only one oral.
             if self.stu == oral.stu:
-                    raise AssertionError('More than one oral are assigned to student ' + str(oral.stu) + ".")
+                raise AssertionError('More than one oral are assigned to student ' + str(oral.stu) + ".")
+            """
             # refuse to add orals that conflict with personal events.
-            for reader in oral.readers:
-                if reader.events != []:
-                    for event in reader.events:
+            for oreader in oral.readers:
+                if oreader.events != []:
+                    for event in oreader.events:
                         if (oral.dtstart > event.dtstart and oral.dtstart <= event.dtend) or (
                             oral.dtend > event.dtstart and oral.dtend <= event.dtend) or (
                             oral.dtstart <= event.dtstart and oral.dtend >= event.dtend):
@@ -187,3 +189,18 @@ class Oral(Event):
         return reader
     
 
+class OralStartDay(db.Model):
+    """
+    Contains a description and a start day to select whichever oral week
+    the user would want to see
+    """
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    description = db.Column(db.String(50), unique=True) # ie 'Fall 2016'
+    start = db.Column(db.Date, nullable=False)
+
+    def __init__(self, desc, start):
+        self.description = desc
+        self.start = start
+
+    def __repr__(self):
+        return '<%r>' % self.description
