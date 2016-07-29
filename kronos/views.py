@@ -157,56 +157,64 @@ def update_event():
     location = request.form.get("location") or None
     start = request.form.get("start") or None
     end = request.form.get("end") or None
+    evtype = request.form.get("type") or None
     # TODO: get current user from ldap
     user = User.query.first()
+    #if we're updating a current event
     if eventid is not None:
         event = Event.query.get_or_404(eventid)
+
+        if userid is not None:
+            event.userid = userid
+            db.session.commit()
+            return event.user.name
+        if stuid is not None:
+            event.stu_id = stuid
+            db.session.commit()
+            return event.stu.name
+        elif summary is not None:
+            event.summary = summary
+            db.session.commit()
+            return event.summary
+        elif readers is not None:
+            readerobjs = [Prof.query.get(id) for id in readers]
+            event.readers = readerobjs
+            db.session.commit()
+            return str(event.readers)
+        elif location is not None:
+            event.location = location
+            db.session.commit()
+            return event.location
+        elif (start is not None) and (end is not None):
+            # need to update start and end in the right order so the validators don't freak out
+            if parser.parse(end) < event.dtstart:
+                event.dtstart = start
+                event.dtend = end
+            else: 
+                event.dtend = end
+                event.dtstart = start
+            db.session.commit()
+            return (str(event.dtstart.timestamp()), str(event.dtend.timestamp()))
+        elif start is not None:
+            event.dtstart = start
+            db.session.commit()
+            return event.dtstart.strftime("%-H:%M")
+        elif end is not None:
+            event.dtend = end
+            db.session.commit()
+            return event.dtend.strftime("%-H:%M")
+        else:
+            return "Something went wrong!"
+    #new event
     elif (start is not None) and (end is not None):
-        event = Event('New Event', start, end, user)
+        print(request.form)
+        if evtype == "oral":
+            event = Oral(Stu.query.first(), 'New Oral', start, end, user)
+        else:
+            event = Event('New Event', start, end, user)
         db.session.add(event)
         db.session.commit()
-        return event.summmary
-    if userid is not None:
-        event.userid = userid
-        db.session.commit()
-        return event.user.name
-    if stuid is not None:
-        event.stu_id = stuid
-        db.session.commit()
-        return event.stu.name
-    elif summary is not None:
-        event.summary = summary
-        db.session.commit()
-        return event.summary
-    elif readers is not None:
-        readerobjs = [Prof.query.get(id) for id in readers]
-        event.readers = readerobjs
-        db.session.commit()
-        return str(event.readers)
-    elif location is not None:
-        event.location = location
-        db.session.commit()
-        return event.location
-    elif (start is not None) and (end is not None):
-        # need to update start and end in the right order so the validators don't freak out
-        if parser.parse(end) < event.dtstart:
-            event.dtstart = start
-            event.dtend = end
-        else: 
-            event.dtend = end
-            event.dtstart = start
-        db.session.commit()
-        return (str(event.dtstart.timestamp()), str(event.dtend.timestamp()))
-    elif start is not None:
-        event.dtstart = start
-        db.session.commit()
-        return event.dtstart.strftime("%-H:%M")
-    elif end is not None:
-        event.dtend = end
-        db.session.commit()
-        return event.dtend.strftime("%-H:%M")
-    else:
-        return "Something went wrong!"
+        return "Sucess!"
 
 
 @app.route('/deletevent', methods=['POST'])
