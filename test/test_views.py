@@ -34,8 +34,8 @@ class TestViews:
     
     @pytest.mark.usefixtures("setup_db")
     class Test_with_empty_db:
-        def test_schedule_works_with_empty_db(self):
-            rv = self.client.get('/')    
+        def test_schedule_works_with_empty_db(self, client):
+            rv = client.get('/')    
             #greater than 400 are error codes
             assert rv.status_code < 400
         
