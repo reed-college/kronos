@@ -202,11 +202,16 @@ $(document).ready(function() {
                             mouse: false,
                         },
                         //makes sure that the qtips don't go outside fullcalendar
-                        viewport: $('#calendar'),
+                viewport: $('#calendar'),
                     },
                     content: content,
                 });
             }
+        },
+        viewRender: function(view, element){
+            //makes it so the print page gets start and end times matching the calendar
+            $("#filter-start").attr("value", view.start.format("YYYY-MM-DD"));
+            $("#filter-end").attr("value", view.end.format("YYYY-MM-DD"));
         },
     });
 });
@@ -225,7 +230,6 @@ function updateQuery() {
     so that they reflect the filters
     */
     $('#calendar').fullCalendar( 'refetchEvents');
-    $('#print-link').attr('data', getFilters()); 
 }
 
 function addEvent(start, end, type) {

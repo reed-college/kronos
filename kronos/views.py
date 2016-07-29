@@ -209,7 +209,7 @@ def update_event():
     elif (start is not None) and (end is not None):
         print(request.form)
         if evtype == "oral":
-            event = Oral(None, 'New Oral', start, end, user)
+            event = Oral(Stu.query.first(), 'New Oral', start, end, user)
         else:
             event = Event('New Event', start, end, user)
         db.session.add(event)

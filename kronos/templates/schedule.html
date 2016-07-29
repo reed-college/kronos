@@ -79,6 +79,9 @@ var edit = {{ edit }};
         </div>
       </div>
     </div>
+    {# hidden formfields so print page gets date range from fullcalendar #}
+    <input id="filter-start" name="start"type="hidden"></input>
+    <input id="filter-end" name="end" type="hidden"></input>
     <div class="row">
       <div class='col-md-12'>
         <button id='print-button' formmethod='get' class="btn btn-default pull-right">Print</button>
