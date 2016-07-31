@@ -79,6 +79,9 @@ var edit = {{ edit }};
         </div>
       </div>
     </div>
+    {# hidden formfields so print page gets date range from fullcalendar #}
+    <input id="filter-start" name="start"type="hidden"></input>
+    <input id="filter-end" name="end" type="hidden"></input>
     <div class="row">
       <div class='col-md-12'>
         <button id='print-button' formmethod='get' class="btn btn-default pull-right">Print</button>
@@ -187,5 +190,12 @@ var edit = {{ edit }};
       <button class="hidden edit-delete-event btn btn-danger">Delete</button>
     </div>
   </div>
+</div>
+<div class="hidden" id="add-event-oral-qtip-template">
+  <div class="list-group">
+    <button id="new-event" type="button" class="list-group-item" onclick="addEvent({start},{end},'event');">New Event</button>
+    <button id="new-oral"  type="button" class="list-group-item" onclick="addEvent({start},{end},'oral');">New Oral</button>
+    <button id="cancel"    type="button" class="list-group-item" onclick="cancel();">Cancel</button>
+  </div>  
 </div>
 {% endblock %}
