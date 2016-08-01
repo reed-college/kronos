@@ -11,13 +11,10 @@ engine = create_engine('postgresql://Jiahui:pass@localhost/db_kronos')
 
 # Import CSV files
 
-# (Problem: For some reason dates will be saved as text when converted to CSV from Excel, 
-# hence they cannot be appended to the event table.)
+df_csv = pd.read_csv('/Users/Jiahui/kronos/kronos/csvdata.csv')
+df_csv.to_sql('event', engine, if_exists='append', index=False)
 
-# df_csv = pd.read_csv('/Users/Jiahui/kronos/kronos/csvdata.csv')
-# df_csv.to_sql('pandas', engine, if_exists='append')
-
-# assert df_csv.query('dtstart > dtend').empty
+assert df_csv.query('dtstart > dtend').empty
 
 
 # Import Excel files
