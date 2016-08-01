@@ -23,7 +23,7 @@ def populate_db():
     oral1.readers = [hovda]
     oral2 = Oral(richard, 'Oral_Richard', datetime.datetime(2016,5,2,15), datetime.datetime(2016,5,2,17), richard)
     oral2.readers = [hancock]
-    s16 = OralStartDay("Spring 2016", datetime.date(2016, 5,  2)) 
+    s16 = OralStartDay("Sprang 2016", datetime.date(2016, 5,  2)) 
     kronos.db.session.add(emma)
     kronos.db.session.add(richard)
     kronos.db.session.add(hovda)
