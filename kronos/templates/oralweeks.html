@@ -14,6 +14,7 @@
     {% for day in oralstarts %}
       <div class="row">
         <div class="form-group col-sm-4">
+          {# the double dashes in the names are there to differentiate between exisiting oralstarts being edited and new oralstarts that need to be added#}
           <input name="desc--{{day.id}}" class="form-control" type='text' placeholder="Name (ie Spring 2016)" value="{{day.description}}"></input>
         </div>
         <div class="form-group col-sm-4">
@@ -38,6 +39,7 @@
   </form>
   <div class='col-md-1'></div>
 </div>
+{# this row will be copied everytime the plus button is clicked#}
 <div id="copy-row" class="hidden">
   <div class="row">
     <div class="form-group col-sm-4">
