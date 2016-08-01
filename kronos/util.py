@@ -1,6 +1,7 @@
 from datetime import timedelta, datetime
 from .models import department, division, Event, Oral, Stu, Prof
 
+
 def FreeTimeCalc(events, orals):
     """
     the events and orals objects are tuples of datetimes where the first one
@@ -69,7 +70,7 @@ def GetOralTable(orals):
                         info = '<b>' + oral.stu.name + '</b><br>'
                         for reader in oral.readers:
                             info += reader.name + '<br>'
-                        for i in range(len(oral.readers)+1,5):
+                        for i in range(len(oral.readers) + 1, 5):
                             info += ordinalize(i) + " Reader: <br>"
                         if oral.location is not None:
                             info += oral.location
@@ -87,7 +88,7 @@ def GetOralTable(orals):
 
 def filter_events(eventobjs, args):
     """
-    Takes a dictionary of querystring arguments and an event query 
+    Takes a dictionary of querystring arguments and an event query
     and then filters it based on the args
     """
     # putting args into variables
@@ -100,7 +101,7 @@ def filter_events(eventobjs, args):
 
     # filtering by querystring args
     if ((profs != [] and profs != [''] and profs is not None) or
-       (stus != [] and stus != [''] and stus is not None)):
+            (stus != [] and stus != [''] and stus is not None)):
         # make the query empty
         eventobjs = eventobjs.except_(eventobjs)
     for profid in profs:
@@ -121,15 +122,15 @@ def filter_events(eventobjs, args):
         eventobjs = eventobjs.union(ora)
     if div in division:
         st = eventobjs.join(Oral).join(Oral.stu).\
-           join(Stu).filter(Stu.division == div)
+            join(Stu).filter(Stu.division == div)
         pf = eventobjs.join(Event.user).\
-           join(Prof).filter(Prof.division == div)
+            join(Prof).filter(Prof.division == div)
         eventobjs = st.union(pf)
     if dept in department:
         st = eventobjs.join(Oral).join(Oral.stu).\
-                join(Stu).filter(Stu.department == dept)
+            join(Stu).filter(Stu.department == dept)
         pf = eventobjs.join(Event.user).\
-                join(Prof).filter(Prof.department == dept)
+            join(Prof).filter(Prof.department == dept)
         eventobjs = st.union(pf)
     if start is not None:
         eventobjs = eventobjs.filter(Event.dtend >= start)
@@ -139,8 +140,9 @@ def filter_events(eventobjs, args):
     return eventobjs
 
 
-"""    
-I stole this function from here: 
-http://codegolf.stackexchange.com/a/74047
-"""
-ordinalize = lambda n:str(n)+'tsnrhtdd'[n%5*(n%100^15>4>n%10)::4]
+def ordinalize(n):
+    """
+    I stole this function from here:
+    http://codegolf.stackexchange.com/a/74047
+    """
+    return str(n) + 'tsnrhtdd'[n % 5 * (n % 100 ^ 15 > 4 > n % 10)::4]
