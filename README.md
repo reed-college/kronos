@@ -29,3 +29,13 @@ This is exactly how I set my db, you don't need to follow it exactly for it to w
 * If you followed this guide exactly and used the default postgres port, the full URI would be, `postgresql+psycopg2://kronos_dev_user:password@localhost:5432/kronos_dev`
 * You also should make a test database and enter its URI under `TestConfig` in `config.py`
   * if you type `CREATE DATABASE kronos_test WITH OWNER kronos_dev_user;` into psql, then the URI should be `postgresql+psycopg2://kronos_dev_user:password@localhost:5432/kronos_test`, assuming you did everything else in this guide the same
+
+## Migrations
+After making any changes to  `models.py` you must:
+ * run `python manage.py db migrate`
+ * run `python manage.py db upgrade`
+ * add the new migrations to source control (`git add -A` should do  it)
+ * push changes to master soon after so that everyone else can get these changes before they change the models as well
+
+After pulling someone elses new migrations:
+ * run `python manage.py db upgrade`
