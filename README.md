@@ -31,6 +31,10 @@ This is exactly how I set my db, you don't need to follow it exactly for it to w
   * if you type `CREATE DATABASE kronos_test WITH OWNER kronos_dev_user;` into psql, then the URI should be `postgresql+psycopg2://kronos_dev_user:password@localhost:5432/kronos_test`, assuming you did everything else in this guide the same
 
 ## Migrations
+First time setup:
+ * Start with empty db
+ * run `python manage.py db upgrade`
+
 After making any changes to  `models.py` you must:
  * run `python manage.py db migrate`
  * run `python manage.py db upgrade`
