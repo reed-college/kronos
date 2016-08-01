@@ -31,6 +31,10 @@ class TestViews:
         def test_print_schedule_shows_at_least_one_oral(self, client):
             rv = client.get('/print')
             assert 'Emma' in str(rv.data)         
+
+        def test_oral_weeks_has_oral_week(self, client):
+            rv = client.get('/oralweeks')
+            assert 'Sprang 2016' in str(rv.data)         
     
     @pytest.mark.usefixtures("setup_db")
     class Test_with_empty_db:
@@ -51,3 +55,12 @@ class TestViews:
             rv = client.get('/print')
             assert rv.status_code == 200         
 
+        def test_oral_weeks_does_not_have_oral_week(self, client):
+            rv = client.get('/oralweeks')
+            assert 'Sprang 2016' not in str(rv.data)         
+
+        def test_add_oral_week(self, client):
+            name = 'the limit of characters for this field is 50'
+            client.post('/oralweeks',data={'desc-1': name, 'date-1':'2017-05-01'})
+            rv = client.get('/oralweeks')
+            assert name in str(rv.data)

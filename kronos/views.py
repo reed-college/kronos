@@ -56,6 +56,8 @@ def edit_start_days():
     knows what week to go to for orals week
     """
     if request.method == 'POST':
+        print(request.form)
+        # editing existing oral days
         for day in OralStartDay.query.all():
             desc = request.form.get("desc--" + str(day.id))
             date = request.form.get("date--" + str(day.id))
@@ -63,17 +65,19 @@ def edit_start_days():
             if desc is not None and date is not None:
                 day.description = desc
                 day.start = date
-            elif remove is "True":
-                db.session.remove(day)
-        i = 0
+            elif remove == "True":
+                print(remove)
+                db.session.delete(day)
+        # adding new oral days
+        i = 1
         desc = request.form.get("desc-"+str(i))
         date = request.form.get("date-"+str(i))
         while desc is not None and desc is not "" and date is not None and date is not "":
-            desc = request.form.get("desc-"+str(i))
-            date = request.form.get("date-"+str(i))
             day = OralStartDay(desc, date)
             db.session.add(day)
             i += 1
+            desc = request.form.get("desc-"+str(i))
+            date = request.form.get("date-"+str(i))
         db.session.commit()
         return redirect('/oralweeks')
     else:
