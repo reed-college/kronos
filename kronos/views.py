@@ -23,11 +23,14 @@ def schedule():
     if startdayid is not None:
         startday = OralStartDay.query.get(startdayid).start 
     else:
-        startday = OralStartDay.query.\
+        startoralday = OralStartDay.query.\
                    filter(OralStartDay.start >= 
                           (datetime.date.today() - 
                            datetime.timedelta(days=7))).\
-                   order_by(OralStartDay.start).first().start
+                   order_by(OralStartDay.start).first()
+        if startoralday is None:
+            startoralday = OralStartDay.query.order_by(OralStartDay.start).first()
+        startday = startoralday.start
 
     students = Stu.query.all()
     professors = Prof.query.all()

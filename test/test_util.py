@@ -2,7 +2,9 @@ from random import randint
 import datetime
 from dateutil import parser
 from kronos import util
-from kronos.models import Oral, Stu, Prof
+from kronos.models import Oral, Stu, Prof, Event
+from werkzeug.datastructures import ImmutableMultiDict
+import pytest
 
 class TestUtil:
     def test_FreeTimeCalc(self):
@@ -70,9 +72,15 @@ class TestUtil:
                     # making sure the oral is below its timeslot's header
                     assert oral2col == i
 
+    @pytest.mark.usefixtures("setup_db", "populate_db")
+    class TestFilterEvents():
 
-
-
-
+        def test_filter_professor(self, db):
+            adcockid = Stu.query.filter(Stu.username == 'adcockr').first().id
+            oral2 = Oral.query.filter(Oral.stu_id == adcockid).first()
+            hovdaid = Prof.query.filter(Prof.username == 'hovdap').first().id
+            args = ImmutableMultiDict({'professors[]': [hovdaid]})
+            events = util.filter_events(Event.query, args)
+            assert oral2 not in events.all()
 
 

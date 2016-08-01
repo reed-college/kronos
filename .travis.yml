@@ -11,4 +11,4 @@ before_script:
   # Need to include host:port so it doesn't replace the port in 'import'
   - cp kronos/config.py.template kronos/config.py
   - psql -c 'CREATE DATABASE kronos_test;' -U postgres
-script: py.test
+script: py.test --random
