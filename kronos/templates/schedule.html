@@ -5,10 +5,10 @@
 {{super()}} {# gets bootstrap styles #}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-<link rel="stylesheet" href="{{url_for('.static', filename='schedule.css')}}">
-<link rel="stylesheet" href="{{url_for('.static', filename='fullcalendar.min.css')}}" >
-<link rel="stylesheet" href="{{url_for('.static', filename='fullcalendar.print.css')}}" media='print' >
-<link rel="stylesheet" href="{{url_for('.static', filename='jquery.qtip.min.css')}}" >
+<link rel="stylesheet" href="{{url_for('static', filename='css/schedule.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/fullcalendar.min.css')}}" >
+<link rel="stylesheet" href="{{url_for('static', filename='css/fullcalendar.print.css')}}" media='print' >
+<link rel="stylesheet" href="{{url_for('static', filename='css/jquery.qtip.min.css')}}" >
 {% endblock %}
 
 {% block scripts %}
@@ -18,13 +18,13 @@
 var startday = "{{startday.strftime('%Y-%m-%d')}}";
 var edit = {{ edit }};
 </script>
-<script src="{{url_for('.static', filename='moment.min.js')}}"></script>
-<script src="{{url_for('.static', filename='fullcalendar.min.js')}}" ></script>
+<script src="{{url_for('static', filename='js/moment.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/fullcalendar.min.js')}}" ></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-<script src="{{url_for('.static', filename='jquery.jeditable.mini.js')}}" ></script>
-<script src="{{url_for('.static', filename='jquery.qtip.min.js')}}" ></script>
-<script src="{{url_for('.static', filename='jquery.jeditable.time.js')}}" ></script>
-<script src="{{url_for('.static', filename='schedule.js')}}"></script>
+<script src="{{url_for('static', filename='js/jquery.jeditable.mini.js')}}" ></script>
+<script src="{{url_for('static', filename='js/jquery.qtip.min.js')}}" ></script>
+<script src="{{url_for('static', filename='js/jquery.jeditable.time.js')}}" ></script>
+<script src="{{url_for('static', filename='js/schedule.js')}}"></script>
 {% endblock %}
 
 {% block content %}
