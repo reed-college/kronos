@@ -114,6 +114,12 @@ def print_schedule():
     return render_template('printsched.html', oraltable=oraltable,
                            division=div, department=dept, time=time)
 
+@app.route('/search')
+def search():
+    """
+    allows you to search for what poffessors are free at a given time
+    """
+    return "hi"
 
 @app.route('/eventsjson')
 def get_events_json():

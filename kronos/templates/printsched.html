@@ -1,4 +1,5 @@
-{% extends "bootstrap/base.html" %}
+{% extends "base.html" %}
+{% block title %}Print{% endblock %}
 {% block styles %}
 {{ super() }}
 <link rel="stylesheet" href="{{url_for('.static', filename='css/printsched.css')}}">
