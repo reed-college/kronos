@@ -9,27 +9,29 @@ from apiclient import discovery
 from oauth2client import client
 
 from kronos import app, db, util
-from .models import department, division, Oral, Stu, Prof, Event, User, OralStartDay
+from .models import department, division, Oral, Stu
+from .models import Prof, Event, User, OralStartDay
 
 
 @app.route('/')
 def schedule():
 
     startdays = OralStartDay.query.all()
-    if startdays  == []:
+    if startdays == []:
         return redirect('/oralweeks')
 
     startdayid = request.args.get("startday") or None
     if startdayid is not None:
-        startday = OralStartDay.query.get(startdayid).start 
+        startday = OralStartDay.query.get(startdayid).start
     else:
         startoralday = OralStartDay.query.\
-                   filter(OralStartDay.start >= 
-                          (datetime.date.today() - 
-                           datetime.timedelta(days=7))).\
-                   order_by(OralStartDay.start).first()
+            filter(OralStartDay.start >=
+                   (datetime.date.today() -
+                    datetime.timedelta(days=7))).\
+            order_by(OralStartDay.start).first()
         if startoralday is None:
-            startoralday = OralStartDay.query.order_by(OralStartDay.start).first()
+            startoralday = OralStartDay.query.order_by(
+                OralStartDay.start).first()
         startday = startoralday.start
 
     students = Stu.query.all()
@@ -37,11 +39,11 @@ def schedule():
     # TODO when we're gonna need each POST request from fullcalendar/jeditable
     # to be validated through ldap, because leaving it up to a javascript
     # variable is super insercure.
-    # But we'll have to wait until someone gets around to helping us set up ldap
-    # to do that.
+    # But we'll have to wait until someone gets around to helping us set up
+    # ldap to do that.
     # and also hopefully the javascript variable will get set by ldap
     # authentication and not a querysting
-    edit = request.args.get("edit") or "false" 
+    edit = request.args.get("edit") or "false"
 
     return render_template(
         "schedule.html", department=department, division=division,
@@ -61,7 +63,7 @@ def edit_start_days():
         for day in OralStartDay.query.all():
             desc = request.form.get("desc--" + str(day.id))
             date = request.form.get("date--" + str(day.id))
-            remove = request.form.get("remove--" + str(day.id)) 
+            remove = request.form.get("remove--" + str(day.id))
             if desc is not None and date is not None:
                 day.description = desc
                 day.start = date
@@ -70,20 +72,22 @@ def edit_start_days():
                 db.session.delete(day)
         # adding new oral days
         i = 1
-        desc = request.form.get("desc-"+str(i))
-        date = request.form.get("date-"+str(i))
-        while desc is not None and desc is not "" and date is not None and date is not "":
+        desc = request.form.get("desc-" + str(i))
+        date = request.form.get("date-" + str(i))
+        while (desc is not None and desc is not "" and
+               date is not None and date is not ""):
             day = OralStartDay(desc, date)
             db.session.add(day)
             i += 1
-            desc = request.form.get("desc-"+str(i))
-            date = request.form.get("date-"+str(i))
+            desc = request.form.get("desc-" + str(i))
+            date = request.form.get("date-" + str(i))
         db.session.commit()
         return redirect('/oralweeks')
     else:
         oralstarts = OralStartDay.query.order_by(OralStartDay.start).all()
         return render_template("oralweeks.html", oralstarts=oralstarts)
- 
+
+
 @app.route('/print')
 def print_schedule():
     """
@@ -107,8 +111,9 @@ def print_schedule():
         time = semester + ' ' + str(year)
     else:
         time = ''
-    return render_template('printsched.html', oraltable=oraltable, 
+    return render_template('printsched.html', oraltable=oraltable,
                            division=div, department=dept, time=time)
+
 
 @app.route('/eventsjson')
 def get_events_json():
@@ -121,21 +126,21 @@ def get_events_json():
     events = []
     for event in eventobjs:
         evjson = {
-        "id": event.id,
-        "title": event.summary,
-        "start": str(event.dtstart),
-        "end": str(event.dtend),
-        "type": event.discriminator,
-        "user": event.user.name,
-        "student": "",
-        "readers": [],
-        "location": event.location,
+            "id": event.id,
+            "title": event.summary,
+            "start": str(event.dtstart),
+            "end": str(event.dtend),
+            "type": event.discriminator,
+            "user": event.user.name,
+            "student": "",
+            "readers": [],
+            "location": event.location,
         }
-        if type(event) is Oral:
+        if isinstance(event, Oral):
             evjson["readers"] = [reader.name for reader in event.readers]
             evjson["student"] = event.stu.name
         events.append(evjson)
-        
+
     return json.dumps(events)
 
 
@@ -146,7 +151,7 @@ def get_users_json():
     """
     usrtype = request.args.get("type") or ""
     usrqury = User.query.filter(User.discriminator.contains(usrtype))
-    users = {usr.id : usr.name for usr in usrqury} 
+    users = {usr.id: usr.name for usr in usrqury}
     return json.dumps(users)
 
 
@@ -167,7 +172,7 @@ def update_event():
     evtype = request.form.get("type") or None
     # TODO: get current user from ldap
     user = User.query.first()
-    #if we're updating a current event
+    # if we're updating a current event
     if eventid is not None:
         event = Event.query.get_or_404(eventid)
 
@@ -193,15 +198,17 @@ def update_event():
             db.session.commit()
             return event.location
         elif (start is not None) and (end is not None):
-            # need to update start and end in the right order so the validators don't freak out
+            # need to update start and end in the right order so the validators
+            # don't freak out
             if parser.parse(end) < event.dtstart:
                 event.dtstart = start
                 event.dtend = end
-            else: 
+            else:
                 event.dtend = end
                 event.dtstart = start
             db.session.commit()
-            return (str(event.dtstart.timestamp()), str(event.dtend.timestamp()))
+            return (str(event.dtstart.timestamp()),
+                    str(event.dtend.timestamp()))
         elif start is not None:
             event.dtstart = start
             db.session.commit()
@@ -212,7 +219,7 @@ def update_event():
             return event.dtend.strftime("%-H:%M")
         else:
             return "Something went wrong!"
-    #new event
+    # new event
     elif (start is not None) and (end is not None):
         print(request.form)
         if evtype == "oral":
@@ -233,7 +240,7 @@ def delete_event():
     db.session.delete(event)
     db.session.commit()
     return "Event '" + name + "' deleted"
-     
+
 
 @app.route('/gcal')
 def get_gcal():
