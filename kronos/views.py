@@ -76,7 +76,11 @@ def edit_start_days():
     else:
         oralstarts = OralStartDay.query.order_by(OralStartDay.start).all()
         return render_template("oralweeks.html", oralstarts=oralstarts)
- 
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    return render_template("upload.html")
+
 @app.route('/print')
 def print_schedule():
     """
