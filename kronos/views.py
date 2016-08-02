@@ -21,11 +21,11 @@ def schedule():
 
     startdayid = request.args.get("startday") or None
     if startdayid is not None:
-        startday = OralStartDay.query.get(startdayid).start 
+        startday = OralStartDay.query.get(startdayid).start
     else:
         startday = OralStartDay.query.\
-                   filter(OralStartDay.start >= 
-                          (datetime.date.today() - 
+                   filter(OralStartDay.start >=
+                          (datetime.date.today() -
                            datetime.timedelta(days=7))).\
                    order_by(OralStartDay.start).first().start
 
@@ -38,7 +38,7 @@ def schedule():
     # to do that.
     # and also hopefully the javascript variable will get set by ldap
     # authentication and not a querysting
-    edit = request.args.get("edit") or "false" 
+    edit = request.args.get("edit") or "false"
 
     return render_template(
         "schedule.html", department=department, division=division,
@@ -56,7 +56,7 @@ def edit_start_days():
         for day in OralStartDay.query.all():
             desc = request.form.get("desc--" + str(day.id))
             date = request.form.get("date--" + str(day.id))
-            remove = request.form.get("remove--" + str(day.id)) 
+            remove = request.form.get("remove--" + str(day.id))
             if desc is not None and date is not None:
                 day.description = desc
                 day.start = date
@@ -104,7 +104,7 @@ def print_schedule():
         time = semester + ' ' + str(year)
     else:
         time = ''
-    return render_template('printsched.html', oraltable=oraltable, 
+    return render_template('printsched.html', oraltable=oraltable,
                            division=div, department=dept, time=time)
 
 @app.route('/eventsjson')
@@ -132,7 +132,7 @@ def get_events_json():
             evjson["readers"] = [reader.name for reader in event.readers]
             evjson["student"] = event.stu.name
         events.append(evjson)
-        
+
     return json.dumps(events)
 
 
@@ -143,7 +143,7 @@ def get_users_json():
     """
     usrtype = request.args.get("type") or ""
     usrqury = User.query.filter(User.discriminator.contains(usrtype))
-    users = {usr.id : usr.name for usr in usrqury} 
+    users = {usr.id : usr.name for usr in usrqury}
     return json.dumps(users)
 
 
@@ -194,7 +194,7 @@ def update_event():
             if parser.parse(end) < event.dtstart:
                 event.dtstart = start
                 event.dtend = end
-            else: 
+            else:
                 event.dtend = end
                 event.dtstart = start
             db.session.commit()
@@ -230,7 +230,7 @@ def delete_event():
     db.session.delete(event)
     db.session.commit()
     return "Event '" + name + "' deleted"
-     
+
 
 @app.route('/gcal')
 def get_gcal():
