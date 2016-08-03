@@ -1,5 +1,5 @@
 {% extends "bootstrap/base.html" %}
-
+{% block title %}Upload{% endblock %}
 {% block scripts %}
 {{super()}}
 <script src="{{url_for('.static', filename='upload.js')}}"></script>
@@ -7,16 +7,16 @@
 
 {% block content %}
 <body>
-
-  <h2>Calendar Upload</h2>
-  <form>
-    Choose file to upload.
-    Kronos can import files with extension .xls, .xlsx, .csv or .ics.
-    <input type="file" id="file" accept=".xls, application/vnd.ms-excel, .xlsx,
-    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .ics"
-    onchange="checkfile(this);" />
-    <input type="submit" name="submit" value="Submit">
-  </form>
-
+  <div class="container">
+    <h2>Upload Calendar</h2>
+    <form action="" method=post enctype="multipart/form-data">
+      <p>Choose file to upload.
+      <p>Kronos can import files with extension .xls, .xlsx, .csv or .ics.
+      <p><input type="file" id="file" accept=".xls, application/vnd.ms-excel, .xlsx,
+      application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .ics"
+      onchange="checkfile(this);" />
+      <p><input type="submit" name="submit" value="Submit">
+    </form>
+  </div>
 </body>
 {% endblock %}
