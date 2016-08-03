@@ -1,12 +1,14 @@
+import os
 import json
 import datetime
 from dateutil import parser
 import flask
 import httplib2
 
-from flask import render_template, request, redirect
+from flask import Flask, flash, render_template, request, redirect, url_for, send_from_directory
 from apiclient import discovery
 from oauth2client import client
+from werkzeug.utils import secure_filename
 
 from kronos import app, db, util
 from .models import department, division, Oral, Stu, Prof, Event, User, OralStartDay
@@ -77,9 +79,42 @@ def edit_start_days():
         oralstarts = OralStartDay.query.order_by(OralStartDay.start).all()
         return render_template("oralweeks.html", oralstarts=oralstarts)
 
+# Copied almost entirely from:
+# http://flask.pocoo.org/docs/0.10/patterns/fileuploads/
+
+UPLOAD_FOLDER = '../kronos/uploads' # path to the uploads
+ALLOWED_EXTENSIONS = set(['ics', 'xls', 'xlsx', 'csv'])
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('upload_file',
+                                    filename=filename))
     return render_template("upload.html")
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+                               filename)
 
 @app.route('/print')
 def print_schedule():
