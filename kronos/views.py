@@ -82,7 +82,7 @@ def edit_start_days():
 # Copied almost entirely from:
 # http://flask.pocoo.org/docs/0.10/patterns/fileuploads/
 
-UPLOAD_FOLDER = '../kronos/uploads' # path to the uploads
+UPLOAD_FOLDER = '/Users/Jiahui/kronos/uploads'
 ALLOWED_EXTENSIONS = set(['ics', 'xls', 'xlsx', 'csv'])
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
