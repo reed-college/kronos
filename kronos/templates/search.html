@@ -1,12 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Search {% endblock %}
+{% block title %}Search{% endblock %}
 {% block content %}
 <div class="container">
   <h4>Search for Professors</h4>
-  <form class="form-inline" method="POST">
+  <form class="form-inline" method="GET">
     <div class="form-group">
-      
+      <label for="start">Start</label>
+      <input type="datetime-local" class="form-control" id="start" name="start">
     </div>
+    <div class="form-group">
+      <label for="end">Start</label>
+      <input type="datetime-local" class="form-control" id="end" name="end">
+    </div>
+    <button type="submit" class="btn btn-default">Go!</button>
   </form>
 </div>
 {% endblock %}

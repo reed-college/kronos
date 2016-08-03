@@ -1,5 +1,5 @@
 import json
-import datetime
+import datetime as dt
 from dateutil import parser
 import flask
 import httplib2
@@ -26,8 +26,8 @@ def schedule():
     else:
         startoralday = OralStartDay.query.\
             filter(OralStartDay.start >=
-                   (datetime.date.today() -
-                    datetime.timedelta(days=7))).\
+                   (dt.date.today() -
+                    dt.timedelta(days=7))).\
             order_by(OralStartDay.start).first()
         if startoralday is None:
             startoralday = OralStartDay.query.order_by(
@@ -119,6 +119,15 @@ def search():
     """
     allows you to search for what poffessors are free at a given time
     """
+    startstr = request.args.get("start")
+    endstr = request.args.get("end")
+    if startstr is not None:
+        start = dt.datetime.strptime(startstr,"%Y-%m-%dT%H:%M")
+        end = dt.datetime.strptime(endstr,"%Y-%m-%dT%H:%M")
+    else:
+        start = None
+        end = None
+    print(start)
     return render_template("search.html")
 
 @app.route('/eventsjson')
@@ -263,8 +272,8 @@ def get_gcal():
         http_auth = credentials.authorize(httplib2.Http())
         service = discovery.build('calendar', 'v3', http=http_auth)
         # 'Z' indicates UTC time
-        oralsweekstart = datetime.datetime(2017, 5, 1).isoformat() + 'Z'
-        oralsweekend = datetime.datetime(2017, 5, 6).isoformat() + 'Z'
+        oralsweekstart = dt.datetime(2017, 5, 1).isoformat() + 'Z'
+        oralsweekend = dt.datetime(2017, 5, 6).isoformat() + 'Z'
 
         print('Getting events during orals week')
         eventsResult = service.events().list(
