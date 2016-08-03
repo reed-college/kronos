@@ -119,7 +119,7 @@ def search():
     """
     allows you to search for what poffessors are free at a given time
     """
-    return "hi"
+    return render_template("search.html")
 
 @app.route('/eventsjson')
 def get_events_json():
