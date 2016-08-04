@@ -82,7 +82,7 @@ def edit_start_days():
 # Copied almost entirely from:
 # http://flask.pocoo.org/docs/0.10/patterns/fileuploads/
 
-UPLOAD_FOLDER = '/Users/Jiahui/kronos/uploads'
+UPLOAD_FOLDER = '/Users/Jiahui/kronos/kronos/static/uploads'
 ALLOWED_EXTENSIONS = set(['ics', 'xls', 'xlsx', 'csv'])
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -99,6 +99,7 @@ def upload_file():
             flash('No file part')
             return redirect(request.url)
         file = request.files['file']
+        data = request.files['file'].read()
         # if user does not select file, browser also
         # submit a empty part without filename
         if file.filename == '':
