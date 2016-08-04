@@ -117,31 +117,26 @@ def print_schedule():
 @app.route('/search')
 def search():
     """
-    allows you to search for what poffessors are free at a given time
+    allows you to search for what pofessors are free at a given time
     """
     startstr = request.args.get("start")
     endstr = request.args.get("end")
+    stuid = request.args.get("student")
     if startstr is not None and endstr is not None:
         start = dt.datetime.strptime(startstr,"%Y-%m-%dT%H:%M")
         end = dt.datetime.strptime(endstr,"%Y-%m-%dT%H:%M")
-        overlaps = [event for event in Event.query
-                if util.overlap(event.dtstart, event.dtend, start, end)
-                ]
-        # profs who are on an orals board at the given time
-        readers = {reader.id for oral in overlaps 
-               if oral.discriminator == "oral" for reader in oral.readers}
-
-        # profs who have another event at the given time
-        eventprofs = {event.user.id for event in overlaps 
-                  if event.discriminator == "event" and 
-                     event.user.discriminator == "professor"}
-        # combines the two sets of profs
-        busyprofs = readers | eventprofs
-        # getting every prof who isn't busy at the current time
-        profs = Prof.query.filter(*[Prof.id != profid for profid in busyprofs]).all()
+        profs = util.free_professors(start, end)
+    elif stuid is not None:
+        oral = Oral.query.filter(Oral.stu_id == stuid).first()
+        start = oral.dtstart
+        end = oral.dtend
+        profs = util.free_professors(start,end)
     else:
+        start = None
+        end = None
         profs = []
-    return render_template("search.html", profs=profs)
+    return render_template("search.html", profs=profs, start=startstr,
+           end=endstr, students=Stu.query.all())
 
 @app.route('/eventsjson')
 def get_events_json():

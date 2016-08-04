@@ -3,17 +3,32 @@
 {% block content %}
 <div class="container">
   <h4>Search for Professors</h4>
-  <form class="form-inline" method="GET">
-    <div class="form-group">
-      <label for="start">Start</label>
-      <input type="datetime-local" class="form-control" id="start" name="start">
-    </div>
-    <div class="form-group">
-      <label for="end">Start</label>
-      <input type="datetime-local" class="form-control" id="end" name="end">
-    </div>
-    <button type="submit" class="btn btn-default">Go!</button>
-  </form>
+  <div class="row">
+    <form class="form-inline col-md-12" method="GET">
+      <div class="form-group">
+        <label for="start">Start</label>
+        <input type="datetime-local" class="form-control" id="start" name="start" {% if start %} value="{{start}}" {% endif %}>
+      </div>
+      <div class="form-group">
+        <label for="end">End</label>
+        <input type="datetime-local" class="form-control" id="end" name="end" {% if end %} value="{{end}}" {% endif %}>
+      </div>
+      <button type="submit" class="btn btn-default">Go!</button>
+    </form>
+  </div>
+  <div class="row">
+    <form class="form-inline col-md-12" method="GET">
+      <div class="form-group">
+        <label for="start">Seach by student's oral times</label>
+        <select class="form-control" id="student" name="student">
+          {% for student in students %}
+            <option value={{student.id}}>{{student.name}}</option>
+          {% endfor %} 
+        </select>
+      </div>
+      <button type="submit" class="btn btn-default">Go!</button>
+    </form>
+  </div>
   {% if profs != [] %}
     <h4>Professors available:</h4>
     <p>

@@ -147,6 +147,7 @@ def ordinalize(n):
     """
     return str(n) + 'tsnrhtdd'[n % 5 * (n % 100 ^ 15 > 4 > n % 10)::4]
 
+
 def overlap(start1, end1, start2, end2):
     """
     takes 4 datetimes of the starts and ends of 2 events and returns 
@@ -157,3 +158,26 @@ def overlap(start1, end1, start2, end2):
     return ((start1 > start2 and start1 <= end2) or
             (end1 > start2 and end1 <= end2) or
             (start1 <= start2 and end1 >= end2))
+
+
+def free_professors(start, end):
+    """
+    takes a time range and returns what professors are free during that time
+    """
+    overlaps = [event for event in Event.query
+            if overlap(event.dtstart, event.dtend, start, end)
+            ]
+    # profs who are on an orals board at the given time
+    readers = {reader.id for oral in overlaps 
+           if oral.discriminator == "oral" for reader in oral.readers}
+
+    # profs who have another event at the given time
+    eventprofs = {event.user.id for event in overlaps 
+              if event.discriminator == "event" and 
+                 event.user.discriminator == "professor"}
+    # combines the two sets of profs
+    busyprofs = readers | eventprofs
+    # getting every prof who isn't busy at the current time
+    return Prof.query.filter(*[Prof.id != profid for profid in busyprofs]).\
+            order_by(Prof.name).all()
+
