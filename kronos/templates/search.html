@@ -14,5 +14,13 @@
     </div>
     <button type="submit" class="btn btn-default">Go!</button>
   </form>
+  {% if profs != [] %}
+    <h4>Professors available:</h4>
+    <p>
+      {% for prof in profs %}
+        {{prof.name}}<br>
+      {% endfor %}
+    </p>
+  {% endif %}
 </div>
 {% endblock %}

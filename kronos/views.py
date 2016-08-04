@@ -124,9 +124,15 @@ def search():
     if startstr is not None and endstr is not None:
         start = dt.datetime.strptime(startstr,"%Y-%m-%dT%H:%M")
         end = dt.datetime.strptime(endstr,"%Y-%m-%dT%H:%M")
-        overlaps = Oral.query.\
-           filter((Oral.dtstart < start) and (Oral.dtend > end))
-        print(overlaps.all()) 
+        overlaps = [oral for oral in Oral.query
+                if util.overlap(oral.dtstart, oral.dtend, start, end)
+                ]
+        readers = [reader.id for oral in overlaps for reader in oral.readers]
+        print(readers)
+        profs = Prof.query.filter(*[Prof.id != rid for rid in readers]).all()
+        print(profs) 
+        print(13 not in readers)
+        print(type(profs[0].id), type(readers[0]))
     else:
         profs = []
     return render_template("search.html", profs=profs)
