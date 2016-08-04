@@ -146,3 +146,14 @@ def ordinalize(n):
     http://codegolf.stackexchange.com/a/74047
     """
     return str(n) + 'tsnrhtdd'[n % 5 * (n % 100 ^ 15 > 4 > n % 10)::4]
+
+def overlap(start1, end1, start2, end2):
+    """
+    takes 4 datetimes of the starts and ends of 2 events and returns 
+    whether or not they overlap
+    """
+    # assert start1 <= end1
+    # assert start2 <= end2
+    return ((start1 > start2 and start1 <= end2) or
+            (end1 > start2 and end1 <= end2) or
+            (start1 <= start2 and end1 >= end2))

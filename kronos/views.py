@@ -121,14 +121,15 @@ def search():
     """
     startstr = request.args.get("start")
     endstr = request.args.get("end")
-    if startstr is not None:
+    if startstr is not None and endstr is not None:
         start = dt.datetime.strptime(startstr,"%Y-%m-%dT%H:%M")
         end = dt.datetime.strptime(endstr,"%Y-%m-%dT%H:%M")
+        overlaps = Oral.query.\
+           filter((Oral.dtstart < start) and (Oral.dtend > end))
+        print(overlaps.all()) 
     else:
-        start = None
-        end = None
-    print(start)
-    return render_template("search.html")
+        profs = []
+    return render_template("search.html", profs=profs)
 
 @app.route('/eventsjson')
 def get_events_json():
