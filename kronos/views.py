@@ -124,15 +124,21 @@ def search():
     if startstr is not None and endstr is not None:
         start = dt.datetime.strptime(startstr,"%Y-%m-%dT%H:%M")
         end = dt.datetime.strptime(endstr,"%Y-%m-%dT%H:%M")
-        overlaps = [oral for oral in Oral.query
-                if util.overlap(oral.dtstart, oral.dtend, start, end)
+        overlaps = [event for event in Event.query
+                if util.overlap(event.dtstart, event.dtend, start, end)
                 ]
-        readers = [reader.id for oral in overlaps for reader in oral.readers]
-        print(readers)
-        profs = Prof.query.filter(*[Prof.id != rid for rid in readers]).all()
-        print(profs) 
-        print(13 not in readers)
-        print(type(profs[0].id), type(readers[0]))
+        # profs who are on an orals board at the given time
+        readers = {reader.id for oral in overlaps 
+               if oral.discriminator == "oral" for reader in oral.readers}
+
+        # profs who have another event at the given time
+        eventprofs = {event.user.id for event in overlaps 
+                  if event.discriminator == "event" and 
+                     event.user.discriminator == "professor"}
+        # combines the two sets of profs
+        busyprofs = readers | eventprofs
+        # getting every prof who isn't busy at the current time
+        profs = Prof.query.filter(*[Prof.id != profid for profid in busyprofs]).all()
     else:
         profs = []
     return render_template("search.html", profs=profs)

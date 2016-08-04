@@ -96,7 +96,8 @@ class Event(db.Model):
     private = db.Column(db.Boolean)
     location = db.Column(db.String(50))
     discriminator = db.Column('type', db.String(10))
-    __mapper_args__ = {'polymorphic_on': discriminator}
+    __mapper_args__ = {'polymorphic_on': discriminator,
+                       'polymorphic_identity': 'event'}
     __table_args__ = (
         CheckConstraint('dtstart <= dtend'),
     )
