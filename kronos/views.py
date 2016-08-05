@@ -131,6 +131,8 @@ def search():
         start = oral.dtstart
         end = oral.dtend
         profs = util.free_professors(start,end)
+        startstr = oral.dtstart.strftime("%Y-%m-%dT%H:%M")
+        endstr = oral.dtend.strftime("%Y-%m-%dT%H:%M")
     else:
         start = None
         end = None

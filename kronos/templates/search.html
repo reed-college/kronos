@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% block title %}Search{% endblock %}
 {% block content %}
+{{super()}}
 <div class="container">
   <h4>Search for Professors</h4>
-  <div class="row">
-    <form class="form-inline col-md-12" method="GET">
+  <form class="form-inline row" method="GET">
+    <div class="col-md-7">
       <div class="form-group">
         <label for="start">Start</label>
         <input type="datetime-local" class="form-control" id="start" name="start" {% if start %} value="{{start}}" {% endif %}>
@@ -13,22 +14,24 @@
         <label for="end">End</label>
         <input type="datetime-local" class="form-control" id="end" name="end" {% if end %} value="{{end}}" {% endif %}>
       </div>
+    </div> 
+    <div class="col-md-1">
       <button type="submit" class="btn btn-default">Go!</button>
-    </form>
-  </div>
-  <div class="row">
-    <form class="form-inline col-md-12" method="GET">
-      <div class="form-group">
-        <label for="start">Seach by student's oral times</label>
-        <select class="form-control" id="student" name="student">
-          {% for student in students %}
-            <option value={{student.id}}>{{student.name}}</option>
-          {% endfor %} 
-        </select>
-      </div>
+    </div>
+  </form>
+  <form class="form-inline row" method="GET">
+    <div class="form-group col-md-7">
+      <label for="start">Seach by student's oral times</label>
+      <select class="form-control" id="student" name="student">
+        {% for student in students %}
+          <option value={{student.id}}>{{student.name}}</option>
+        {% endfor %} 
+      </select>
+    </div>
+    <div class="col-md-1">
       <button type="submit" class="btn btn-default">Go!</button>
-    </form>
-  </div>
+    </div>
+  </form>
   {% if profs != [] %}
     <h4>Professors available:</h4>
     <p>

@@ -27,6 +27,7 @@ var edit = {{ edit }};
 {% endblock %}
 
 {% block content %}
+{{super()}}
 <div class="well hidden-print" id="filter-well">
   {# This form sends the fields as a querystring to /print so that the schedule is filtered #}
   <form action="{{ url_for('print_schedule') }}">
