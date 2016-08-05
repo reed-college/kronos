@@ -3,42 +3,51 @@
 {% block content %}
 {{super()}}
 <div class="container">
-  <h4>Search for Professors</h4>
-  <form class="form-inline row" method="GET">
-    <div class="col-md-7">
-      <div class="form-group">
-        <label for="start">Start</label>
-        <input type="datetime-local" class="form-control" id="start" name="start" {% if start %} value="{{start}}" {% endif %}>
-      </div>
-      <div class="form-group">
-        <label for="end">End</label>
-        <input type="datetime-local" class="form-control" id="end" name="end" {% if end %} value="{{end}}" {% endif %}>
-      </div>
-    </div> 
-    <div class="col-md-1">
-      <button type="submit" class="btn btn-default">Go!</button>
+  <h3>Search for Professors</h3>
+  <h5>Manually Enter Timeslot:</h5>
+  <form class="form-inline" method="GET">
+    <div class="form-group">
+      <label for="start">Start</label>
+      <input type="datetime-local" class="form-control" id="start" name="start" {% if start %} value="{{start}}" {% endif %}>
     </div>
+    <div class="form-group">
+      <label for="end">End</label>
+      <input type="datetime-local" class="form-control" id="end" name="end" {% if end %} value="{{end}}" {% endif %}>
+    </div>
+    <button type="submit" class="btn btn-default">Go!</button>
   </form>
-  <form class="form-inline row" method="GET">
-    <div class="form-group col-md-7">
-      <label for="start">Seach by student's oral times</label>
-      <select class="form-control" id="student" name="student">
-        {% for student in students %}
-          <option value={{student.id}}>{{student.name}}</option>
-        {% endfor %} 
-      </select>
-    </div>
-    <div class="col-md-1">
-      <button type="submit" class="btn btn-default">Go!</button>
-    </div>
+  <h5>Search by student's oral timeslot:</h5>
+  <form class="form-inline" method="GET">
+    <label for="start">Student Name</label>
+    <select class="form-control" id="student" name="student">
+      {% for student in students %}
+        <option value={{student.id}}>{{student.name}}</option>
+      {% endfor %} 
+    </select>
+    <button type="submit" class="btn btn-default">Go!</button>
   </form>
   {% if profs != [] %}
-    <h4>Professors available:</h4>
-    <p>
-      {% for prof in profs %}
-        {{prof.name}}<br>
-      {% endfor %}
-    </p>
+    <h3>Professors available:</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Department</th>
+          <th>Division</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for prof in profs %}
+          <tr>
+            <td>{{prof.name}}</td>
+            <td>{{prof.email}}</td>
+            <td>{{prof.department}}</td>
+            <td>{{prof.division}}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   {% endif %}
 </div>
 {% endblock %}
