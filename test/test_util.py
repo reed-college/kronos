@@ -148,3 +148,22 @@ class TestUtil:
             start2 = dt.datetime(2000,1,1,10)
             end2 = dt.datetime(2000,1,1,12)
             assert util.overlap(start1,end1,start2,end2)
+
+    
+    @pytest.mark.usefixtures("setup_db", "populate_db")
+    class TestFreeProfessors():
+        
+        def test_professor_not_free_when_in_oral(self):
+            start = dt.datetime(2016, 5, 2, 10)
+            end = dt.datetime(2016, 5, 2, 12)
+            hovda = Prof.query.filter(Prof.username == 'hovdap').first()
+            profs = util.free_professors(start,end)
+            assert hovda not in profs 
+             
+        
+        def test_professor_free_when_not_in_oral(self):
+            start = dt.datetime(2016, 5, 2, 12)
+            end = dt.datetime(2016, 5, 2, 14)
+            hovda = Prof.query.filter(Prof.username == 'hovdap').first()
+            profs = util.free_professors(start,end)
+            assert hovda in profs 
