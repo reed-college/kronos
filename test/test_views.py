@@ -36,6 +36,10 @@ class TestViews:
             rv = client.get('/oralweeks')
             assert 'Sprang 2016' in str(rv.data)
 
+        def test_load_search(self, client):
+            rv = client.get('/print')
+            assert rv.status_code == 200
+
     @pytest.mark.usefixtures("setup_db")
     class Test_with_empty_db:
 
@@ -69,3 +73,7 @@ class TestViews:
                     'date-1': '2017-05-01'})
             rv = client.get('/oralweeks')
             assert name in str(rv.data)
+        
+        def test_load_search(self, client):
+            rv = client.get('/print')
+            assert rv.status_code == 200
