@@ -1,5 +1,5 @@
-from datetime import timedelta, datetime
-from .models import department, division, Event, Oral, Stu, Prof
+import datetime as dt
+from .models import department, division, Event, Oral, Stu, Prof, OralStartDay
 
 
 def FreeTimeCalc(events, orals):
@@ -54,7 +54,7 @@ def GetOralTable(orals):
         delta = lastday - firstday
         for i in range(delta.days + 1):
             timerow.append(
-                (firstday + timedelta(days=i)).strftime("%A, %B %d <br> ") +
+                (firstday + dt.timedelta(days=i)).strftime("%A, %B %d <br> ") +
                 earliestStart.strftime("%I:%M - ") +
                 earliestEnd.strftime("%I:%M"))
         oraltable.append(timerow)
@@ -62,9 +62,9 @@ def GetOralTable(orals):
         while currTimeslotOrals != []:
             oralrow = ["c"]  # c for cell
             for i in range(delta.days + 1):
-                currday = firstday + timedelta(days=i)
-                currstart = datetime.combine(currday, earliestStart)
-                currend = datetime.combine(currday, earliestEnd)
+                currday = firstday + dt.timedelta(days=i)
+                currstart = dt.datetime.combine(currday, earliestStart)
+                currend = dt.datetime.combine(currday, earliestEnd)
                 for oral in currTimeslotOrals:
                     if oral.dtstart == currstart and oral.dtend == currend:
                         info = '<b>' + oral.stu.name + '</b><br>'
@@ -180,4 +180,23 @@ def free_professors(start, end):
     # getting every prof who isn't busy at the current time
     return Prof.query.filter(*[Prof.id != profid for profid in busyprofs]).\
             order_by(Prof.name).all()
+
+def get_start_day(startdayid):
+    """
+    Returns the startday with id startdayid if startdayid is a number
+    if startdayid is None, it gets the closest future startday
+    """
+    if startdayid is not None:
+        return OralStartDay.query.get(startdayid)
+    else:
+        startoralday = OralStartDay.query.\
+            filter(OralStartDay.start >=
+                   (dt.date.today() -
+                    dt.timedelta(days=7))).\
+            order_by(OralStartDay.start).first()
+        if startoralday is None:
+            startoralday = OralStartDay.query.order_by(
+                OralStartDay.start).first()
+        return startoralday
+
 

@@ -21,18 +21,7 @@ def schedule():
         return redirect('/oralweeks')
 
     startdayid = request.args.get("startday") or None
-    if startdayid is not None:
-        startday = OralStartDay.query.get(startdayid).start
-    else:
-        startoralday = OralStartDay.query.\
-            filter(OralStartDay.start >=
-                   (dt.date.today() -
-                    dt.timedelta(days=7))).\
-            order_by(OralStartDay.start).first()
-        if startoralday is None:
-            startoralday = OralStartDay.query.order_by(
-                OralStartDay.start).first()
-        startday = startoralday.start
+    startday = util.get_start_day(startdayid).start
 
     students = Stu.query.all()
     professors = Prof.query.all()
@@ -123,10 +112,13 @@ def search():
     endstr = request.args.get("end")
     stuid = request.args.get("student")
     if startstr is not None and endstr is not None:
+        # gets profs based on given start and end
         start = dt.datetime.strptime(startstr,"%Y-%m-%dT%H:%M")
         end = dt.datetime.strptime(endstr,"%Y-%m-%dT%H:%M")
         profs = util.free_professors(start, end)
     elif stuid is not None:
+        # Gets profs based on the start and end times of a given student's
+        # oral
         oral = Oral.query.filter(Oral.stu_id == stuid).first()
         start = oral.dtstart
         end = oral.dtend
@@ -134,11 +126,21 @@ def search():
         startstr = oral.dtstart.strftime("%Y-%m-%dT%H:%M")
         endstr = oral.dtend.strftime("%Y-%m-%dT%H:%M")
     else:
-        start = None
-        end = None
+        # if there is an oralstartday, this sets the default start and end 
+        # datetimes to that day
+        if OralStartDay.query.all() != []:
+            startday = util.get_start_day(None).start
+            start = dt.datetime.combine(startday, dt.time(0,0,0))
+            end = start + dt.timedelta(hours=2)
+            startstr = start.strftime("%Y-%m-%dT%H:%M")
+            endstr = end.strftime("%Y-%m-%dT%H:%M")
         profs = []
+    # the the Stu object stores a list of its orals under Stu.oral, not 
+    # one singular oral, as a rational human being would expect
+    students = Stu.query.filter(Stu.oral).all()
+    print(students)
     return render_template("search.html", profs=profs, start=startstr,
-           end=endstr, students=Stu.query.all())
+           end=endstr, students=students)
 
 @app.route('/eventsjson')
 def get_events_json():
