@@ -1,5 +1,5 @@
-from datetime import timedelta, datetime
-from .models import department, division, Event, Oral, Stu, Prof
+import datetime as dt
+from .models import department, division, Event, Oral, Stu, Prof, OralStartDay
 
 
 def FreeTimeCalc(events, orals):
@@ -54,7 +54,7 @@ def GetOralTable(orals):
         delta = lastday - firstday
         for i in range(delta.days + 1):
             timerow.append(
-                (firstday + timedelta(days=i)).strftime("%A, %B %d <br> ") +
+                (firstday + dt.timedelta(days=i)).strftime("%A, %B %d <br> ") +
                 earliestStart.strftime("%I:%M - ") +
                 earliestEnd.strftime("%I:%M"))
         oraltable.append(timerow)
@@ -62,9 +62,9 @@ def GetOralTable(orals):
         while currTimeslotOrals != []:
             oralrow = ["c"]  # c for cell
             for i in range(delta.days + 1):
-                currday = firstday + timedelta(days=i)
-                currstart = datetime.combine(currday, earliestStart)
-                currend = datetime.combine(currday, earliestEnd)
+                currday = firstday + dt.timedelta(days=i)
+                currstart = dt.datetime.combine(currday, earliestStart)
+                currend = dt.datetime.combine(currday, earliestEnd)
                 for oral in currTimeslotOrals:
                     if oral.dtstart == currstart and oral.dtend == currend:
                         info = '<b>' + oral.stu.name + '</b><br>'
@@ -146,3 +146,57 @@ def ordinalize(n):
     http://codegolf.stackexchange.com/a/74047
     """
     return str(n) + 'tsnrhtdd'[n % 5 * (n % 100 ^ 15 > 4 > n % 10)::4]
+
+
+def overlap(start1, end1, start2, end2):
+    """
+    takes 4 datetimes of the starts and ends of 2 events and returns 
+    whether or not they overlap
+    """
+    # assert start1 <= end1
+    # assert start2 <= end2
+    return ((start1 > start2 and start1 <= end2) or
+            (end1 > start2 and end1 <= end2) or
+            (start1 <= start2 and end1 >= end2))
+
+
+def free_professors(start, end):
+    """
+    takes a time range and returns what professors are free during that time
+    """
+    overlaps = [event for event in Event.query
+            if overlap(event.dtstart, event.dtend, start, end)
+            ]
+    # profs who are on an orals board at the given time
+    readers = {reader.id for oral in overlaps 
+           if oral.discriminator == "oral" for reader in oral.readers}
+
+    # profs who have another event at the given time
+    eventprofs = {event.user.id for event in overlaps 
+              if event.discriminator == "event" and 
+                 event.user.discriminator == "professor"}
+    # combines the two sets of profs
+    busyprofs = readers | eventprofs
+    # getting every prof who isn't busy at the current time
+    return Prof.query.filter(*[Prof.id != profid for profid in busyprofs]).\
+            order_by(Prof.name).all()
+
+def get_start_day(startdayid):
+    """
+    Returns the startday with id startdayid if startdayid is a number
+    if startdayid is None, it gets the closest future startday
+    """
+    if startdayid is not None:
+        return OralStartDay.query.get(startdayid)
+    else:
+        startoralday = OralStartDay.query.\
+            filter(OralStartDay.start >=
+                   (dt.date.today() -
+                    dt.timedelta(days=7))).\
+            order_by(OralStartDay.start).first()
+        if startoralday is None:
+            startoralday = OralStartDay.query.order_by(
+                OralStartDay.start).first()
+        return startoralday
+
+

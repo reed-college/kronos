@@ -12,7 +12,8 @@
 }
 
 .well {
-	border-radius: 0 !important;    
+    border-radius: 0 !important;    
+    border-top-width: 0px;
 }
 
 .chosen-disabled {
@@ -66,4 +67,9 @@ a:focus {
 .select2-dropdown{
     z-index: 9999999999999;
 }
+
+.navbar {
+    margin-bottom: 0px !important;
+}
+
 

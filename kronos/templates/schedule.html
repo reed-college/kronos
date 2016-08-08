@@ -1,10 +1,9 @@
-{% extends "bootstrap/base.html" %}
+{% extends "base.html" %}
 {% block title %}Kronos{% endblock %}
 
 {% block styles %}
 {{super()}} {# gets bootstrap styles #}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
-<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 <link rel="stylesheet" href="{{url_for('static', filename='css/schedule.css')}}">
 <link rel="stylesheet" href="{{url_for('static', filename='css/fullcalendar.min.css')}}" >
 <link rel="stylesheet" href="{{url_for('static', filename='css/fullcalendar.print.css')}}" media='print' >
@@ -28,6 +27,7 @@ var edit = {{ edit }};
 {% endblock %}
 
 {% block content %}
+{{super()}}
 <div class="well hidden-print" id="filter-well">
   {# This form sends the fields as a querystring to /print so that the schedule is filtered #}
   <form action="{{ url_for('print_schedule') }}">

@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 from dateutil import parser
 from kronos import util
 from kronos.models import Oral, Stu, Prof, Event
@@ -16,12 +16,12 @@ class TestUtil:
         events = []
         orals = []
         guess = []
-        oralslength = datetime.timedelta(hours=2)
+        oralslength = dt.timedelta(hours=2)
         for i in range(1, 6):
-            start = datetime.datetime(2017, 5, i, hour=10)
-            length = datetime.timedelta(hours=i)
+            start = dt.datetime(2017, 5, i, hour=10)
+            length = dt.timedelta(hours=i)
             events.append((start, start + length))
-            oralstart = datetime.datetime(2017, 5, i, hour=13)
+            oralstart = dt.datetime(2017, 5, i, hour=13)
             orals.append((oralstart, oralstart + oralslength))
             # This guesses which orals won't intersect the events, since
             # the events increase in length over the week
@@ -117,3 +117,53 @@ class TestUtil:
             args = ImmutableMultiDict({'professors[]': [hovdaid]})
             events = util.filter_events(Event.query, args)
             assert oral2 not in events.all()
+
+
+    class TestOverlap:
+        
+        def test_end_of_first_event_after_start_of_second_overlaps(self):
+            start1 = dt.datetime(2000,1,1,10)
+            end1 = dt.datetime(2000,1,1,12)
+            start2 = dt.datetime(2000,1,1,11)
+            end2 = dt.datetime(2000,1,1,13)
+            assert util.overlap(start1,end1,start2,end2)
+
+        def test_first_event_inside_second(self):
+            start1 = dt.datetime(2000,1,1,10)
+            end1 = dt.datetime(2000,1,1,12)
+            start2 = dt.datetime(2000,1,1,2)
+            end2 = dt.datetime(2000,1,7,2)
+            assert util.overlap(start1,end1,start2,end2)
+
+        def test_first_event_end_equals_second_event_start(self):
+            start1 = dt.datetime(2000,1,1,10)
+            end1 = dt.datetime(2000,1,1,12)
+            start2 = dt.datetime(2000,1,1,12)
+            end2 = dt.datetime(2000,1,1,14)
+            assert not util.overlap(start1,end1,start2,end2)
+
+        def test_end_of_second_event_after_start_of_first(self):
+            start1 = dt.datetime(2000,1,1,11)
+            end1 = dt.datetime(2000,1,1,13)
+            start2 = dt.datetime(2000,1,1,10)
+            end2 = dt.datetime(2000,1,1,12)
+            assert util.overlap(start1,end1,start2,end2)
+
+    
+    @pytest.mark.usefixtures("setup_db", "populate_db")
+    class TestFreeProfessors():
+        
+        def test_professor_not_free_when_in_oral(self):
+            start = dt.datetime(2016, 5, 2, 10)
+            end = dt.datetime(2016, 5, 2, 12)
+            hovda = Prof.query.filter(Prof.username == 'hovdap').first()
+            profs = util.free_professors(start,end)
+            assert hovda not in profs 
+             
+        
+        def test_professor_free_when_not_in_oral(self):
+            start = dt.datetime(2016, 5, 2, 12)
+            end = dt.datetime(2016, 5, 2, 14)
+            hovda = Prof.query.filter(Prof.username == 'hovdap').first()
+            profs = util.free_professors(start,end)
+            assert hovda in profs 
