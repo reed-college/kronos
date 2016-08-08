@@ -199,4 +199,21 @@ def get_start_day(startdayid):
                 OralStartDay.start).first()
         return startoralday
 
-
+def get_div_from_dept(dept):
+    """
+    Takes a string with the name of a department and returns the 
+    division its in 
+    """
+    if dept not in department:
+        raise AssertionError("Given dept not one of: " + str(department))
+    if dept in {'Art', 'Dance', 'Music', 'Theatre'}:
+        return 'The Arts'
+    if dept in {'Anthropology', 'Economics', 'History', 'Political Science', 'Sociology'}:
+        return 'History and Social Sciences'
+    if dept in {'Chinese','Classics','English','French','German','Russian','Spanish'}:
+        return 'Literature and Languages'    
+    if dept in {'Biology', 'Chemisty', 'Physics', 'Mathematics'}:
+        return 'Mathematics and Natural Sciences'
+    if dept in {'Philosophy', 'Religion', 'Psychology', 'Linguistics'}:
+        return 'Philosophy, Religion, Psychology and Linguistics'
+    return 'Other'
