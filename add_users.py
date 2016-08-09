@@ -4,6 +4,7 @@ adds profs,stus and FACs from ldap
 import ldap3
 from string import ascii_lowercase
 from kronos.models import FAC, Stu, Prof
+from kronos.util import get_div_from_dept
 from kronos import db
 db.create_all()
 
@@ -18,7 +19,28 @@ filter +=    '(&'
 filter +=      '(eduPersonPrimaryAffiliation=student)'
 filter +=      '(!(eduPersonAffiliation=alumni))'
 filter +=    ')'
-filter +=    '(eduPersonPrimaryAffiliation=faculty)'
+filter +=    '(&'
+filter +=      '(eduPersonPrimaryAffiliation=faculty)'
+filter +=      '(&'
+filter +=        '(!(eduPersonAffiliation=trustee))'
+filter +=        '(&'
+filter +=          "(rcDepartment=*)"
+filter +=          '(&'
+filter +=            "(!(rcDepartment=President's Office))"
+filter +=            '(&'
+filter +=              "(!(rcDepartment=Institutional Diversity))"
+filter +=              '(&'
+filter +=                "(!(rcDepartment=Library))"
+filter +=                '(&'
+filter +=                  "(!(rcDepartment=Department of Athletics))"
+filter +=                  "(!(rcDepartment=Dean of the Faculty))"
+filter +=                ')'
+filter +=              ')'
+filter +=            ')'
+filter +=          ')'
+filter +=        ')'
+filter +=      ')'
+filter +=    ')'
 filter +=  ')'
 filter +=  '(uid=a*)'
 filter +=')'
@@ -35,6 +57,21 @@ for i in ascii_lowercase:
                 attributes=ldap3.ALL_ATTRIBUTES)
     for person in conn.response:
         att = person.get('attributes')
-        if att.get('eduPersonPrimaryAffiliation') == 'faculty':
-            
+        uid = att.get('uid')[0] or "username"
+        name = att.get('gecos') or "name"
+        email = att.get('eduPersonPrincipalName') or "placeholder@reed.edu"
+        role = att.get('eduPersonPrimaryAffiliation')  
+        if name is None:
+            print(uid)
+        if role == 'faculty':
+            # adding new professor
+            dept = att.get('rcDepartment')[0] 
+            div = get_div_from_dept(dept)
+            newuser = Prof(uid, name, email, dept, div)
+            db.session.add(newuser)
+        elif role == 'student':
+            # adding new student
+            newuser = Stu(uid, name, email, None, None)
+            db.session.add(newuser)
+db.session.commit()
 

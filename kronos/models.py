@@ -10,7 +10,7 @@ department = ('Anthropology', 'Art', 'Biology', 'Chemistry', 'Chinese',
               'Classics', 'Dance', 'Economics', 'English', 'French', 'German',
               'History', 'Linguistics', 'Mathematics', 'Music', 'Philosophy',
               'Physics', 'Political Science', 'Psychology', 'Religion',
-              'Russian', 'Sociology', 'Spanish', 'Theatre')
+              'Russian', 'Sociology', 'Spanish', 'Theatre', 'Creative Writing')
 division = ('The Arts', 'History and Social Sciences',
             'Literature and Languages', 'Mathematics and Natural Sciences',
             'Philosophy, Religion, Psychology and Linguistics')

@@ -210,9 +210,9 @@ def get_div_from_dept(dept):
         return 'The Arts'
     if dept in {'Anthropology', 'Economics', 'History', 'Political Science', 'Sociology'}:
         return 'History and Social Sciences'
-    if dept in {'Chinese','Classics','English','French','German','Russian','Spanish'}:
+    if dept in {'Chinese','Classics','English','French','German','Russian','Spanish', 'Creative Writing'}:
         return 'Literature and Languages'    
-    if dept in {'Biology', 'Chemisty', 'Physics', 'Mathematics'}:
+    if dept in {'Biology', 'Chemistry', 'Physics', 'Mathematics'}:
         return 'Mathematics and Natural Sciences'
     if dept in {'Philosophy', 'Religion', 'Psychology', 'Linguistics'}:
         return 'Philosophy, Religion, Psychology and Linguistics'
