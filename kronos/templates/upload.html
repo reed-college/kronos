@@ -69,36 +69,40 @@
                 Please use the same format as in the example.</li>
             </ol>
             Example:<br>
-            <table border="1">
-              <tbody>
-                <tr>
-                  <th style="width:25%;"><code class="notranslate">summary</code></th>
-                  <th style="width:25%;"><code class="notranslate">dtstart</code></th>
-                  <th style="width:25%;"><code class="notranslate">dtend</code></th>
-                  <th style="width:25%;"><code class="notranslate">private</code></th>
-                </tr>
-                <tr>
-                  <th style="width:25%;"><code class="notranslate">event1</code></th>
-                  <th style="width:25%;"><code class="notranslate">5/3/16 10:00</code></th>
-                  <th style="width:25%;"><code class="notranslate">5/3/16 12:00</code></th>
-                  <th style="width:25%;"><code class="notranslate">TRUE</code></th>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width:25%;" translate="no">summary</th>
+                    <th style="width:25%;" translate="no">dtstart</th>
+                    <th style="width:25%;" translate="no">dtend</th>
+                    <th style="width:25%;" translate="no">private</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="width:25%;" translate="no">event1</td>
+                    <td style="width:25%;" translate="no">5/3/16 10:00</td>
+                    <td style="width:25%;" translate="no">5/3/16 12:00</td>
+                    <td style="width:25%;" translate="no">TRUE</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <ul>
-              <li><strong><code class="notranslate">summary</code></strong><br>
-                The name of the event, required.
-              <li><strong><code class="notranslate">dtstart</code></strong><br>
+              <li translate="no"><strong>summary</strong><br>
+                The name of the event, required.</li>
+              <li translate="no"><strong>dtstart</strong><br>
                 The start time of the event, required. The format of time is mm/dd/yy hh:mm.
                 It's ok if Excel automatically modified the date you entered (for example
-                Excel will show 5/3/16 if you enter 05/03/16).
-              <li><strong><code class="notranslate">dtend</code></strong><br>
-                The end time of the event, required. <code class="notranslate">dtend</code>
-                use the same format as <code class="notranslate">dtstart</code>.
-              <li><strong><code class="notranslate">private</code></strong><br>
+                Excel will show 5/3/16 if you enter 05/03/16).</li>
+              <li translate="no"><strong>dtend</strong><br>
+                The end time of the event, required. dtend
+                use the same format as dtstart.</li>
+              <li translate="no"><strong>private</strong><br>
                 Whether the event should be marked private. Enter TRUE if the event is private,
                 and FALSE if it isn't. The summary of private events will be shown as
-                "unavailable" in the public calendar page.
+                "unavailable" in the public calendar page.</li>
             </ul>
           </p>
       </ol>
