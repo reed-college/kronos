@@ -61,16 +61,15 @@ def import_ics(path):
 # Import files from uploads folder
 
 def import_from_uploads(path):
-    files = os.listdir(path)[1:]
-    for file in files:
+    for file in os.listdir(path):
         extension = os.path.splitext(file)[1]
-        abspath = os.path.abspath(file)
-        if extension == '.xlsx' or '.xls':
-            return import_excel(abspath)
+        file_path = os.path.join(path, file)
+        if extension == '.xlsx' or extension == '.xls':
+            import_excel(file_path)
         elif extension == 'csv':
-            return import_csv(abspath)
+            import_csv(file_path)
         elif extension == 'ics':
-            return import_ics(abspath)
+            import_ics(file_path)
 
 
 
