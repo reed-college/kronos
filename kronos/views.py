@@ -5,7 +5,7 @@ import flask
 import httplib2
 from functools import wraps
 
-from flask import render_template, request, redirect, Response, current_app, session, abort
+from flask import render_template, request, redirect, Response, current_app, session, abort, g
 from apiclient import discovery
 from oauth2client import client
 
@@ -26,14 +26,12 @@ def schedule():
     # only get students who have orals
     students = Stu.query.filter(Stu.oral).all()
     professors = Prof.query.all()
-    # TODO when we're gonna need each POST request from fullcalendar/jeditable
-    # to be validated through ldap, because leaving it up to a javascript
-    # variable is super insercure.
-    # But we'll have to wait until someone gets around to helping us set up
-    # ldap to do that.
-    # and also hopefully the javascript variable will get set by ldap
-    # authentication and not a querysting
-    edit = request.args.get("edit") or "false"
+    
+    # Only FACs can edit
+    edit = "false"
+    if g.user and g.user.discriminator == "FAC":
+        # need to have true and false as strings because javascript
+        edit = "true"
 
     return render_template(
         "schedule.html", department=department, division=division,
@@ -363,4 +361,17 @@ def logout():
         return redirect(util.redirect_url())   
     else:
         return redirect(util.redirect_url())   
+
+@app.before_request
+def load_user():
+    """
+    sets 'global' user variable based on user id stored in session variables
+    stolen from: 
+    http://stackoverflow.com/questions/13617231/how-to-use-g-user-global-in-flask
+    """
+    if session.get("user_id"):
+        user = User.query.get(session["user_id"])
+    else:
+        user = None
+    g.user = user
 
