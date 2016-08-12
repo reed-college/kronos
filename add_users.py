@@ -71,7 +71,7 @@ for i in ascii_lowercase:
             db.session.add(newuser)
         elif role == 'student':
             # adding new student
-            newuser = Stu(uid, name, email, None, None)
+            newuser = Stu(uid, name, email, 'Dance', 'The Arts')
             db.session.add(newuser)
 db.session.commit()
 

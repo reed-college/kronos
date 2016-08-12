@@ -1,5 +1,6 @@
 import datetime as dt
 from .models import department, division, Event, Oral, Stu, Prof, OralStartDay
+from flask import request, url_for
 
 
 def FreeTimeCalc(events, orals):
@@ -217,3 +218,13 @@ def get_div_from_dept(dept):
     if dept in {'Philosophy', 'Religion', 'Psychology', 'Linguistics'}:
         return 'Philosophy, Religion, Psychology and Linguistics'
     return 'Other'
+
+def redirect_url():
+    """
+    helper function to redirect to the last visited page
+    stolen from: http://flask.pocoo.org/docs/0.11/reqcontext/
+    """
+    return request.args.get('next') or \
+           request.referrer or \
+           url_for('schedule')
+

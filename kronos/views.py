@@ -3,19 +3,19 @@ import datetime as dt
 from dateutil import parser
 import flask
 import httplib2
+from functools import wraps
 
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect, Response, current_app, session, abort
 from apiclient import discovery
 from oauth2client import client
 
 from kronos import app, db, util
-from .models import department, division, Oral, Stu
+from .models import department, division, Oral, Stu, FAC
 from .models import Prof, Event, User, OralStartDay
 
 
 @app.route('/')
 def schedule():
-
     startdays = OralStartDay.query.all()
     if startdays == []:
         return redirect('/oralweeks')
@@ -23,7 +23,8 @@ def schedule():
     startdayid = request.args.get("startday") or None
     startday = util.get_start_day(startdayid).start
 
-    students = Stu.query.all()
+    # only get students who have orals
+    students = Stu.query.filter(Stu.oral).all()
     professors = Prof.query.all()
     # TODO when we're gonna need each POST request from fullcalendar/jeditable
     # to be validated through ldap, because leaving it up to a javascript
@@ -138,7 +139,6 @@ def search():
     # the the Stu object stores a list of its orals under Stu.oral, not 
     # one singular oral, as a rational human being would expect
     students = Stu.query.filter(Stu.oral).all()
-    print(students)
     return render_template("search.html", profs=profs, start=startstr,
            end=endstr, students=students)
 
@@ -315,3 +315,52 @@ def oauth2callback():
         credentials = flow.step2_exchange(auth_code)
         flask.session['credentials'] = credentials.to_json()
         return flask.redirect(flask.url_for('get_gcal'))
+
+
+def check_auth(username, password):
+    """This function is called to check if a username /
+    password combination is valid.
+    """
+    return username == 'admin' and password == 'secret'
+
+def authenticate():
+    """Sends a 401 response that enables basic auth"""
+    return Response(
+    'Could not verify your access level for that URL.\n'
+    'You have to login with proper credentials', 401,
+    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password):
+            return authenticate()
+        return f(*args, **kwargs)
+    return decorated
+
+@app.route('/login')
+def login():
+    if session.get('user_id') is None:
+        # When debuging, make the user a FAC
+        if current_app.config['DEBUG']:
+            if FAC.query.all() == []:
+                gonyerk = FAC('gonyerk', 'Kristy', 'gonyerk@reed.edu')
+                db.session.add(gonyerk)
+                db.session.commit()
+            session['user_id'] = FAC.query.first().id
+            return redirect(util.redirect_url())   
+        else:        
+            return redirect(util.redirect_url())   
+    else:
+        # Can't log in again when you're already logged in
+        abort(403)
+    
+@app.route('/logout')
+def logout():
+    if current_app.config['DEBUG']:
+        del session['user_id']
+        return redirect(util.redirect_url())   
+    else:
+        return redirect(util.redirect_url())   
+
