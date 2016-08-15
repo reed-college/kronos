@@ -12,6 +12,7 @@ from oauth2client import client
 from kronos import app, db, util
 from .models import department, division, Oral, Stu, FAC
 from .models import Prof, Event, User, OralStartDay
+from .util import authorize
 
 
 @app.route('/')
@@ -46,6 +47,7 @@ def edit_start_days():
     knows what week to go to for orals week
     """
     if request.method == 'POST':
+        authorize()
         print(request.form)
         # editing existing oral days
         for day in OralStartDay.query.all():
@@ -72,8 +74,12 @@ def edit_start_days():
         db.session.commit()
         return redirect('/oralweeks')
     else:
-        oralstarts = OralStartDay.query.order_by(OralStartDay.start).all()
-        return render_template("oralweeks.html", oralstarts=oralstarts)
+        if g.user and g.user.discriminator == "FAC":
+            oralstarts = OralStartDay.query.order_by(OralStartDay.start).all()
+            return render_template("oralweeks.html", oralstarts=oralstarts)
+        else:
+            return render_template("oralweekpublic.html")
+            
 
 
 @app.route('/print')
@@ -185,7 +191,7 @@ def update_event():
     """
     page for jeditable to send new event changes to the db
     """
-    print(request.form)
+    authorize()
     eventid = request.form.get("event_id") or None
     userid = request.form.get("user_id") or None
     stuid = request.form.get("stu_id") or None
@@ -258,6 +264,7 @@ def update_event():
 
 @app.route('/deletevent', methods=['POST'])
 def delete_event():
+    authorize()
     print(request.form)
     eventid = request.form.get("event_id") or None
     event = Event.query.get_or_404(eventid)
@@ -315,28 +322,6 @@ def oauth2callback():
         return flask.redirect(flask.url_for('get_gcal'))
 
 
-def check_auth(username, password):
-    """This function is called to check if a username /
-    password combination is valid.
-    """
-    return username == 'admin' and password == 'secret'
-
-def authenticate():
-    """Sends a 401 response that enables basic auth"""
-    return Response(
-    'Could not verify your access level for that URL.\n'
-    'You have to login with proper credentials', 401,
-    {'WWW-Authenticate': 'Basic realm="Login Required"'})
-
-def requires_auth(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        auth = request.authorization
-        if not auth or not check_auth(auth.username, auth.password):
-            return authenticate()
-        return f(*args, **kwargs)
-    return decorated
-
 @app.route('/login')
 def login():
     if session.get('user_id') is None:
@@ -374,4 +359,5 @@ def load_user():
     else:
         user = None
     g.user = user
+
 

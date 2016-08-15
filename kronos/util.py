@@ -1,6 +1,6 @@
 import datetime as dt
 from .models import department, division, Event, Oral, Stu, Prof, OralStartDay
-from flask import request, url_for
+from flask import request, url_for, g, abort
 
 
 def FreeTimeCalc(events, orals):
@@ -228,3 +228,10 @@ def redirect_url():
            request.referrer or \
            url_for('schedule')
 
+def authorize():
+    """
+    checks that the current user is a FAC 
+    used for pages that update data, like submitevent
+    """
+    if not(g.user and g.user.discriminator == "FAC"):
+        abort(403)
