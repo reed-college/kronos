@@ -1,9 +1,10 @@
 import datetime as dt
 from dateutil import parser
 from kronos import util
-from kronos.models import Oral, Stu, Prof, Event
+from kronos.models import Oral, Stu, Prof, Event, FAC
 from werkzeug.datastructures import ImmutableMultiDict
 import pytest
+from kronos.views import g
 
 
 class TestUtil:
@@ -220,3 +221,4 @@ class TestUtil:
             assert util.get_div_from_dept("Religion") == "Philosophy, Religion, Psychology, and Linguistics"
             assert util.get_div_from_dept("Psychology") == "Philosophy, Religion, Psychology, and Linguistics"
             assert util.get_div_from_dept("Linguistics") == "Philosophy, Religion, Psychology, and Linguistics"
+

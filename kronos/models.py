@@ -13,7 +13,7 @@ department = ('Anthropology', 'Art', 'Biology', 'Chemistry', 'Chinese',
               'Russian', 'Sociology', 'Spanish', 'Theatre', 'Creative Writing')
 division = ('The Arts', 'History and Social Sciences',
             'Literature and Languages', 'Mathematics and Natural Sciences',
-            'Philosophy, Religion, Psychology and Linguistics')
+            'Philosophy, Religion, Psychology, and Linguistics')
 
 readers = db.Table('readers',
                    db.Column('prof_id', db.Integer, db.ForeignKey('prof.id')),
