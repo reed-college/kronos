@@ -1,33 +1,35 @@
-{% extends "bootstrap/base.html" %}
+{% extends "base.html" %}
 {% block title %}Kronos{% endblock %}
 
 {% block styles %}
-{{super()}}
+{{super()}} {# gets bootstrap styles #}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
-<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-<link rel="stylesheet" href="{{url_for('.static', filename='schedule.css')}}">
-<link rel="stylesheet" href="{{url_for('.static', filename='fullcalendar.min.css')}}" >
-<link rel="stylesheet" href="{{url_for('.static', filename='fullcalendar.print.css')}}" media='print' >
-<link rel="stylesheet" href="{{url_for('.static', filename='jquery.qtip.min.css')}}" >
+<link rel="stylesheet" href="{{url_for('static', filename='css/schedule.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/fullcalendar.min.css')}}" >
+<link rel="stylesheet" href="{{url_for('static', filename='css/fullcalendar.print.css')}}" media='print' >
+<link rel="stylesheet" href="{{url_for('static', filename='css/jquery.qtip.min.css')}}" >
 {% endblock %}
 
 {% block scripts %}
-{{super()}}
+{{super()}} {# gets bootstrap scripts #}
 <script>
+{# passing variable from server so they can be used in shedule.js #}
 var startday = "{{startday.strftime('%Y-%m-%d')}}";
 var edit = {{ edit }};
 </script>
-<script src="{{url_for('.static', filename='moment.min.js')}}"></script>
-<script src="{{url_for('.static', filename='fullcalendar.min.js')}}" ></script>
+<script src="{{url_for('static', filename='js/moment.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/fullcalendar.min.js')}}" ></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-<script src="{{url_for('.static', filename='jquery.jeditable.mini.js')}}" ></script>
-<script src="{{url_for('.static', filename='jquery.qtip.min.js')}}" ></script>
-<script src="{{url_for('.static', filename='jquery.jeditable.time.js')}}" ></script>
-<script src="{{url_for('.static', filename='schedule.js')}}"></script>
+<script src="{{url_for('static', filename='js/jquery.jeditable.mini.js')}}" ></script>
+<script src="{{url_for('static', filename='js/jquery.qtip.min.js')}}" ></script>
+<script src="{{url_for('static', filename='js/jquery.jeditable.time.js')}}" ></script>
+<script src="{{url_for('static', filename='js/schedule.js')}}"></script>
 {% endblock %}
 
 {% block content %}
+{{super()}}
 <div class="well hidden-print" id="filter-well">
+  {# This form sends the fields as a querystring to /print so that the schedule is filtered #}
   <form action="{{ url_for('print_schedule') }}">
     <div class="row form-group">
       <div class="col-md-12" id="prof-select-container">
@@ -117,12 +119,14 @@ var edit = {{ edit }};
   </div>
   <div class="row"><div class="col-md-12"></div></div>
 </div>
+{# hidden fields that are copied for qtips #}
 <div class="hidden" id="oral-qtip-template">
   <div class="row">
     <div class="col-xs-4">
       When:
     </div>
     <div class="col-xs-8">
+      {# the javascript searches for and replaces these tags with the braces #}
       <span class="edit-start">{start}</span>
       -
       <span class="edit-end">{end}</span>

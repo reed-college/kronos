@@ -1,9 +1,7 @@
-import datetime
 from kronos import db
-from sqlalchemy import Enum, ForeignKey, DateTime, event
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import validates
 from sqlalchemy.schema import CheckConstraint
-from sqlalchemy.ext.declarative import declared_attr
 from dateutil import parser
 from datetime import datetime
 
@@ -18,10 +16,9 @@ division = ('The Arts', 'History and Social Sciences',
             'Philosophy, Religion, Psychology and Linguistics')
 
 readers = db.Table('readers',
-       db.Column('prof_id', db.Integer, db.ForeignKey('prof.id')),
-       db.Column('oral_id', db.Integer, db.ForeignKey('oral.id'))
-       )
-
+                   db.Column('prof_id', db.Integer, db.ForeignKey('prof.id')),
+                   db.Column('oral_id', db.Integer, db.ForeignKey('oral.id'))
+                   )
 
 
 # The User class contains professors and students,
@@ -49,8 +46,10 @@ class User(db.Model):
         assert '@' in email
         return email
 
+
 class FAC(User):
     __mapper_args__ = {'polymorphic_identity': 'FAC'}
+
     def __init__(self, username, name, email):
         User.__init__(self, username, name, email)
         self.type = 'FAC'
@@ -97,11 +96,11 @@ class Event(db.Model):
     private = db.Column(db.Boolean)
     location = db.Column(db.String(50))
     discriminator = db.Column('type', db.String(10))
-    __mapper_args__ = {'polymorphic_on': discriminator}
+    __mapper_args__ = {'polymorphic_on': discriminator,
+                       'polymorphic_identity': 'event'}
     __table_args__ = (
         CheckConstraint('dtstart <= dtend'),
-        )
-
+    )
 
     userid = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', backref=db.backref('events'))
@@ -125,32 +124,39 @@ class Event(db.Model):
     def validate_end_after_start(self, key, field):
         """
         Checks 2 things
-        1. That either a string or a datetime was set to either dtstart or dtend
+        1. That either a string or a datetime was set to either dtstart
+           or dtend
         2. That the end of this event is after the start
         """
-        #if a string is submitted, it will now be converted to a datetime
-        if type(field) is datetime:
+        # if a string is submitted, it will now be converted to a datetime
+        if isinstance(field, datetime):
             time = field
-        elif type(field) is str:
+        elif isinstance(field, str):
             time = parser.parse(field)
         else:
-            raise AssertionError(key + " must of type 'datetime.datetime' or type 'str'")
+            raise AssertionError(
+                key + " must of type 'datetime.datetime' or type 'str'")
         if key is "dtstart" and isinstance(self.dtend, datetime):
             assert time < self.dtend
         elif key is "dtend" and isinstance(self.dtstart, datetime):
             assert time > self.dtstart
         return field
 
+
 class Oral(Event):
     __tablename__ = 'oral'
     __mapper_args__ = {'polymorphic_identity': 'oral'}
-    id = db.Column(db.Integer, ForeignKey('event.id'), primary_key=True, autoincrement=True)
+    id = db.Column(
+        db.Integer,
+        ForeignKey('event.id'),
+        primary_key=True,
+        autoincrement=True)
     stu_id = db.Column(db.Integer, db.ForeignKey('stu.id'))
     stu = db.relationship('Stu', backref=db.backref('oral'))
     response = db.Column(db.Enum('Accepted', 'Declined', 'Tentative',
                                  name="response"))
     readers = db.relationship('Prof', secondary=readers,
-           backref=db.backref('orals', lazy='dynamic'))
+                              backref=db.backref('orals', lazy='dynamic'))
 
     def __init__(self, stu, summary, dtstart, dtend, user,
                  response=None):
@@ -163,31 +169,44 @@ class Oral(Event):
     def __repr__(self):
         return '<%rs Oral>' % self.stu
 
-    
     @validates('readers')
     def validate_orals(self, key, reader):
         for oral in reader.orals:
             # make sure readers won't be assigned to conflicting orals.
-            if (oral.dtstart > self.dtstart and oral.dtstart <= self.dtend) or (
-                oral.dtend > self.dtstart and oral.dtend <= self.dtend) or (
-                oral.dtstart <= self.dtstart and oral.dtend >= self.dtend):
-                raise ValueError('Conflicting orals are assigned to reader ' + str(reader) + ".")
+            if ((oral.dtstart > self.dtstart and oral.dtstart <= self.dtend) or
+               (oral.dtend > self.dtstart and oral.dtend <= self.dtend) or
+               (oral.dtstart <= self.dtstart and oral.dtend >= self.dtend)):
+                raise ValueError(
+                    'Conflicting orals are assigned to reader ' +
+                    str(reader) +
+                    ".")
             """
             TODO: move this to validate_stu
             # make sure that each student is assigned for only one oral.
             if self.stu == oral.stu:
-                raise AssertionError('More than one oral are assigned to student ' + str(oral.stu) + ".")
+                raise AssertionError(
+                'More than one oral are assigned to student '
+                + str(oral.stu) + ".")
             """
             # refuse to add orals that conflict with personal events.
             for oreader in oral.readers:
                 if oreader.events != []:
                     for event in oreader.events:
-                        if (oral.dtstart > event.dtstart and oral.dtstart <= event.dtend) or (
-                            oral.dtend > event.dtstart and oral.dtend <= event.dtend) or (
-                            oral.dtstart <= event.dtstart and oral.dtend >= event.dtend):
-                            raise ValueError("Conflicting oral '"+oral.summary+"' and "+str(event.user)+"'s personal event '"+event.summary+"' are added.")
+                        if ((oral.dtstart > event.dtstart and
+                             oral.dtstart <= event.dtend) or
+                            (oral.dtend > event.dtstart and
+                             oral.dtend <= event.dtend) or
+                            (oral.dtstart <= event.dtstart and
+                             oral.dtend >= event.dtend)):
+                            raise ValueError("Conflicting oral '" +
+                                             oral.summary +
+                                             "' and " +
+                                             str(event.user) +
+                                             "'s personal event '" +
+                                             event.summary +
+                                             "' are added.")
         return reader
-    
+
 
 class OralStartDay(db.Model):
     """
@@ -195,7 +214,7 @@ class OralStartDay(db.Model):
     the user would want to see
     """
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    description = db.Column(db.String(50), unique=True) # ie 'Fall 2016'
+    description = db.Column(db.String(50), unique=True)  # ie 'Fall 2016'
     start = db.Column(db.Date, nullable=False)
 
     def __init__(self, desc, start):

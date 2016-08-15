@@ -203,10 +203,7 @@ $(document).ready(function() {
                         //makes sure that the qtips don't go outside fullcalendar
                         viewport: $('#calendar'),
                     },
-                    content:{
-                        text: content,
-                        button: true,
-                    },
+                    content: content,
                     events: {
                         render: function(event, api) {
                         }

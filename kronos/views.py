@@ -1,6 +1,6 @@
 import os
 import json
-import datetime
+import datetime as dt
 from dateutil import parser
 import flask
 import httplib2
@@ -11,17 +11,19 @@ from oauth2client import client
 from werkzeug.utils import secure_filename
 
 from kronos import app, db, util
-from .models import department, division, Oral, Stu, Prof, Event, User, OralStartDay
+from .models import department, division, Oral, Stu
+from .models import Prof, Event, User, OralStartDay
 
 
 @app.route('/')
 def schedule():
 
     startdays = OralStartDay.query.all()
-    if startdays  == []:
+    if startdays == []:
         return redirect('/oralweeks')
 
     startdayid = request.args.get("startday") or None
+<<<<<<< HEAD
     if startdayid is not None:
         startday = OralStartDay.query.get(startdayid).start
     else:
@@ -30,14 +32,17 @@ def schedule():
                           (datetime.date.today() -
                            datetime.timedelta(days=7))).\
                    order_by(OralStartDay.start).first().start
+=======
+    startday = util.get_start_day(startdayid).start
+>>>>>>> 65de1a6ddce1c1a69f5f7413b33a777b53e27a0f
 
     students = Stu.query.all()
     professors = Prof.query.all()
     # TODO when we're gonna need each POST request from fullcalendar/jeditable
     # to be validated through ldap, because leaving it up to a javascript
     # variable is super insercure.
-    # But we'll have to wait until someone gets around to helping us set up ldap
-    # to do that.
+    # But we'll have to wait until someone gets around to helping us set up
+    # ldap to do that.
     # and also hopefully the javascript variable will get set by ldap
     # authentication and not a querysting
     edit = request.args.get("edit") or "false"
@@ -55,6 +60,8 @@ def edit_start_days():
     knows what week to go to for orals week
     """
     if request.method == 'POST':
+        print(request.form)
+        # editing existing oral days
         for day in OralStartDay.query.all():
             desc = request.form.get("desc--" + str(day.id))
             date = request.form.get("date--" + str(day.id))
@@ -62,17 +69,20 @@ def edit_start_days():
             if desc is not None and date is not None:
                 day.description = desc
                 day.start = date
-            elif remove is "True":
-                db.session.remove(day)
-        i = 0
-        desc = request.form.get("desc-"+str(i))
-        date = request.form.get("date-"+str(i))
-        while desc is not None and desc is not "" and date is not None and date is not "":
-            desc = request.form.get("desc-"+str(i))
-            date = request.form.get("date-"+str(i))
+            elif remove == "True":
+                print(remove)
+                db.session.delete(day)
+        # adding new oral days
+        i = 1
+        desc = request.form.get("desc-" + str(i))
+        date = request.form.get("date-" + str(i))
+        while (desc is not None and desc is not "" and
+               date is not None and date is not ""):
             day = OralStartDay(desc, date)
             db.session.add(day)
             i += 1
+            desc = request.form.get("desc-" + str(i))
+            date = request.form.get("date-" + str(i))
         db.session.commit()
         return redirect('/oralweeks')
     else:
@@ -127,6 +137,45 @@ def print_schedule():
     return render_template('printsched.html', oraltable=oraltable,
                            division=div, department=dept, time=time)
 
+@app.route('/search')
+def search():
+    """
+    allows you to search for what pofessors are free at a given time
+    """
+    startstr = request.args.get("start")
+    endstr = request.args.get("end")
+    stuid = request.args.get("student")
+    if startstr is not None and endstr is not None:
+        # gets profs based on given start and end
+        start = dt.datetime.strptime(startstr,"%Y-%m-%dT%H:%M")
+        end = dt.datetime.strptime(endstr,"%Y-%m-%dT%H:%M")
+        profs = util.free_professors(start, end)
+    elif stuid is not None:
+        # Gets profs based on the start and end times of a given student's
+        # oral
+        oral = Oral.query.filter(Oral.stu_id == stuid).first()
+        start = oral.dtstart
+        end = oral.dtend
+        profs = util.free_professors(start,end)
+        startstr = oral.dtstart.strftime("%Y-%m-%dT%H:%M")
+        endstr = oral.dtend.strftime("%Y-%m-%dT%H:%M")
+    else:
+        # if there is an oralstartday, this sets the default start and end
+        # datetimes to that day
+        if OralStartDay.query.all() != []:
+            startday = util.get_start_day(None).start
+            start = dt.datetime.combine(startday, dt.time(0,0,0))
+            end = start + dt.timedelta(hours=2)
+            startstr = start.strftime("%Y-%m-%dT%H:%M")
+            endstr = end.strftime("%Y-%m-%dT%H:%M")
+        profs = []
+    # the the Stu object stores a list of its orals under Stu.oral, not
+    # one singular oral, as a rational human being would expect
+    students = Stu.query.filter(Stu.oral).all()
+    print(students)
+    return render_template("search.html", profs=profs, start=startstr,
+           end=endstr, students=students)
+
 @app.route('/eventsjson')
 def get_events_json():
     """
@@ -138,17 +187,17 @@ def get_events_json():
     events = []
     for event in eventobjs:
         evjson = {
-        "id": event.id,
-        "title": event.summary,
-        "start": str(event.dtstart),
-        "end": str(event.dtend),
-        "type": event.discriminator,
-        "user": event.user.name,
-        "student": "",
-        "readers": [],
-        "location": event.location,
+            "id": event.id,
+            "title": event.summary,
+            "start": str(event.dtstart),
+            "end": str(event.dtend),
+            "type": event.discriminator,
+            "user": event.user.name,
+            "student": "",
+            "readers": [],
+            "location": event.location,
         }
-        if type(event) is Oral:
+        if isinstance(event, Oral):
             evjson["readers"] = [reader.name for reader in event.readers]
             evjson["student"] = event.stu.name
         events.append(evjson)
@@ -163,7 +212,11 @@ def get_users_json():
     """
     usrtype = request.args.get("type") or ""
     usrqury = User.query.filter(User.discriminator.contains(usrtype))
+<<<<<<< HEAD
     users = {usr.id : usr.name for usr in usrqury}
+=======
+    users = {usr.id: usr.name for usr in usrqury}
+>>>>>>> 65de1a6ddce1c1a69f5f7413b33a777b53e27a0f
     return json.dumps(users)
 
 
@@ -184,7 +237,7 @@ def update_event():
     evtype = request.form.get("type") or None
     # TODO: get current user from ldap
     user = User.query.first()
-    #if we're updating a current event
+    # if we're updating a current event
     if eventid is not None:
         event = Event.query.get_or_404(eventid)
 
@@ -210,7 +263,8 @@ def update_event():
             db.session.commit()
             return event.location
         elif (start is not None) and (end is not None):
-            # need to update start and end in the right order so the validators don't freak out
+            # need to update start and end in the right order so the validators
+            # don't freak out
             if parser.parse(end) < event.dtstart:
                 event.dtstart = start
                 event.dtend = end
@@ -218,7 +272,8 @@ def update_event():
                 event.dtend = end
                 event.dtstart = start
             db.session.commit()
-            return (str(event.dtstart.timestamp()), str(event.dtend.timestamp()))
+            return (str(event.dtstart.timestamp()),
+                    str(event.dtend.timestamp()))
         elif start is not None:
             event.dtstart = start
             db.session.commit()
@@ -229,7 +284,7 @@ def update_event():
             return event.dtend.strftime("%-H:%M")
         else:
             return "Something went wrong!"
-    #new event
+    # new event
     elif (start is not None) and (end is not None):
         print(request.form)
         if evtype == "oral":
@@ -267,8 +322,8 @@ def get_gcal():
         http_auth = credentials.authorize(httplib2.Http())
         service = discovery.build('calendar', 'v3', http=http_auth)
         # 'Z' indicates UTC time
-        oralsweekstart = datetime.datetime(2017, 5, 1).isoformat() + 'Z'
-        oralsweekend = datetime.datetime(2017, 5, 6).isoformat() + 'Z'
+        oralsweekstart = dt.datetime(2017, 5, 1).isoformat() + 'Z'
+        oralsweekend = dt.datetime(2017, 5, 6).isoformat() + 'Z'
 
         print('Getting events during orals week')
         eventsResult = service.events().list(
