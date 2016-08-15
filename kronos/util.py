@@ -1,6 +1,7 @@
 import datetime as dt
-from .models import department, division, Event, Oral, Stu, Prof, OralStartDay
+from .models import Event, Oral, Stu, Prof, OralStartDay
 from flask import request, url_for, g, abort
+from .academic_constants import *
 
 
 def FreeTimeCalc(events, orals):
@@ -121,13 +122,13 @@ def filter_events(eventobjs, args):
             break
         ora = Event.query.join(Oral).filter(Oral.stu_id == stuid)
         eventobjs = eventobjs.union(ora)
-    if div in division:
+    if div in DIVISIONS:
         st = eventobjs.join(Oral).join(Oral.stu).\
             join(Stu).filter(Stu.division == div)
         pf = eventobjs.join(Event.user).\
             join(Prof).filter(Prof.division == div)
         eventobjs = st.union(pf)
-    if dept in department:
+    if dept in DEPARTMENTS:
         st = eventobjs.join(Oral).join(Oral.stu).\
             join(Stu).filter(Stu.department == dept)
         pf = eventobjs.join(Event.user).\
@@ -205,17 +206,17 @@ def get_div_from_dept(dept):
     Takes a string with the name of a department and returns the 
     division its in 
     """
-    if dept not in department:
-        raise AssertionError("Given dept not one of: " + str(department))
-    if dept in {'Art', 'Dance', 'Music', 'Theatre'}:
+    if dept not in DEPARTMENTS:
+        raise AssertionError("Given dept not one of: " + str(DEPARTMENTS))
+    if dept in THEARTS:
         return 'The Arts'
-    if dept in {'Anthropology', 'Economics', 'History', 'Political Science', 'Sociology'}:
+    if dept in HSS: 
         return 'History and Social Sciences'
-    if dept in {'Chinese','Classics','English','French','German','Russian','Spanish', 'Creative Writing'}:
+    if dept in LL:
         return 'Literature and Languages'    
-    if dept in {'Biology', 'Chemistry', 'Physics', 'Mathematics'}:
+    if dept in MNS: 
         return 'Mathematics and Natural Sciences'
-    if dept in {'Philosophy', 'Religion', 'Psychology', 'Linguistics'}:
+    if dept in PRPL:
         return 'Philosophy, Religion, Psychology, and Linguistics'
     return 'Other'
 

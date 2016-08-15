@@ -12,7 +12,8 @@ from oauth2client import client
 from werkzeug.utils import secure_filename
 
 from kronos import app, db, util
-from .models import department, division, Oral, Stu, FAC
+from .models import Oral, Stu, FAC
+from .academic_constants import DEPARTMENTS, DIVISIONS
 from .models import Prof, Event, User, OralStartDay
 from .util import authorize
 
@@ -37,7 +38,7 @@ def schedule():
         edit = "true"
 
     return render_template(
-        "schedule.html", department=department, division=division,
+        "schedule.html", department=DEPARTMENTS, division=DIVISIONS,
         students=students, professors=professors, startday=startday,
         edit=edit, startdays=startdays)
 
