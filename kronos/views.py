@@ -1,3 +1,4 @@
+import os
 import json
 import datetime as dt
 from dateutil import parser
@@ -5,9 +6,10 @@ import flask
 import httplib2
 from functools import wraps
 
-from flask import render_template, request, redirect, Response, current_app, session, abort, g
+from flask import Flask, flash, Markup, render_template, request, redirect, Response, url_for, send_from_directory, current_app, session, abort, g
 from apiclient import discovery
 from oauth2client import client
+from werkzeug.utils import secure_filename
 
 from kronos import app, db, util
 from .models import department, division, Oral, Stu, FAC
@@ -82,6 +84,27 @@ def edit_start_days():
             
 
 
+UPLOAD_FOLDER = '/Users/Jiahui/kronos/kronos/static/uploads'
+ALLOWED_EXTENSIONS = set(['ics', 'xls', 'xlsx', 'csv'])
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            flash(Markup('File uploaded. <a href="javascript:history.back()"> Back</a>'))
+            return render_template('uploaded.html')
+    return render_template("upload.html")
+
+
 @app.route('/print')
 def print_schedule():
     """
@@ -131,7 +154,7 @@ def search():
         startstr = oral.dtstart.strftime("%Y-%m-%dT%H:%M")
         endstr = oral.dtend.strftime("%Y-%m-%dT%H:%M")
     else:
-        # if there is an oralstartday, this sets the default start and end 
+        # if there is an oralstartday, this sets the default start and end
         # datetimes to that day
         if OralStartDay.query.all() != []:
             startday = util.get_start_day(None).start
@@ -140,7 +163,7 @@ def search():
             startstr = start.strftime("%Y-%m-%dT%H:%M")
             endstr = end.strftime("%Y-%m-%dT%H:%M")
         profs = []
-    # the the Stu object stores a list of its orals under Stu.oral, not 
+    # the the Stu object stores a list of its orals under Stu.oral, not
     # one singular oral, as a rational human being would expect
     students = Stu.query.filter(Stu.oral).all()
     return render_template("search.html", profs=profs, start=startstr,
@@ -182,7 +205,7 @@ def get_users_json():
     """
     usrtype = request.args.get("type") or ""
     usrqury = User.query.filter(User.discriminator.contains(usrtype))
-    users = {usr.id: usr.name for usr in usrqury}
+    users = {usr.id : usr.name for usr in usrqury}
     return json.dumps(users)
 
 

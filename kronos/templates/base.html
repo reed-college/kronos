@@ -20,7 +20,7 @@
         <ul class="nav navbar-nav">
           <li><a href="{{ url_for('schedule') }}">Schedule</a></li>
           <li><a href="{{ url_for('search') }}">Search</a></li>
-          <li><a href="#">Upload</a></li>
+          <li><a href="{{ url_for('upload_file') }}">Upload</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           {% if not session.get('user_id') %}

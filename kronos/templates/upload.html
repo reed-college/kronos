@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Upload events to Kronos{% endblock %}
+{% block scripts %}
+{{super()}}
+<script src="{{url_for('.static', filename='upload.js')}}"></script>
+{% endblock %}
+
+{% block content %}
+{{super()}}
+<div class="container">
+  <h3>Upload Calendar</h3>
+
+  <h4>Step 1: Create a Calendar File</h4>
+  <p>First, create a calendar file that you can import into Kronos.
+    Choose one of these options:</p>
+
+    <div>
+      <ol>
+        <li><h4>Export from a calendar application</h4></li>
+          <p>Most calendar applications let you export your calendar.
+            Instructions for exporting calendars from Google calendar and
+            Apple calendar are listed below. Exporting calendars from other applications
+            should be similar.
+            <i>It's usually easier to do this from a computer than a phone or tablet.</i>
+            Note that most applications does not support exporting calendar for a certain period,
+            so you'll get a file for your entire calendar
+            (If you are an Apple Calendar user and you want to export your calendar
+            in orals week only, please check the instructions below).</p>
+
+          <p><b>If you choose to export your calendar from a calendar application,
+            please export your calendar as an iCal (".ics") file.</b></p>
+
+          <p>For Google Calendar users, please follow the
+            <a href="https://support.google.com/calendar/answer/37111">
+              directions for exporting your Google calendar</a>.</p>
+
+          <p>For Apple Calendar users:<br>
+            <ul>
+              <li>If you don't mind exporting your entire calendar,
+              please follow the <a href="https://support.apple.com/kb/PH11524?viewlocale=en_US&locale=en_US">
+              instructions in this link</a>.
+              </li>
+
+              <li>If you want to have a file that only includes your events in orals week:
+                <ol>
+                  <li>Open Calendar app on your mac, in the menu bar,
+                    click <b>File &gt; New Calendar</b> to create a temperory calendar for orals week.</li>
+                  <li>On the left, check the calendars that include events you want to export.</li>
+                  <li>Click anywhere in the orals week and then click <b>week</b> on the top
+                    to go to week view. Press <kbd>⌘</kbd> <kbd>A</kbd> to select all events in this view
+                    or <kbd>shift</kbd>-click on events you would like to export.</li>
+                  <li>Press <kbd>⌘</kbd> <kbd>C</kbd> to copy events you selected.</li>
+                  <li>Select the temporary calendar you just created and press <kbd>⌘</kbd> <kbd>V</kbd>
+                    to paste the copied events.</li>
+                  <li>Click <b>File &gt; Export &gt; Export...</b> to export the temporary calendar
+                    and save it as an ics file.</li>
+                  <li>Choose the temporary calendar and click <b>Edit &gt; delete</b> to delete it.</li>
+                </ol>
+              </li>
+            </ul>
+          </p>
+        <li><h4>Create your own calendar file</h4></li>
+          <p>You can also import CSV and excel (both .xls and .xlsx) files into Kronos.
+            Format requirements are listed below:
+            <ol>
+              <li>The first row of your spreadsheet should be headers, and
+                headers must be in English with no capital letters.
+                See the example below for the correct headers.</li>
+              <li>Each row below the header row represents an event.
+                Please use the same format as in the example.</li>
+            </ol>
+            Example:<br>
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width:25%;" translate="no">summary</th>
+                    <th style="width:25%;" translate="no">dtstart</th>
+                    <th style="width:25%;" translate="no">dtend</th>
+                    <th style="width:25%;" translate="no">private</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="width:25%;" translate="no">event1</td>
+                    <td style="width:25%;" translate="no">5/3/16 10:00</td>
+                    <td style="width:25%;" translate="no">5/3/16 12:00</td>
+                    <td style="width:25%;" translate="no">TRUE</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <ul>
+              <li translate="no"><strong>summary</strong><br>
+                The name of the event, required.</li>
+              <li translate="no"><strong>dtstart</strong><br>
+                The start time of the event, required. The format of time is mm/dd/yy hh:mm.
+                It's ok if Excel automatically modified the date you entered (for example
+                Excel will show 5/3/16 if you enter 05/03/16).</li>
+              <li translate="no"><strong>dtend</strong><br>
+                The end time of the event, required. dtend
+                use the same format as dtstart.</li>
+              <li translate="no"><strong>private</strong><br>
+                Whether the event should be marked private. Enter TRUE if the event is private,
+                and FALSE if it isn't. The summary of private events will be shown as
+                "unavailable" in the public calendar page.</li>
+            </ul>
+          </p>
+      </ol>
+    </div>
+
+  <h4>Step 2: Upload Your Calendar File</h4>
+  <form action="" method=post enctype=multipart/form-data>
+    <p>Choose file to upload.<br>
+      Kronos can import files with extension .xls, .xlsx, .csv or .ics.
+    <p><input type=file name=file accept=".xls, application/vnd.ms-excel, .xlsx,
+    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .ics, .csv"
+    onchange="checkfile(this);">
+    <p><input type=submit value=Upload>
+  </form>
+</div>
+{% endblock %}
