@@ -1,3 +1,4 @@
+import os
 from icalendar import Calendar, Event
 from datetime import datetime
 from pandas import DataFrame
@@ -8,30 +9,24 @@ import pytz
 # Remember to change user name and file path.
 engine = create_engine('postgresql://Jiahui:pass@localhost/db_kronos')
 
-
 # Import CSV files
 
-df_csv = pd.read_csv('/Users/Jiahui/kronos/kronos/csvdata.csv')
-df_csv.to_sql('event', engine, if_exists='append', index=False)
-
-assert df_csv.query('dtstart > dtend').empty
-
+def import_csv(path):
+    df_csv = pd.read_csv(path)
+    assert df_csv.query('dtstart > dtend').empty
+    return df_csv.to_sql('event', engine, if_exists='append', index=False)
 
 # Import Excel files
-df_xlsx = pd.read_excel('/Users/Jiahui/kronos/kronos/exceldata.xlsx')
-df_xlsx.to_sql('event', engine, if_exists='append', index=False)
 
-assert df_xlsx.query('dtstart > dtend').empty
-
+def import_excel(path):
+    df_excel = pd.read_excel(path)
+    assert df_excel.query('dtstart > dtend').empty
+    return df_excel.to_sql('event', engine, if_exists='append', index=False)
 
 
 # Import ics files
 
-cal = Calendar() # Create a new empty calendar
-cal = cal.from_ical(open('USHolidays.ics','rb').read()) # Open an existing calendar
-
 # get data from ics files.
-
 def getsummary(cal):
     ls = []
     for event in cal.walk('vevent'):
@@ -50,16 +45,33 @@ def getdtend(cal):
         ls.append(event.get('dtend').dt)
     return ls
 
-
 # import data to db
+def import_ics(path):
+    cal = Calendar().from_ical(open(path,'rb').read())
 
-s = getsummary(cal)
-start = getdtstart(cal)
-end = getdtend(cal)
+    s = getsummary(cal)
+    start = getdtstart(cal)
+    end = getdtend(cal)
 
-df = pd.DataFrame(dict(summary = s, dtstart = start, dtend = end, private = True))
-df.to_sql('event', engine, if_exists='append', index=False)   
+    df = pd.DataFrame(dict(summary = s, dtstart = start, dtend = end, private = True))
+    assert df.query('dtstart > dtend').empty
 
-assert df.query('dtstart > dtend').empty
+    return df.to_sql('event', engine, if_exists='append', index=False)   
+
+# Import files from uploads folder
+
+def import_from_uploads(path):
+    for file in os.listdir(path):
+        extension = os.path.splitext(file)[1]
+        file_path = os.path.join(path, file)
+        if extension == '.xlsx' or extension == '.xls':
+            import_excel(file_path)
+        elif extension == 'csv':
+            import_csv(file_path)
+        elif extension == 'ics':
+            import_ics(file_path)
+
+
+
 
 
