@@ -8,10 +8,12 @@
 <script src="{{url_for('static', filename='js/oralweeks.js')}}"></script>
 {% endblock %}
 {% block content %}
+{{ super() }}
 <div class="container-fluid">
   <div class='col-md-1'></div>
   <form class='col-md-10' method="POST">
     <h4>Oral start days</h4>
+    <p> Theses are days in the each oral week. They are needed so that the calendar on the schedule page know what week to direct you to.</p>
     {% for day in oralstarts %}
       <div class="row">
         <div class="form-group col-sm-4">

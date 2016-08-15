@@ -4,20 +4,22 @@ import datetime as dt
 from dateutil import parser
 import flask
 import httplib2
+from functools import wraps
 
-from flask import Flask, flash, Markup, render_template, request, redirect, url_for, send_from_directory
+from flask import Flask, flash, Markup, render_template, request, redirect, Response, url_for, send_from_directory, current_app, session, abort, g
 from apiclient import discovery
 from oauth2client import client
 from werkzeug.utils import secure_filename
 
 from kronos import app, db, util
-from .models import department, division, Oral, Stu
+from .models import Oral, Stu, FAC
+from .academic_constants import DEPARTMENTS, DIVISIONS
 from .models import Prof, Event, User, OralStartDay
+from .util import authorize
 
 
 @app.route('/')
 def schedule():
-
     startdays = OralStartDay.query.all()
     if startdays == []:
         return redirect('/oralweeks')
@@ -25,19 +27,18 @@ def schedule():
     startdayid = request.args.get("startday") or None
     startday = util.get_start_day(startdayid).start
 
-    students = Stu.query.all()
+    # only get students who have orals
+    students = Stu.query.filter(Stu.oral).all()
     professors = Prof.query.all()
-    # TODO when we're gonna need each POST request from fullcalendar/jeditable
-    # to be validated through ldap, because leaving it up to a javascript
-    # variable is super insercure.
-    # But we'll have to wait until someone gets around to helping us set up
-    # ldap to do that.
-    # and also hopefully the javascript variable will get set by ldap
-    # authentication and not a querysting
-    edit = request.args.get("edit") or "false"
+    
+    # Only FACs can edit
+    edit = "false"
+    if g.user and g.user.discriminator == "FAC":
+        # need to have true and false as strings because javascript
+        edit = "true"
 
     return render_template(
-        "schedule.html", department=department, division=division,
+        "schedule.html", department=DEPARTMENTS, division=DIVISIONS,
         students=students, professors=professors, startday=startday,
         edit=edit, startdays=startdays)
 
@@ -49,6 +50,7 @@ def edit_start_days():
     knows what week to go to for orals week
     """
     if request.method == 'POST':
+        authorize()
         print(request.form)
         # editing existing oral days
         for day in OralStartDay.query.all():
@@ -75,8 +77,12 @@ def edit_start_days():
         db.session.commit()
         return redirect('/oralweeks')
     else:
-        oralstarts = OralStartDay.query.order_by(OralStartDay.start).all()
-        return render_template("oralweeks.html", oralstarts=oralstarts)
+        if g.user and g.user.discriminator == "FAC":
+            oralstarts = OralStartDay.query.order_by(OralStartDay.start).all()
+            return render_template("oralweeks.html", oralstarts=oralstarts)
+        else:
+            return render_template("oralweekpublic.html")
+            
 
 
 UPLOAD_FOLDER = '/Users/Jiahui/kronos/kronos/static/uploads'
@@ -161,7 +167,6 @@ def search():
     # the the Stu object stores a list of its orals under Stu.oral, not
     # one singular oral, as a rational human being would expect
     students = Stu.query.filter(Stu.oral).all()
-    print(students)
     return render_template("search.html", profs=profs, start=startstr,
            end=endstr, students=students)
 
@@ -210,7 +215,7 @@ def update_event():
     """
     page for jeditable to send new event changes to the db
     """
-    print(request.form)
+    authorize()
     eventid = request.form.get("event_id") or None
     userid = request.form.get("user_id") or None
     stuid = request.form.get("stu_id") or None
@@ -283,6 +288,7 @@ def update_event():
 
 @app.route('/deletevent', methods=['POST'])
 def delete_event():
+    authorize()
     print(request.form)
     eventid = request.form.get("event_id") or None
     event = Event.query.get_or_404(eventid)
@@ -338,3 +344,44 @@ def oauth2callback():
         credentials = flow.step2_exchange(auth_code)
         flask.session['credentials'] = credentials.to_json()
         return flask.redirect(flask.url_for('get_gcal'))
+
+
+@app.route('/login')
+def login():
+    if session.get('user_id') is None:
+        # When debuging, make the user a FAC
+        if current_app.config['DEBUG']:
+            if FAC.query.all() == []:
+                gonyerk = FAC('gonyerk', 'Kristy', 'gonyerk@reed.edu')
+                db.session.add(gonyerk)
+                db.session.commit()
+            session['user_id'] = FAC.query.first().id
+            return redirect(util.redirect_url())   
+        else:        
+            return redirect(util.redirect_url())   
+    else:
+        # Can't log in again when you're already logged in
+        abort(403)
+    
+@app.route('/logout')
+def logout():
+    if current_app.config['DEBUG']:
+        del session['user_id']
+        return redirect(util.redirect_url())   
+    else:
+        return redirect(util.redirect_url())   
+
+@app.before_request
+def load_user():
+    """
+    sets 'global' user variable based on user id stored in session variables
+    stolen from: 
+    http://stackoverflow.com/questions/13617231/how-to-use-g-user-global-in-flask
+    """
+    if session.get("user_id"):
+        user = User.query.get(session["user_id"])
+    else:
+        user = None
+    g.user = user
+
+

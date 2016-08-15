@@ -5,15 +5,7 @@ from sqlalchemy.schema import CheckConstraint
 from dateutil import parser
 from datetime import datetime
 
-
-department = ('Anthropology', 'Art', 'Biology', 'Chemistry', 'Chinese',
-              'Classics', 'Dance', 'Economics', 'English', 'French', 'German',
-              'History', 'Linguistics', 'Mathematics', 'Music', 'Philosophy',
-              'Physics', 'Political Science', 'Psychology', 'Religion',
-              'Russian', 'Sociology', 'Spanish', 'Theatre')
-division = ('The Arts', 'History and Social Sciences',
-            'Literature and Languages', 'Mathematics and Natural Sciences',
-            'Philosophy, Religion, Psychology and Linguistics')
+from .academic_constants import DIVISIONS, DEPARTMENTS
 
 readers = db.Table('readers',
                    db.Column('prof_id', db.Integer, db.ForeignKey('prof.id')),
@@ -56,8 +48,8 @@ class FAC(User):
 
 
 class Prof(User):
-    department = db.Column(db.Enum(*department, name="department"))
-    division = db.Column(db.Enum(*division, name="division"))
+    department = db.Column(db.Enum(*DEPARTMENTS, name="department"))
+    division = db.Column(db.Enum(*DIVISIONS, name="division"))
     __mapper_args__ = {'polymorphic_identity': 'professor'}
     id = db.Column(db.Integer, ForeignKey('user.id'), primary_key=True)
 
@@ -72,8 +64,8 @@ class Prof(User):
 
 
 class Stu(User):
-    department = db.Column(db.Enum(*department, name="department"))
-    division = db.Column(db.Enum(*division, name="division"))
+    department = db.Column(db.Enum(*DEPARTMENTS, name="department"))
+    division = db.Column(db.Enum(*DIVISIONS, name="division"))
     __mapper_args__ = {'polymorphic_identity': 'student'}
     id = db.Column(db.Integer, ForeignKey('user.id'), primary_key=True)
 

@@ -22,6 +22,13 @@
           <li><a href="{{ url_for('search') }}">Search</a></li>
           <li><a href="{{ url_for('upload_file') }}">Upload</a></li>
         </ul>
+        <ul class="nav navbar-nav navbar-right">
+          {% if not session.get('user_id') %}
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+          {% else %}
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+          {% endif %}
+        </ul>
       </div>
     </div>
   </nav>
