@@ -23,18 +23,7 @@ def schedule():
         return redirect('/oralweeks')
 
     startdayid = request.args.get("startday") or None
-<<<<<<< HEAD
-    if startdayid is not None:
-        startday = OralStartDay.query.get(startdayid).start
-    else:
-        startday = OralStartDay.query.\
-                   filter(OralStartDay.start >=
-                          (datetime.date.today() -
-                           datetime.timedelta(days=7))).\
-                   order_by(OralStartDay.start).first().start
-=======
     startday = util.get_start_day(startdayid).start
->>>>>>> 65de1a6ddce1c1a69f5f7413b33a777b53e27a0f
 
     students = Stu.query.all()
     professors = Prof.query.all()
@@ -212,11 +201,7 @@ def get_users_json():
     """
     usrtype = request.args.get("type") or ""
     usrqury = User.query.filter(User.discriminator.contains(usrtype))
-<<<<<<< HEAD
     users = {usr.id : usr.name for usr in usrqury}
-=======
-    users = {usr.id: usr.name for usr in usrqury}
->>>>>>> 65de1a6ddce1c1a69f5f7413b33a777b53e27a0f
     return json.dumps(users)
 
 
