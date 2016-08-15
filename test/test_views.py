@@ -32,6 +32,7 @@ class TestViews:
             rv = client.get('/print')
             assert 'Emma' in str(rv.data)
 
+        @pytest.mark.usefixtures("setup_db", "populate_db","debug_auth")
         def test_oral_weeks_has_oral_week(self, client):
             rv = client.get('/oralweeks')
             assert 'Sprang 2016' in str(rv.data)
@@ -64,6 +65,7 @@ class TestViews:
             rv = client.get('/oralweeks')
             assert 'Sprang 2016' not in str(rv.data)
 
+        @pytest.mark.usefixtures("setup_db","debug_auth")
         def test_add_oral_week(self, client):
             name = 'the limit of characters for this field is 50'
             client.post(
