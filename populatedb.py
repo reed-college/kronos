@@ -15,14 +15,14 @@ db.session.add(griffinj)
 
 # Linguistic Seniors
 
-emma = Stu('erennie', 'Emma Rennie', 'erennie@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-richard = Stu('adcockr', 'Richard Adcock', 'adcockr@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-manon = Stu('gilmorem', 'Manon Gilmore', 'gilmorem@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-knar = Stu('knhovakim', 'Knar', 'knhovakim@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-syd = Stu('lows', 'Syd', 'lows@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-miriam = Stu('golzm', 'Miriam', 'golzm@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-sarah = Stu('allens', 'Sarah', 'allens@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-arthur = Stu('sillersa', 'Arthur', 'sillersa@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+emma = Stu('erennie', 'Emma Rennie', 'erennie@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
+richard = Stu('adcockr', 'Richard Adcock', 'adcockr@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
+manon = Stu('gilmorem', 'Manon Gilmore', 'gilmorem@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
+knar = Stu('knhovakim', 'Knar', 'knhovakim@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
+syd = Stu('lows', 'Syd', 'lows@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
+miriam = Stu('golzm', 'Miriam', 'golzm@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
+sarah = Stu('allens', 'Sarah', 'allens@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
+arthur = Stu('sillersa', 'Arthur', 'sillersa@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
 
 # 1 Russian Senior so that we have 2 orals at the same time
 
@@ -45,17 +45,17 @@ db.session.add(jon)
 
 # Profs
 
-hovda = Prof('hovdap', 'Paul Hovda', 'hovdap@reed.edu', 'Philosophy', 'Philosophy, Religion, Psychology and Linguistics')
+hovda = Prof('hovdap', 'Paul Hovda', 'hovdap@reed.edu', 'Philosophy', 'Philosophy, Religion, Psychology, and Linguistics')
 hancock = Prof('hancockv', 'Ginny', 'hancockv@reed.edu', 'Music', 'The Arts')
-pearson = Prof('pearson', 'Pearson', 'pearson@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
-becker = Prof('becker', 'becker', 'becker@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+pearson = Prof('pearson', 'Pearson', 'pearson@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
+becker = Prof('becker', 'becker', 'becker@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
 somda = Prof('somda', 'Somda', 'somda@reed.edu', 'English', 'Literature and Languages')
-gruber = Prof('guber', 'Gruber', 'gruber@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+gruber = Prof('guber', 'Gruber', 'gruber@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
 faletra = Prof('faletra', 'Faletra', 'faletra@reed.edu', 'English', 'Literature and Languages')
 minardi = Prof('minardi', 'Margot', 'minardi@reed.edu', 'History', 'Literature and Languages')
 kroll = Prof('chkroll', 'Christian', 'chkroll@reed.edu', 'Spanish', 'Literature and Languages')
 witt = Prof('wittc', 'Catherine', 'wittc@reed.edu', 'French', 'Literature and Languages')
-khan = Prof('skhan', 'Sameer', 'skhan@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology and Linguistics')
+khan = Prof('skhan', 'Sameer', 'skhan@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
 bershtein = Prof('bershtee', 'Zhenya', 'bershtee@reed.edu', 'Russian', 'Literature and Languages')
 ditter = Prof('dittera', 'Alexei', 'dittera@reed.edu', 'Chinese', 'Literature and Languages')
 makley = Prof('makleyc', 'Charlene', 'makleyc@reed.edu', 'Anthropology', 'History and Social Sciences')

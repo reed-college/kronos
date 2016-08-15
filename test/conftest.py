@@ -22,19 +22,19 @@ def populate_db():
         'Emma Rennie',
         'erennie@reed.edu',
         'Linguistics',
-        'Philosophy, Religion, Psychology and Linguistics')
+        'Philosophy, Religion, Psychology, and Linguistics')
     richard = Stu(
         'adcockr',
         'Richard Adcock',
         'adcockr@reed.edu',
         'Linguistics',
-        'Philosophy, Religion, Psychology and Linguistics')
+        'Philosophy, Religion, Psychology, and Linguistics')
     hovda = Prof(
         'hovdap',
         'Paul Hovda',
         'hovdap@reed.edu',
         'Philosophy',
-        'Philosophy, Religion, Psychology and Linguistics')
+        'Philosophy, Religion, Psychology, and Linguistics')
     hancock = Prof(
         'hancockv',
         'Ginny',
