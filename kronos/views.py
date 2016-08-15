@@ -5,7 +5,7 @@ from dateutil import parser
 import flask
 import httplib2
 
-from flask import Flask, flash, render_template, request, redirect, url_for, send_from_directory
+from flask import Flask, flash, Markup, render_template, request, redirect, url_for, send_from_directory
 from apiclient import discovery
 from oauth2client import client
 from werkzeug.utils import secure_filename
@@ -79,8 +79,6 @@ def edit_start_days():
         oralstarts = OralStartDay.query.order_by(OralStartDay.start).all()
         return render_template("oralweeks.html", oralstarts=oralstarts)
 
-# Copied almost entirely from:
-# http://flask.pocoo.org/docs/0.10/patterns/fileuploads/
 
 UPLOAD_FOLDER = '/Users/Jiahui/kronos/kronos/static/uploads'
 ALLOWED_EXTENSIONS = set(['ics', 'xls', 'xlsx', 'csv'])
@@ -98,14 +96,10 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('upload_file',
-                                    filename=filename))
+            flash(Markup('File uploaded. <a href="javascript:history.back()"> Back</a>'))
+            return render_template('uploaded.html')
     return render_template("upload.html")
 
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'],
-                               filename)
 
 @app.route('/print')
 def print_schedule():
