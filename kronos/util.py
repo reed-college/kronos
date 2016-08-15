@@ -216,7 +216,7 @@ def get_div_from_dept(dept):
     if dept in {'Biology', 'Chemistry', 'Physics', 'Mathematics'}:
         return 'Mathematics and Natural Sciences'
     if dept in {'Philosophy', 'Religion', 'Psychology', 'Linguistics'}:
-        return 'Philosophy, Religion, Psychology and Linguistics'
+        return 'Philosophy, Religion, Psychology, and Linguistics'
     return 'Other'
 
 def redirect_url():
