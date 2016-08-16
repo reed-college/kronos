@@ -25,6 +25,7 @@ def populate_db():
         'adcockr',
         'Richard Adcock',
         'adcockr@reed.edu')
+
     hovda = Prof(
         'hovdap',
         'Paul Hovda',
@@ -66,3 +67,18 @@ def db():
 @pytest.fixture
 def client():
     return kronos.app.test_client()
+
+
+# Once we know what Prod auth will look like, change tests to remove this
+@pytest.yield_fixture
+def debug_auth(request, client):
+    """
+    This sets the config to have debug true and then logs in the client
+    so that the client has FAC privileges
+    """
+    kronos.app.config['DEBUG'] = True
+    client.get('/login')
+    yield None
+    client.get('/logout')
+    kronos.app.config.from_object('kronos.config.TestConfig')
+    

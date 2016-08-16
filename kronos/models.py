@@ -64,6 +64,7 @@ class Prof(User):
 
 
 class Stu(User):
+
     __mapper_args__ = {'polymorphic_identity': 'student'}
     id = db.Column(db.Integer, ForeignKey('user.id'), primary_key=True)
 

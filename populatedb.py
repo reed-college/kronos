@@ -24,6 +24,7 @@ miriam = Stu('golzm', 'Miriam', 'golzm@reed.edu')
 sarah = Stu('allens', 'Sarah', 'allens@reed.edu')
 arthur = Stu('sillersa', 'Arthur', 'sillersa@reed.edu')
 
+
 # 1 Russian Senior so that we have 2 orals at the same time
 
 edmond = Stu('eedmonds', 'Edmond Soun', 'eedmonds@reed.edu')

@@ -1,4 +1,4 @@
-{% extends "bootstrap/base.html" %}
+{% extends "base.html" %}
 {% block title %}Upload events to Kronos{% endblock %}
 {% block scripts %}
 {{super()}}
@@ -6,10 +6,11 @@
 {% endblock %}
 
 {% block content %}
+{{super()}}
 <div class="container">
-  <h1>Upload Calendar</h1>
+  <h3>Upload Calendar</h3>
 
-  <h3>Step 1: Create a Calendar File</h3>
+  <h4>Step 1: Create a Calendar File</h4>
   <p>First, create a calendar file that you can import into Kronos.
     Choose one of these options:</p>
 
@@ -108,7 +109,7 @@
       </ol>
     </div>
 
-  <h3>Step 2: Upload Your Calendar File</h3>
+  <h4>Step 2: Upload Your Calendar File</h4>
   <form action="" method=post enctype=multipart/form-data>
     <p>Choose file to upload.<br>
       Kronos can import files with extension .xls, .xlsx, .csv or .ics.

@@ -1,9 +1,10 @@
 import datetime as dt
 from dateutil import parser
 from kronos import util
-from kronos.models import Oral, Stu, Prof, Event
+from kronos.models import Oral, Stu, Prof, Event, FAC
 from werkzeug.datastructures import ImmutableMultiDict
 import pytest
+from kronos.views import g
 
 
 class TestUtil:
@@ -167,3 +168,57 @@ class TestUtil:
             hovda = Prof.query.filter(Prof.username == 'hovdap').first()
             profs = util.free_professors(start,end)
             assert hovda in profs 
+    
+    class TestGetStartDay():
+
+        @pytest.mark.usefixtures("setup_db", "populate_db")
+        def test_get_only_start_day(self):
+            day = util.get_start_day(None)
+            assert day.description == "Sprang 2016"
+
+        @pytest.mark.usefixtures("setup_db", "populate_db")
+        def test_works_properly_when_given_id(self):
+            day = util.get_start_day(1)
+            assert day.description == "Sprang 2016"
+
+        @pytest.mark.usefixtures("setup_db")
+        def test_returns_none_on_empty_db(self):
+            day = util.get_start_day(None)
+            assert day is None
+            
+    class TestGetDivFromDept():
+        def test_the_arts_division(self):
+            assert util.get_div_from_dept("Art") == "The Arts"
+            assert util.get_div_from_dept("Dance") == "The Arts"
+            assert util.get_div_from_dept("Music") == "The Arts"
+            assert util.get_div_from_dept("Theatre") == "The Arts"
+
+        def test_HSS_division(self):
+            assert util.get_div_from_dept("Anthropology") == "History and Social Sciences"
+            assert util.get_div_from_dept("Economics") == "History and Social Sciences"
+            assert util.get_div_from_dept("History") == "History and Social Sciences"
+            assert util.get_div_from_dept("Political Science") == "History and Social Sciences"
+            assert util.get_div_from_dept("Sociology") == "History and Social Sciences"
+
+        def test_lit_lang_division(self):
+            assert util.get_div_from_dept("Chinese") == "Literature and Languages"
+            assert util.get_div_from_dept("Classics") == "Literature and Languages"
+            assert util.get_div_from_dept("English") == "Literature and Languages"
+            assert util.get_div_from_dept("Creative Writing") == "Literature and Languages"
+            assert util.get_div_from_dept("French") == "Literature and Languages"
+            assert util.get_div_from_dept("German") == "Literature and Languages"
+            assert util.get_div_from_dept("Russian") == "Literature and Languages"
+            assert util.get_div_from_dept("Spanish") == "Literature and Languages"
+
+        def test_mns_division(self):
+            assert util.get_div_from_dept("Biology") == "Mathematics and Natural Sciences"
+            assert util.get_div_from_dept("Chemistry") == "Mathematics and Natural Sciences"
+            assert util.get_div_from_dept("Mathematics") == "Mathematics and Natural Sciences"
+            assert util.get_div_from_dept("Physics") == "Mathematics and Natural Sciences"
+
+        def test_prpl_division(self):
+            assert util.get_div_from_dept("Philosophy") == "Philosophy, Religion, Psychology, and Linguistics"
+            assert util.get_div_from_dept("Religion") == "Philosophy, Religion, Psychology, and Linguistics"
+            assert util.get_div_from_dept("Psychology") == "Philosophy, Religion, Psychology, and Linguistics"
+            assert util.get_div_from_dept("Linguistics") == "Philosophy, Religion, Psychology, and Linguistics"
+
