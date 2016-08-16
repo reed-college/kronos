@@ -20,15 +20,11 @@ def populate_db():
     emma = Stu(
         'erennie',
         'Emma Rennie',
-        'erennie@reed.edu',
-        'Linguistics',
-        'Philosophy, Religion, Psychology and Linguistics')
+        'erennie@reed.edu')
     richard = Stu(
         'adcockr',
         'Richard Adcock',
-        'adcockr@reed.edu',
-        'Linguistics',
-        'Philosophy, Religion, Psychology and Linguistics')
+        'adcockr@reed.edu')
     hovda = Prof(
         'hovdap',
         'Paul Hovda',
@@ -44,12 +40,12 @@ def populate_db():
     oral1 = Oral(
         emma, 'Oral_Emma', datetime.datetime(
             2016, 5, 2, 10), datetime.datetime(
-            2016, 5, 2, 12), emma)
+            2016, 5, 2, 12), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', emma)
     oral1.readers = [hovda]
     oral2 = Oral(
         richard, 'Oral_Richard', datetime.datetime(
             2016, 5, 2, 15), datetime.datetime(
-            2016, 5, 2, 17), richard)
+            2016, 5, 2, 17), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', richard)
     oral2.readers = [hancock]
     s16 = OralStartDay("Sprang 2016", datetime.date(2016, 5, 2))
     kronos.db.session.add(emma)
