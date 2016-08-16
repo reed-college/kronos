@@ -85,7 +85,17 @@ var edit = {{ edit }};
     <input id="filter-start" name="start"type="hidden"></input>
     <input id="filter-end" name="end" type="hidden"></input>
     <div class="row">
-      <div class='col-md-12'>
+      <div class='col-md-6'>
+        <label class="checkbox-inline">
+          <input type="checkbox" id="toggle-events" checked>
+          Show Events
+        </label>
+        <label class="checkbox-inline">
+          <input type="checkbox" id="toggle-orals" checked>
+          Show Orals
+        </label>
+      </div>
+      <div class='col-md-6'>
         <button id='print-button' formmethod='get' class="btn btn-default pull-right">Print</button>
       </div>
     </div>
