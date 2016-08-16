@@ -15,22 +15,23 @@ db.session.add(griffinj)
 
 # Linguistic Seniors
 
-emma = Stu('erennie', 'Emma Rennie', 'erennie@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
-richard = Stu('adcockr', 'Richard Adcock', 'adcockr@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
-manon = Stu('gilmorem', 'Manon Gilmore', 'gilmorem@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
-knar = Stu('knhovakim', 'Knar', 'knhovakim@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
-syd = Stu('lows', 'Syd', 'lows@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
-miriam = Stu('golzm', 'Miriam', 'golzm@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
-sarah = Stu('allens', 'Sarah', 'allens@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
-arthur = Stu('sillersa', 'Arthur', 'sillersa@reed.edu', 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics')
+emma = Stu('erennie', 'Emma Rennie', 'erennie@reed.edu')
+richard = Stu('adcockr', 'Richard Adcock', 'adcockr@reed.edu')
+manon = Stu('gilmorem', 'Manon Gilmore', 'gilmorem@reed.edu')
+knar = Stu('knhovakim', 'Knar', 'knhovakim@reed.edu')
+syd = Stu('lows', 'Syd', 'lows@reed.edu')
+miriam = Stu('golzm', 'Miriam', 'golzm@reed.edu')
+sarah = Stu('allens', 'Sarah', 'allens@reed.edu')
+arthur = Stu('sillersa', 'Arthur', 'sillersa@reed.edu')
+
 
 # 1 Russian Senior so that we have 2 orals at the same time
 
-edmond = Stu('eedmonds', 'Edmond Soun', 'eedmonds@reed.edu', 'Russian', 'Literature and Languages')
+edmond = Stu('eedmonds', 'Edmond Soun', 'eedmonds@reed.edu')
 
 # Made up Senior
 
-jon = Stu('snowj', 'Jon Snow', 'snowj@reed.edu', 'Physics', 'Mathematics and Natural Sciences')
+jon = Stu('snowj', 'Jon Snow', 'snowj@reed.edu')
 
 db.session.add(emma)
 db.session.add(richard)
@@ -93,41 +94,41 @@ db.session.add(event2)
 # db.session.add(event3)
 
 # Orals
-oral1 = Oral(emma, 'Oral_Emma', datetime.datetime(2016,5,2,10), datetime.datetime(2016,5,2,12), griffinj)
+oral1 = Oral(emma, 'Oral_Emma', datetime.datetime(2016,5,2,10), datetime.datetime(2016,5,2,12), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', griffinj)
 oral1.readers = [pearson, becker, hovda, somda]
 
-oral2 = Oral(richard, 'Oral_Richard', datetime.datetime(2016,5,2,15), datetime.datetime(2016,5,2,17), griffinj)
+oral2 = Oral(richard, 'Oral_Richard', datetime.datetime(2016,5,2,15), datetime.datetime(2016,5,2,17), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', griffinj)
 oral2.readers = [becker, gruber, minardi, kroll]
  
-oral3 = Oral(manon, 'Oral_Manon', datetime.datetime(2016,5,3,10), datetime.datetime(2016,5,3,12), griffinj)
+oral3 = Oral(manon, 'Oral_Manon', datetime.datetime(2016,5,3,10), datetime.datetime(2016,5,3,12), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', griffinj)
 oral3.readers = [pearson, gruber, becker, witt]
  
-oral4 = Oral(knar, 'Oral_Knar', datetime.datetime(2016,5,3,13), datetime.datetime(2016,5,3,15), griffinj)
+oral4 = Oral(knar, 'Oral_Knar', datetime.datetime(2016,5,3,13), datetime.datetime(2016,5,3,15), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', griffinj)
 oral4.readers = [gruber, pearson, khan, bershtein]
  
-oral5 = Oral(syd, 'Oral_Syd', datetime.datetime(2016,5,3,15), datetime.datetime(2016,5,3,17), griffinj)
+oral5 = Oral(syd, 'Oral_Syd', datetime.datetime(2016,5,3,15), datetime.datetime(2016,5,3,17), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', griffinj)
 oral5.readers = [becker, pearson, ditter, makley]
  
-oral6 = Oral(miriam, 'Oral_Miriam', datetime.datetime(2016,5,4,13), datetime.datetime(2016,5,4,15), griffinj)
+oral6 = Oral(miriam, 'Oral_Miriam', datetime.datetime(2016,5,4,13), datetime.datetime(2016,5,4,15), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', griffinj)
 oral6.readers = [gruber, becker, hancock, faletra]
  
-oral7 = Oral(sarah, 'Oral_Sarah', datetime.datetime(2016,5,5,10), datetime.datetime(2016,5,5,12), griffinj)
+oral7 = Oral(sarah, 'Oral_Sarah', datetime.datetime(2016,5,5,10), datetime.datetime(2016,5,5,12), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', griffinj)
 oral7.readers = [pearson]
 
-oral8 = Oral(arthur, 'Oral_Arthur', datetime.datetime(2016,5,5,15), datetime.datetime(2016,5,5,17), griffinj)
+oral8 = Oral(arthur, 'Oral_Arthur', datetime.datetime(2016,5,5,15), datetime.datetime(2016,5,5,17), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', griffinj)
 oral8.readers = [gruber, pearson, becker, luker]
 
-oral9 = Oral(edmond, 'Oral_Edmond', datetime.datetime(2016,5,2,10), datetime.datetime(2016,5,2,12), griffinj)
+oral9 = Oral(edmond, 'Oral_Edmond', datetime.datetime(2016,5,2,10), datetime.datetime(2016,5,2,12), 'Russian', 'Literature and Languages', griffinj)
 oral9.readers = [bershtein, gruber, faletra, minardi]
 
-oral10 = Oral(jon, 'Oral_Jon', datetime.datetime(2016,5,6,10), datetime.datetime(2016,5,6,12), griffinj)
+oral10 = Oral(jon, 'Oral_Jon', datetime.datetime(2016,5,6,10), datetime.datetime(2016,5,6,12), 'Physics', 'Mathematics and Natural Sciences', griffinj)
 oral10.readers = [hovda]
 
 # made-up orals for testing validators.
-# oral10 = Oral(emma, 'Oral_test', datetime.datetime(2016,5,2,10), datetime.datetime(2016,5,2,12), griffinj)
+# oral10 = Oral(emma, 'Oral_test', datetime.datetime(2016,5,2,10), datetime.datetime(2016,5,2,12), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', griffinj)
 # oral10.readers = [pearson, becker, hovda, somda]
 
-# oral11 = Oral(emma, 'Oral_test', datetime.datetime(2016,6,1,10), datetime.datetime(2016,6,1,12), griffinj)
+# oral11 = Oral(emma, 'Oral_test', datetime.datetime(2016,6,1,10), datetime.datetime(2016,6,1,12), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', griffinj)
 # oral11.readers = [pearson, ditter, minardi, witt]
 
 

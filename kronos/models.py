@@ -64,15 +64,12 @@ class Prof(User):
 
 
 class Stu(User):
-    department = db.Column(db.Enum(*DEPARTMENTS, name="department"))
-    division = db.Column(db.Enum(*DIVISIONS, name="division"))
+
     __mapper_args__ = {'polymorphic_identity': 'student'}
     id = db.Column(db.Integer, ForeignKey('user.id'), primary_key=True)
 
-    def __init__(self, username, name, email, department, division):
+    def __init__(self, username, name, email):
         User.__init__(self, username, name, email)
-        self.department = department
-        self.division = division
         self.type = 'student'
 
     def __repr__(self):
@@ -80,7 +77,6 @@ class Stu(User):
 
 
 class Event(db.Model):
-
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     summary = db.Column(db.Text)
     dtstart = db.Column(db.DateTime, nullable=False)
@@ -136,6 +132,8 @@ class Event(db.Model):
 
 
 class Oral(Event):
+    department = db.Column(db.Enum(*DEPARTMENTS, name="department"))
+    division = db.Column(db.Enum(*DIVISIONS, name="division"))
     __tablename__ = 'oral'
     __mapper_args__ = {'polymorphic_identity': 'oral'}
     id = db.Column(
@@ -150,10 +148,12 @@ class Oral(Event):
     readers = db.relationship('Prof', secondary=readers,
                               backref=db.backref('orals', lazy='dynamic'))
 
-    def __init__(self, stu, summary, dtstart, dtend, user,
+    def __init__(self, stu, summary, dtstart, dtend, department, division, user, 
                  response=None):
         Event.__init__(self, summary, dtstart, dtend, user)
-        self.private = False
+        self.private = False       
+        self.department = department
+        self.division = division
         self.user = user
         self.stu = stu
         self.type = 'oral'
