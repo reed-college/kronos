@@ -100,6 +100,8 @@ def filter_events(eventobjs, args):
     dept = str(args.get("department"))
     profs = args.getlist("professors[]")
     stus = args.getlist("students[]")
+    showevents = args.get("showevents") or "true"
+    showorals = args.get("showorals") or "true" 
 
     # filtering by querystring args
     if ((profs != [] and profs != [''] and profs is not None) or
@@ -138,6 +140,10 @@ def filter_events(eventobjs, args):
         eventobjs = eventobjs.filter(Event.dtend >= start)
     if end is not None:
         eventobjs = eventobjs.filter(Event.dtstart <= end)
+    if showevents == "false":
+        eventobjs = eventobjs.filter(Event.discriminator != "event")
+    if showorals == "false":
+        eventobjs = eventobjs.filter(Event.discriminator != "oral")
 
     return eventobjs
 

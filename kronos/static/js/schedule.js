@@ -218,7 +218,7 @@ $(document).ready(function() {
         },
     });
 });
-$(document).on('change', '#filter-well select', updateQuery);
+$(document).on('change', '#filter-well select, input', updateQuery);
 
 $(".clr-btn").click(function() {
     select = $(this).data("select"); //gets id of the select attached to this button
@@ -257,7 +257,9 @@ function getFilters(){
         department: $('#department option:selected').text(),
         division: $('#division option:selected').text(),
         'professors[]': $('#prof-select').val(),
-        'students[]': $('#stu-select').val()
+        'students[]': $('#stu-select').val(),
+        showevents: $('#toggle-events').is(':checked'),
+        showorals: $('#toggle-orals').is(':checked')
     };
 } 
 
