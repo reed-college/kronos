@@ -30,7 +30,7 @@ def populate_db():
         'Paul Hovda',
         'hovdap@reed.edu',
         'Philosophy',
-        'Philosophy, Religion, Psychology and Linguistics')
+        'Philosophy, Religion, Psychology, and Linguistics')
     hancock = Prof(
         'hancockv',
         'Ginny',

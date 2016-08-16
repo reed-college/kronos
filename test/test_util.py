@@ -40,25 +40,21 @@ class TestUtil:
             'Paul Hovda',
             'hovdap@reed.edu',
             'Philosophy',
-            'Philosophy, Religion, Psychology and Linguistics')
+            'Philosophy, Religion, Psychology, and Linguistics')
         pearson = Prof(
             'pearson',
             'Pearson',
             'pearson@reed.edu',
             'Linguistics',
-            'Philosophy, Religion, Psychology and Linguistics')
+            'Philosophy, Religion, Psychology, and Linguistics')
         emma = Stu(
             'erennie',
             'Emma Rennie',
-            'erennie@reed.edu',
-            'Linguistics',
-            'Philosophy, Religion, Psychology and Linguistics')
+            'erennie@reed.edu')
         richard = Stu(
             'adcockr',
             'Richard Adcock',
-            'adcockr@reed.edu',
-            'Linguistics',
-            'Philosophy, Religion, Psychology and Linguistics')
+            'adcockr@reed.edu')
 
         oral1 = Oral(
             emma,
