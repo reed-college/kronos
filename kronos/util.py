@@ -1,5 +1,7 @@
 import datetime as dt
-from .models import department, division, Event, Oral, Stu, Prof, OralStartDay
+from .models import Event, Oral, Stu, Prof, OralStartDay
+from flask import request, url_for, g, abort
+from .academic_constants import *
 
 
 def FreeTimeCalc(events, orals):
@@ -98,6 +100,8 @@ def filter_events(eventobjs, args):
     dept = str(args.get("department"))
     profs = args.getlist("professors[]")
     stus = args.getlist("students[]")
+    showevents = args.get("showevents") or "true"
+    showorals = args.get("showorals") or "true" 
 
     # filtering by querystring args
     if ((profs != [] and profs != [''] and profs is not None) or
@@ -120,15 +124,15 @@ def filter_events(eventobjs, args):
             break
         ora = Event.query.join(Oral).filter(Oral.stu_id == stuid)
         eventobjs = eventobjs.union(ora)
-    if div in division:
+    if div in DIVISIONS:
         st = eventobjs.join(Oral).join(Oral.stu).\
-            join(Stu).filter(Stu.division == div)
+            join(Stu).filter(Oral.division == div)
         pf = eventobjs.join(Event.user).\
             join(Prof).filter(Prof.division == div)
         eventobjs = st.union(pf)
-    if dept in department:
+    if dept in DEPARTMENTS:
         st = eventobjs.join(Oral).join(Oral.stu).\
-            join(Stu).filter(Stu.department == dept)
+            join(Stu).filter(Oral.department == dept)
         pf = eventobjs.join(Event.user).\
             join(Prof).filter(Prof.department == dept)
         eventobjs = st.union(pf)
@@ -136,6 +140,10 @@ def filter_events(eventobjs, args):
         eventobjs = eventobjs.filter(Event.dtend >= start)
     if end is not None:
         eventobjs = eventobjs.filter(Event.dtstart <= end)
+    if showevents == "false":
+        eventobjs = eventobjs.filter(Event.discriminator != "event")
+    if showorals == "false":
+        eventobjs = eventobjs.filter(Event.discriminator != "oral")
 
     return eventobjs
 
@@ -199,4 +207,38 @@ def get_start_day(startdayid):
                 OralStartDay.start).first()
         return startoralday
 
+def get_div_from_dept(dept):
+    """
+    Takes a string with the name of a department and returns the 
+    division its in 
+    """
+    if dept not in DEPARTMENTS:
+        raise AssertionError("Given dept not one of: " + str(DEPARTMENTS))
+    if dept in THEARTS:
+        return 'The Arts'
+    if dept in HSS: 
+        return 'History and Social Sciences'
+    if dept in LL:
+        return 'Literature and Languages'    
+    if dept in MNS: 
+        return 'Mathematics and Natural Sciences'
+    if dept in PRPL:
+        return 'Philosophy, Religion, Psychology, and Linguistics'
+    return 'Other'
 
+def redirect_url():
+    """
+    helper function to redirect to the last visited page
+    stolen from: http://flask.pocoo.org/docs/0.11/reqcontext/
+    """
+    return request.args.get('next') or \
+           request.referrer or \
+           url_for('schedule')
+
+def authorize():
+    """
+    checks that the current user is a FAC 
+    used for pages that update data, like submitevent
+    """
+    if not(g.user and g.user.discriminator == "FAC"):
+        abort(403)
