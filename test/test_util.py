@@ -60,7 +60,9 @@ class TestUtil:
             emma,
             'Oral_Emma',
             parser.parse('20160502 10:00:00 AM'),
-            parser.parse('20160502 12:00:00 PM'),
+            parser.parse('20160502 12:00:00 PM'), 
+            'Linguistics', 
+            'Philosophy, Religion, Psychology, and Linguistics',
             pearson)
         oral1.readers = [pearson]
 
@@ -68,7 +70,9 @@ class TestUtil:
             richard,
             'Oral_Richard',
             parser.parse('20160502 03:00:00 PM'),
-            parser.parse('20160502 05:00:00 PM'),
+            parser.parse('20160502 05:00:00 PM'), 
+            'Linguistics', 
+            'Philosophy, Religion, Psychology, and Linguistics',
             hovda)
         oral2.readers = [hovda]
 

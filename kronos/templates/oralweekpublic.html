@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Add New Weeks{% endblock %}
+{% block styles %}
+{{ super() }}
+{% endblock %}
+{% block scripts %}
+{{super()}}
+<script src="{{url_for('static', filename='js/oralweeks.js')}}"></script>
+{% endblock %}
+{% block content %}
+{{ super() }}
+<div class="container-fluid">
+  <p>
+    If you got redirected here and don't know why, please email 
+    <a href="mailto:grantal@reed.edu">grantal@reed.edu</a> or 
+    <a href="mailto:weij@reed.edu">weij@reed.edu</a>. 
+  </p>
+  <p>
+    If you were trying to add new orals weeks, please 
+    <a href="{{ url_for('login') }}">login</a> 
+    and make sure you're authorized to do so.
+  </p>
+</div>
+{% endblock %}
