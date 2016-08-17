@@ -17,6 +17,7 @@ from .models import Oral, Stu, FAC
 from .academic_constants import DEPARTMENTS, DIVISIONS
 from .models import Prof, Event, User, OralStartDay
 from .util import authorize
+from .importfile import import_from_uploads
 
 
 @app.route('/')
@@ -99,6 +100,8 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            #TODO install celery to run this in background
+            import_from_uploads(app.config['UPLOAD_FOLDER'])
             flash(Markup('File uploaded. <a href="javascript:history.back()"> Back</a>'))
             return render_template('uploaded.html')
     return render_template("upload.html")

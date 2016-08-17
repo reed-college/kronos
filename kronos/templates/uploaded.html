@@ -1,8 +1,13 @@
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    {% for message in messages %}
-      {{ message | safe }}
-    {% endfor %}
-  {% endif %}
-{% endwith %}
-{% block body %}{% endblock %}
+{% extends "base.html" %}
+{% block content %}
+{{ super() }} 
+<div class="container">
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+        {{ message | safe }}
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+</div>
+{% endblock %}
