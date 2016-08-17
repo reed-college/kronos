@@ -30,7 +30,7 @@ def schedule():
     # only get students who have orals
     students = Stu.query.filter(Stu.oral).all()
     professors = Prof.query.all()
-    
+
     # Only FACs can edit
     edit = "false"
     if g.user and g.user.discriminator == "FAC":
@@ -82,10 +82,10 @@ def edit_start_days():
             return render_template("oralweeks.html", oralstarts=oralstarts)
         else:
             return render_template("oralweekpublic.html")
-            
 
 
-UPLOAD_FOLDER = '/Users/Jiahui/kronos/kronos/static/uploads'
+
+UPLOAD_FOLDER = 'PATH-TO-THE-UPLOADS-FOLDER'
 ALLOWED_EXTENSIONS = set(['ics', 'xls', 'xlsx', 'csv'])
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -190,10 +190,23 @@ def get_events_json():
             "student": "",
             "readers": [],
             "location": event.location,
+            "color": ""
         }
         if isinstance(event, Oral):
             evjson["readers"] = [reader.name for reader in event.readers]
             evjson["student"] = event.stu.name
+            if event.division == DIVISIONS[0]:
+                evjson["color"] = "#E2CFEA"
+            elif event.division == DIVISIONS[1]:
+                evjson["color"] = "#3b5998"
+            elif event.division == DIVISIONS[2]:
+                evjson["color"] = "#276f45"
+            elif event.division == DIVISIONS[3]:
+                evjson["color"] = "#b62020"
+            else:
+                evjson["color"] = "#A8D0DB"
+        else:
+            evjson["color"] = "#c3c0b7"
         events.append(evjson)
 
     return json.dumps(events)
@@ -356,26 +369,26 @@ def login():
                 db.session.add(gonyerk)
                 db.session.commit()
             session['user_id'] = FAC.query.first().id
-            return redirect(util.redirect_url())   
-        else:        
-            return redirect(util.redirect_url())   
+            return redirect(util.redirect_url())
+        else:
+            return redirect(util.redirect_url())
     else:
         # Can't log in again when you're already logged in
         abort(403)
-    
+
 @app.route('/logout')
 def logout():
     if current_app.config['DEBUG']:
         del session['user_id']
-        return redirect(util.redirect_url())   
+        return redirect(util.redirect_url())
     else:
-        return redirect(util.redirect_url())   
+        return redirect(util.redirect_url())
 
 @app.before_request
 def load_user():
     """
     sets 'global' user variable based on user id stored in session variables
-    stolen from: 
+    stolen from:
     http://stackoverflow.com/questions/13617231/how-to-use-g-user-global-in-flask
     """
     if session.get("user_id"):
@@ -383,5 +396,3 @@ def load_user():
     else:
         user = None
     g.user = user
-
-
