@@ -5,6 +5,7 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://username:password@host:port/mydatabase'
     DEBUG = False 
     SECRET_KEY = str(uuid.uuid4())
+    UPLOAD_FOLDER = "./kronos/static/uploads/" 
 
 class DevelopmentConfig(Config):
     DEBUG = True

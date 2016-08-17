@@ -5,6 +5,7 @@ from dateutil import parser
 import flask
 import httplib2
 from functools import wraps
+import requests
 
 from flask import Flask, flash, Markup, render_template, request, redirect, Response, url_for, send_from_directory, current_app, session, abort, g
 from apiclient import discovery
@@ -85,10 +86,7 @@ def edit_start_days():
             
 
 
-UPLOAD_FOLDER = '/Users/Jiahui/kronos/kronos/static/uploads'
 ALLOWED_EXTENSIONS = set(['ics', 'xls', 'xlsx', 'csv'])
-
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -180,13 +178,17 @@ def get_events_json():
     # putting the events into the formal fullcalendar wants
     events = []
     for event in eventobjs:
+        if event.user:
+            name = event.user.name
+        else:
+            name = ""
         evjson = {
             "id": event.id,
             "title": event.summary,
             "start": str(event.dtstart),
             "end": str(event.dtend),
             "type": event.discriminator,
-            "user": event.user.name,
+            "user": name,
             "student": "",
             "readers": [],
             "location": event.location,
@@ -312,6 +314,7 @@ def get_gcal():
     else:
         http_auth = credentials.authorize(httplib2.Http())
         service = discovery.build('calendar', 'v3', http=http_auth)
+        """
         # 'Z' indicates UTC time
         oralsweekstart = dt.datetime(2017, 5, 1).isoformat() + 'Z'
         oralsweekend = dt.datetime(2017, 5, 6).isoformat() + 'Z'
@@ -323,6 +326,13 @@ def get_gcal():
         events = eventsResult.get('items', [])
 
         return json.dumps(events)
+        """
+        calendar_list_entry = service.calendarList().get(calendarId='primary').execute()
+        id = calendar_list_entry['id'] 
+        url = "https://calendar.google.com/calendar/ical/" + id + "/private/basic.ics"
+        r = requests.get(url)
+        print(r.text)
+        return r.text
 
 
 @app.route('/oauth2callback')

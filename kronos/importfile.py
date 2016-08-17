@@ -5,9 +5,10 @@ from pandas import DataFrame
 from sqlalchemy import create_engine
 import pandas as pd
 import pytz
+from . import app
 
 # Remember to change user name and file path.
-engine = create_engine('postgresql://Jiahui:pass@localhost/db_kronos')
+engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 
 # Import CSV files
 
@@ -53,6 +54,9 @@ def import_ics(path):
     start = getdtstart(cal)
     end = getdtend(cal)
 
+    print(start[0])
+
+
     df = pd.DataFrame(dict(summary = s, dtstart = start, dtend = end, private = True))
     assert df.query('dtstart > dtend').empty
 
@@ -66,9 +70,9 @@ def import_from_uploads(path):
         file_path = os.path.join(path, file)
         if extension == '.xlsx' or extension == '.xls':
             import_excel(file_path)
-        elif extension == 'csv':
+        elif extension == '.csv':
             import_csv(file_path)
-        elif extension == 'ics':
+        elif extension == '.ics':
             import_ics(file_path)
 
 
