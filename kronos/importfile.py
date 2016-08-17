@@ -50,7 +50,7 @@ def getdtend(cal):
     return ls
 
 # import data to db
-def import_ics(path):
+def import_ics(path, userid=None):
     cal = Calendar().from_ical(open(path,'rb').read())
 
     s = getsummary(cal)
@@ -64,8 +64,8 @@ def import_ics(path):
     for i in range(len(end)):
         if type(end[i]) == datetime: 
             end[i] = end[i].replace(tzinfo=None)
-    
-    df = pd.DataFrame(dict(summary = s, dtstart = start, dtend = end, private = True))
+     
+    df = pd.DataFrame(dict(summary = s, dtstart = start, dtend = end, private = True, userid = userid))
     assert df.query('dtstart > dtend').empty
 
     df.to_sql('event', engine, if_exists='append', index=False)   
@@ -73,7 +73,7 @@ def import_ics(path):
 
 # Import files from uploads folder
 
-def import_from_uploads(path):
+def import_from_uploads(path, userid=None):
     for file in os.listdir(path):
         extension = os.path.splitext(file)[1]
         file_path = os.path.join(path, file)
@@ -82,7 +82,7 @@ def import_from_uploads(path):
         elif extension == '.csv':
             import_csv(file_path)
         elif extension == '.ics':
-            import_ics(file_path)
+            import_ics(file_path,userid)
 
 
 

@@ -95,13 +95,14 @@ def allowed_file(filename):
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
-    if request.method == 'POST':
+    # Need to be logged in to upload so we can assign events
+    if request.method == 'POST' and g.user:
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             #TODO install celery to run this in background
-            import_from_uploads(app.config['UPLOAD_FOLDER'])
+            import_from_uploads(app.config['UPLOAD_FOLDER'],session.get("user_id"))
             flash(Markup('File uploaded. <a href="javascript:history.back()"> Back</a>'))
             return render_template('uploaded.html')
     return render_template("upload.html")
