@@ -56,16 +56,19 @@ filter +=')'
 # alphabet because ldap limits searches to 500 entries, so otherwise we
 # would not be able to get everyone 
 for i in ascii_lowercase:
+    # progress bar
+    print('.', end="", flush=True)
     myfilter = filter.replace("a*", i + "*")
     conn.search(search_base=query,
                 search_filter=myfilter,
                 search_scope=ldap3.SUBTREE,
                 attributes=ldap3.ALL_ATTRIBUTES)
+    
     for person in conn.response:
         att = person.get('attributes')
         uid = att.get('uid')[0] or "username"
         name = att.get('gecos') or "name"
-        email = att.get('eduPersonPrincipalName') or "placeholder@reed.edu"
+        email = att.get('eduPersonPrincipalName').lower() or "placeholder@reed.edu"
         role = att.get('eduPersonPrimaryAffiliation')  
         if name is None:
             print(uid)
@@ -95,4 +98,4 @@ for i in ascii_lowercase:
                 # db.session.add(newuser)
                 pass
 db.session.commit()
-
+print("")

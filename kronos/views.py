@@ -318,25 +318,31 @@ def get_gcal():
     else:
         http_auth = credentials.authorize(httplib2.Http())
         service = discovery.build('calendar', 'v3', http=http_auth)
-        """
         # 'Z' indicates UTC time
         oralsweekstart = dt.datetime(2017, 5, 1).isoformat() + 'Z'
         oralsweekend = dt.datetime(2017, 5, 6).isoformat() + 'Z'
 
-        print('Getting events during orals week')
         eventsResult = service.events().list(
-            calendarId='primary', timeMin=oralsweekstart, timeMax=oralsweekend,
+            calendarId='reed.edu_u6m2d7fain2e3jcl1pqs3ljclg@group.calendar.google.com', timeMin=oralsweekstart, timeMax=oralsweekend,
             singleEvents=True, orderBy='startTime').execute()
         events = eventsResult.get('items', [])
-
-        return json.dumps(events)
+        eventstr = ""
+        for event in events:
+            summ = event.get("summary")
+            start = event.get("start").get("dateTime") 
+            end = event.get("end").get("dateTime") 
+            email = event.get("creator").get("email")
+            user = User.query.filter(User.email == email).first() or g.user
+            eventobj = Event(summ, start, end, user)
+            db.session.add(eventobj)
+        
+        db.session.commit()
+            
+        return json.dumps(events) 
         """
-        calendar_list_entry = service.calendarList().get(calendarId='primary').execute()
-        id = calendar_list_entry['id'] 
-        url = "https://calendar.google.com/calendar/ical/" + id + "/private/basic.ics"
-        r = requests.get(url)
-        print(r.text)
-        return r.text
+        calendar_list = service.calendarList().list().execute()
+        return json.dumps(calendar_list['items']) 
+        """
 
 
 @app.route('/oauth2callback')
