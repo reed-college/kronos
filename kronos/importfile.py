@@ -15,14 +15,17 @@ engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 def import_csv(path):
     df_csv = pd.read_csv(path)
     assert df_csv.query('dtstart > dtend').empty
-    return df_csv.to_sql('event', engine, if_exists='append', index=False)
+    df_csv.to_sql('event', engine, if_exists='append', index=False)
+    os.remove(path)
+    
 
 # Import Excel files
 
 def import_excel(path):
     df_excel = pd.read_excel(path)
     assert df_excel.query('dtstart > dtend').empty
-    return df_excel.to_sql('event', engine, if_exists='append', index=False)
+    df_excel.to_sql('event', engine, if_exists='append', index=False)
+    os.remove(path)
 
 
 # Import ics files
@@ -62,13 +65,11 @@ def import_ics(path):
         if type(end[i]) == datetime: 
             end[i] = end[i].replace(tzinfo=None)
     
-    print(start[0])
-
-
     df = pd.DataFrame(dict(summary = s, dtstart = start, dtend = end, private = True))
     assert df.query('dtstart > dtend').empty
 
-    return df.to_sql('event', engine, if_exists='append', index=False)   
+    df.to_sql('event', engine, if_exists='append', index=False)   
+    os.remove(path)
 
 # Import files from uploads folder
 
