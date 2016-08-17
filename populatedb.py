@@ -32,6 +32,8 @@ edmond = Stu('eedmonds', 'Edmond Soun', 'eedmonds@reed.edu')
 # Made up Senior
 
 jon = Stu('snowj', 'Jon Snow', 'snowj@reed.edu')
+thomas = Stu('youngt', 'Thomas Young', 'youngt@reed.edu')
+albert = Stu('einsteina', 'Albert Einstein', 'einsteina@reed.edu')
 
 db.session.add(emma)
 db.session.add(richard)
@@ -43,6 +45,8 @@ db.session.add(sarah)
 db.session.add(arthur)
 db.session.add(edmond)
 db.session.add(jon)
+db.session.add(thomas)
+db.session.add(albert)
 
 # Profs
 
@@ -99,19 +103,19 @@ oral1.readers = [pearson, becker, hovda, somda]
 
 oral2 = Oral(richard, 'Oral_Richard', datetime.datetime(2016,5,2,15), datetime.datetime(2016,5,2,17), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', griffinj)
 oral2.readers = [becker, gruber, minardi, kroll]
- 
+
 oral3 = Oral(manon, 'Oral_Manon', datetime.datetime(2016,5,3,10), datetime.datetime(2016,5,3,12), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', griffinj)
 oral3.readers = [pearson, gruber, becker, witt]
- 
+
 oral4 = Oral(knar, 'Oral_Knar', datetime.datetime(2016,5,3,13), datetime.datetime(2016,5,3,15), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', griffinj)
 oral4.readers = [gruber, pearson, khan, bershtein]
- 
+
 oral5 = Oral(syd, 'Oral_Syd', datetime.datetime(2016,5,3,15), datetime.datetime(2016,5,3,17), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', griffinj)
 oral5.readers = [becker, pearson, ditter, makley]
- 
+
 oral6 = Oral(miriam, 'Oral_Miriam', datetime.datetime(2016,5,4,13), datetime.datetime(2016,5,4,15), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', griffinj)
 oral6.readers = [gruber, becker, hancock, faletra]
- 
+
 oral7 = Oral(sarah, 'Oral_Sarah', datetime.datetime(2016,5,5,10), datetime.datetime(2016,5,5,12), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', griffinj)
 oral7.readers = [pearson]
 
@@ -123,6 +127,12 @@ oral9.readers = [bershtein, gruber, faletra, minardi]
 
 oral10 = Oral(jon, 'Oral_Jon', datetime.datetime(2016,5,6,10), datetime.datetime(2016,5,6,12), 'Physics', 'Mathematics and Natural Sciences', griffinj)
 oral10.readers = [hovda]
+
+oral11 = Oral(thomas, 'Oral_Thomas', datetime.datetime(2016,5,3,15), datetime.datetime(2016,5,3,17), 'History', 'History and Social Sciences', griffinj)
+oral11.readers = [hancock]
+
+oral12 = Oral(albert, 'Oral_Albert', datetime.datetime(2016,5,5,15), datetime.datetime(2016,5,5,17), 'Music', 'The Arts', griffinj)
+oral12.readers = [hancock]
 
 # made-up orals for testing validators.
 # oral10 = Oral(emma, 'Oral_test', datetime.datetime(2016,5,2,10), datetime.datetime(2016,5,2,12), 'Linguistics', 'Philosophy, Religion, Psychology, and Linguistics', griffinj)
@@ -142,13 +152,14 @@ db.session.add(oral7)
 db.session.add(oral8)
 db.session.add(oral9)
 db.session.add(oral10)
-# db.session.add(oral11)
+db.session.add(oral11)
+db.session.add(oral12)
 
-s16 = OralStartDay("Spring 2016", datetime.date(2016, 5,  2)) 
+s16 = OralStartDay("Spring 2016", datetime.date(2016, 5,  2))
 f16 = OralStartDay("Fall 2016",   datetime.date(2016, 12, 8))
-s17 = OralStartDay("Spring 2017", datetime.date(2017, 5,  1)) 
+s17 = OralStartDay("Spring 2017", datetime.date(2017, 5,  1))
 f17 = OralStartDay("Fall 2017",   datetime.date(2017, 12, 7))
-s18 = OralStartDay("Spring 2018", datetime.date(2018, 4,  30)) 
+s18 = OralStartDay("Spring 2018", datetime.date(2018, 4,  30))
 
 db.session.add(s16)
 db.session.add(f16)
@@ -157,4 +168,3 @@ db.session.add(f17)
 db.session.add(s18)
 
 db.session.commit()
-

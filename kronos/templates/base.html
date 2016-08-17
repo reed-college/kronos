@@ -5,7 +5,7 @@
 {% endblock %}
 {% block content %}
 <head>
-  <nav class="navbar navbar-default navbar-static-top">
+  <nav class="navbar navbar-inverse navbar-static-top" style="background-color: #870400;">
     <div class="container-fluid">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#kronos-navbar-collapse" aria-expanded="false">
@@ -14,19 +14,19 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">Kronos</a>
+        <a class="navbar-brand" href="#" style="color: #F3E6E6">Kronos</a>
       </div>
       <div class="collapse navbar-collapse" id="kronos-navbar-collapse">
         <ul class="nav navbar-nav">
-          <li><a href="{{ url_for('schedule') }}">Schedule</a></li>
-          <li><a href="{{ url_for('search') }}">Search</a></li>
-          <li><a href="{{ url_for('upload_file') }}">Upload</a></li>
+          <li><a href="{{ url_for('schedule') }}" style="color: #F3E6E6">Schedule</a></li>
+          <li><a href="{{ url_for('search') }}" style="color: #F3E6E6">Search</a></li>
+          <li><a href="{{ url_for('upload_file') }}" style="color: #F3E6E6">Upload</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           {% if not session.get('user_id') %}
-            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('login') }}" style="color: #F3E6E6">Login</a></li>
           {% else %}
-            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            <li><a href="{{ url_for('logout') }}" style="color: #F3E6E6">Logout</a></li>
           {% endif %}
         </ul>
       </div>
