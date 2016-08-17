@@ -53,7 +53,15 @@ def import_ics(path):
     s = getsummary(cal)
     start = getdtstart(cal)
     end = getdtend(cal)
-
+    
+    # replacing timezone with none for gcal
+    for i in range(len(start)):
+        if type(start[i]) == datetime: 
+            start[i] = start[i].replace(tzinfo=None)
+    for i in range(len(end)):
+        if type(end[i]) == datetime: 
+            end[i] = end[i].replace(tzinfo=None)
+    
     print(start[0])
 
 
