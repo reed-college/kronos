@@ -7,7 +7,7 @@ import httplib2
 from functools import wraps
 import requests
 
-from flask import Flask, flash, Markup, render_template, request, redirect, Response, url_for, send_from_directory, current_app, session, abort, g
+from flask import Flask, flash, Markup, render_template, request, redirect, Response, url_for, send_from_directory, current_app, session, abort, g, stream_with_context
 from apiclient import discovery
 from oauth2client import client
 from werkzeug.utils import secure_filename
@@ -304,7 +304,7 @@ def delete_event():
     return "Event '" + name + "' deleted"
 
 
-@app.route('/gcal')
+@app.route('/gcal', methods=['GET','POST'])
 def get_gcal():
     """
     Shows the user what events they have during orals week
@@ -318,27 +318,35 @@ def get_gcal():
     else:
         http_auth = credentials.authorize(httplib2.Http())
         service = discovery.build('calendar', 'v3', http=http_auth)
-        # 'Z' indicates UTC time
-        oralsweekstart = dt.datetime(2017, 5, 1).isoformat() + 'Z'
-        oralsweekend = dt.datetime(2017, 5, 6).isoformat() + 'Z'
+        # renders a small form to get start and end times and calendar name
+        if request.method == "GET":
+            calendar_list = service.calendarList().list().execute()
+            calendars = {(cal.get("summary"), cal.get("id")) if not cal.get("primary") else ("Primary", "primary") for cal in calendar_list["items"]}
+            return render_template("gcalform.html", calendars=calendars)
+            # return json.dumps(calendar_list['items']) 
+        else:
+            print(request.form)
+            # 'Z' indicates UTC time
+            start = "{0}T00:00:00-00:00".format(request.form.get('start'))
+            end = "{0}T00:00:00-00:00".format(request.form.get('end'))
+            calid = request.form.get('calendar_id')
 
-        eventsResult = service.events().list(
-            calendarId='reed.edu_u6m2d7fain2e3jcl1pqs3ljclg@group.calendar.google.com', timeMin=oralsweekstart, timeMax=oralsweekend,
-            singleEvents=True, orderBy='startTime').execute()
-        events = eventsResult.get('items', [])
-        eventstr = ""
-        for event in events:
-            summ = event.get("summary")
-            start = event.get("start").get("dateTime") 
-            end = event.get("end").get("dateTime") 
-            email = event.get("creator").get("email")
-            user = User.query.filter(User.email == email).first() or g.user
-            eventobj = Event(summ, start, end, user)
-            db.session.add(eventobj)
-        
-        db.session.commit()
+            eventsResult = service.events().list(
+                calendarId=calid, timeMin=start, timeMax=end,
+                singleEvents=True, orderBy='startTime').execute()
+            events = eventsResult.get('items', [])
+            for event in events:
+                summ = event.get("summary")
+                start = event.get("start").get("dateTime") 
+                end = event.get("end").get("dateTime") 
+                email = event.get("creator").get("email")
+                user = User.query.filter(User.email == email).first() or g.user
+                eventobj = Event(summ, start, end, user)
+                db.session.add(eventobj)
             
-        return json.dumps(events) 
+            db.session.commit()
+                
+            return redirect(url_for('schedule')) 
         """
         calendar_list = service.calendarList().list().execute()
         return json.dumps(calendar_list['items']) 
@@ -403,5 +411,4 @@ def load_user():
     else:
         user = None
     g.user = user
-
 
