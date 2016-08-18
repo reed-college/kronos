@@ -322,8 +322,9 @@ def get_gcal():
         if request.method == "GET":
             calendar_list = service.calendarList().list().execute()
             calendars = {(cal.get("summary"), cal.get("id")) if not cal.get("primary") else ("Primary", "primary") for cal in calendar_list["items"]}
-            return render_template("gcalform.html", calendars=calendars)
-            # return json.dumps(calendar_list['items']) 
+            # Gets the times surrounding the next orals week so its easier to import times from then
+            weekstart, weekend = util.surrounding_week(util.get_start_day(None).start)
+            return render_template("gcalform.html", calendars=calendars, weekstart=weekstart, weekend=weekend)
         else:
             print(request.form)
             # 'Z' indicates UTC time
@@ -331,10 +332,12 @@ def get_gcal():
             end = "{0}T00:00:00-00:00".format(request.form.get('end'))
             calid = request.form.get('calendar_id')
 
+            # gcal api query
             eventsResult = service.events().list(
                 calendarId=calid, timeMin=start, timeMax=end,
                 singleEvents=True, orderBy='startTime').execute()
             events = eventsResult.get('items', [])
+            # adds the new events to the db
             for event in events:
                 summ = event.get("summary")
                 start = event.get("start").get("dateTime") 
@@ -347,11 +350,6 @@ def get_gcal():
             db.session.commit()
                 
             return redirect(url_for('schedule')) 
-        """
-        calendar_list = service.calendarList().list().execute()
-        return json.dumps(calendar_list['items']) 
-        """
-
 
 @app.route('/oauth2callback')
 def oauth2callback():

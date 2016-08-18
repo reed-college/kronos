@@ -2,8 +2,9 @@
 {% block content %}
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-4 center-block">
+    <div class="col-md-3 center-block" style="float: none;">
       <form method="POST">
+        <h4>Select Calendar to get events from</h4>
         <select name='calendar_id' class="form-control">
           <option selected="" disabled="" class="default">Select a Calendar</option>
           {% for cal in calendars %}
@@ -13,11 +14,11 @@
         <h4> Range to get events from</h4>
         <div class="form-group">
           <label for="start">Start:</label>
-          <input name="start" class="form-control" type='date'></input>
+          <input name="start" class="form-control" type='date' value={{weekstart}}></input>
         </div>
         <div class="form-group">
           <label for="end">End:</label>
-          <input name="end" class="form-control" type='date'></input>
+          <input name="end" class="form-control" type='date' value={{weekend}}></input>
         </div>
         <input type="submit" class="btn btn-default" value="Done"></input>
       </form>

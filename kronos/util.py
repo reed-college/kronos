@@ -242,3 +242,16 @@ def authorize():
     """
     if not(g.user and g.user.discriminator == "FAC"):
         abort(403)
+
+def surrounding_week(day):
+    """
+    Takes a date object and returns a tuple of the sunday before and the
+    sunday after that date
+    if the day is a sunday, it returns that day and the next sunday
+    """
+    if day.isoweekday() == 7:
+        second = day + dt.timedelta(days=7)
+        return (day, second)
+    first = day - dt.timedelta(days=day.isoweekday())
+    second = first + dt.timedelta(days=7)
+    return (first, second) 
