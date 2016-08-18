@@ -235,6 +235,8 @@ def redirect_url():
            request.referrer or \
            url_for('schedule')
 
+
+
 def authorize():
     """
     checks that the current user is a FAC 

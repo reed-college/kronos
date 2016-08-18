@@ -199,7 +199,10 @@ def get_events_json():
         }
         if isinstance(event, Oral):
             evjson["readers"] = [reader.name for reader in event.readers]
-            evjson["student"] = event.stu.name
+            if event.stu:
+                evjson["student"] = event.stu.name
+            else:
+                evjson["student"] = ""
         events.append(evjson)
 
     return json.dumps(events)
@@ -231,8 +234,7 @@ def update_event():
     start = request.form.get("start") or None
     end = request.form.get("end") or None
     evtype = request.form.get("type") or None
-    # TODO: get current user from ldap
-    user = User.query.first()
+    user = g.user
     # if we're updating a current event
     if eventid is not None:
         event = Event.query.get_or_404(eventid)
@@ -284,7 +286,7 @@ def update_event():
     elif (start is not None) and (end is not None):
         print(request.form)
         if evtype == "oral":
-            event = Oral(Stu.query.first(), 'New Oral', start, end, user)
+            event = Oral(None, 'New Oral', start, end, user)
         else:
             event = Event('New Event', start, end, user)
         db.session.add(event)
@@ -305,10 +307,14 @@ def delete_event():
 
 
 @app.route('/gcal', methods=['GET','POST'])
-def get_gcal():
+def gcal():
     """
-    Shows the user what events they have during orals week
+    adds events to db from a google calendar
     """
+    # Need to be a prof or a fac to access this page
+    if not (g.user and (g.user.discriminator == "FAC" or g.user.discriminator == "professor")):
+         abort(403)
+    # google api authorization
     if 'credentials' not in flask.session:
         return flask.redirect(flask.url_for('oauth2callback'))
     credentials = client.OAuth2Credentials.from_json(
@@ -331,12 +337,13 @@ def get_gcal():
             start = "{0}T00:00:00-00:00".format(request.form.get('start'))
             end = "{0}T00:00:00-00:00".format(request.form.get('end'))
             calid = request.form.get('calendar_id')
+            type = request.form.get('caltype')
 
             # gcal api query
             eventsResult = service.events().list(
                 calendarId=calid, timeMin=start, timeMax=end,
                 singleEvents=True, orderBy='startTime').execute()
-            events = eventsResult.get('items', [])
+            events = eventsResult.get('items')
             # adds the new events to the db
             for event in events:
                 summ = event.get("summary")
@@ -344,7 +351,24 @@ def get_gcal():
                 end = event.get("end").get("dateTime") 
                 email = event.get("creator").get("email")
                 user = User.query.filter(User.email == email).first() or g.user
-                eventobj = Event(summ, start, end, user)
+                if type == "oral": 
+                    # if the event has attendees, if one of them is a student,
+                    # make them the student for this oral. If one a professor,
+                    # make them a reader
+                    attendees = event.get("attendees") or []
+                    student = None
+                    readers = []
+                    for attender in attendees:
+                        person = User.query.filter(User.email == attender.get("email")).first()
+                        if person:
+                            if person.discriminator == "student":
+                                student = person
+                            elif person.discriminator == "professor":
+                                readers.append(person) 
+                    eventobj = Oral(student, summ, start, end, user)
+                    eventobj.readers = readers
+                else:
+                    eventobj = Event(summ, start, end, user)
                 db.session.add(eventobj)
             
             db.session.commit()
@@ -369,7 +393,7 @@ def oauth2callback():
         auth_code = flask.request.args.get('code')
         credentials = flow.step2_exchange(auth_code)
         flask.session['credentials'] = credentials.to_json()
-        return flask.redirect(flask.url_for('get_gcal'))
+        return flask.redirect(flask.url_for('gcal'))
 
 
 @app.route('/login')
