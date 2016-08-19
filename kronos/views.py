@@ -330,7 +330,7 @@ def gcal():
             calendars = {(cal.get("summary"), cal.get("id")) if not cal.get("primary") else ("Primary", "primary") for cal in calendar_list["items"]}
             # Gets the times surrounding the next orals week so its easier to import times from then
             weekstart, weekend = util.surrounding_week(util.get_start_day(None).start)
-            return render_template("gcalform.html", calendars=calendars, weekstart=weekstart, weekend=weekend)
+            return render_template("gcalform.html", calendars=calendars, weekstart=weekstart, weekend=weekend, usertype=g.user.discriminator)
         else:
             print(request.form)
             # 'Z' indicates UTC time
@@ -350,8 +350,12 @@ def gcal():
                 start = event.get("start").get("dateTime") 
                 end = event.get("end").get("dateTime") 
                 email = event.get("creator").get("email")
-                user = User.query.filter(User.email == email).first() or g.user
-                if type == "oral": 
+                # only FACs should be able to assign events to people other than themselves
+                if g.user.discriminator == "FAC":
+                    user = User.query.filter(User.email == email).first() or g.user
+                else:
+                    user = g.user
+                if type == "oral" and g.user.discriminator == "FAC": 
                     # if the event has attendees, if one of them is a student,
                     # make them the student for this oral. If one a professor,
                     # make them a reader
