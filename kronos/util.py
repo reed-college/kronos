@@ -237,12 +237,21 @@ def redirect_url():
 
 
 
-def authorize():
+def authorize(allowStu=False, allowProf=False, allowFAC=True):
     """
-    checks that the current user is a FAC 
+    Depending on which args are true, those types of users are 
+    allowed to access a page.
+    Everyone else gets a 403 
+    no matter what, you have to be logged in to access the page
     used for pages that update data, like submitevent
     """
-    if not(g.user and g.user.discriminator == "FAC"):
+    if not g.user:
+        abort(403)
+    if g.user.discriminator == "student" and not allowStu:
+        abort(403)
+    if g.user.discriminator == "professor" and not allowProf:
+        abort(403)
+    if g.user.discriminator == "FAC" and not allowFAC:
         abort(403)
 
 def surrounding_week(day):

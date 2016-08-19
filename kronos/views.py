@@ -95,8 +95,8 @@ def allowed_file(filename):
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
-    # Need to be logged in to upload so we can assign events
-    if request.method == 'POST' and g.user:
+    authorize(allowProf=True)
+    if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
@@ -312,8 +312,7 @@ def gcal():
     adds events to db from a google calendar
     """
     # Need to be a prof or a fac to access this page
-    if not (g.user and (g.user.discriminator == "FAC" or g.user.discriminator == "professor")):
-         abort(403)
+    authorize(allowProf=True)
     # google api authorization
     if 'credentials' not in flask.session:
         return flask.redirect(flask.url_for('oauth2callback'))
@@ -376,8 +375,9 @@ def gcal():
                 db.session.add(eventobj)
             
             db.session.commit()
-                
-            return redirect(url_for('schedule')) 
+            flash(Markup('Calendar Imported. <a href="' + url_for('schedule') + '"> Home</a>'))
+            return render_template('uploaded.html')
+            return redirect() 
 
 @app.route('/oauth2callback')
 def oauth2callback():
