@@ -11,6 +11,7 @@ flask site for scheduling and viewing orals
 * edit `config.py` to have the correct postgres URI for the db you just created
   * Make sure the username and password you type in are for a user who can edit the db, such as the owner
 * then you should be good to go, run `python runserver.py` and go to `localhost:5000/`
+* If you want test data, run `python populatedb.py`
 
 ## Running Tests
 * Run `py.test` in the home directory
