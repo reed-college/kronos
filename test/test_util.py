@@ -41,31 +41,29 @@ class TestUtil:
             'Paul Hovda',
             'hovdap@reed.edu',
             'Philosophy',
-            'Philosophy, Religion, Psychology and Linguistics')
+            'Philosophy, Religion, Psychology, and Linguistics')
         pearson = Prof(
             'pearson',
             'Pearson',
             'pearson@reed.edu',
             'Linguistics',
-            'Philosophy, Religion, Psychology and Linguistics')
+            'Philosophy, Religion, Psychology, and Linguistics')
         emma = Stu(
             'erennie',
             'Emma Rennie',
-            'erennie@reed.edu',
-            'Linguistics',
-            'Philosophy, Religion, Psychology and Linguistics')
+            'erennie@reed.edu')
         richard = Stu(
             'adcockr',
             'Richard Adcock',
-            'adcockr@reed.edu',
-            'Linguistics',
-            'Philosophy, Religion, Psychology and Linguistics')
+            'adcockr@reed.edu')
 
         oral1 = Oral(
             emma,
             'Oral_Emma',
             parser.parse('20160502 10:00:00 AM'),
-            parser.parse('20160502 12:00:00 PM'),
+            parser.parse('20160502 12:00:00 PM'), 
+            'Linguistics', 
+            'Philosophy, Religion, Psychology, and Linguistics',
             pearson)
         oral1.readers = [pearson]
 
@@ -73,7 +71,9 @@ class TestUtil:
             richard,
             'Oral_Richard',
             parser.parse('20160502 03:00:00 PM'),
-            parser.parse('20160502 05:00:00 PM'),
+            parser.parse('20160502 05:00:00 PM'), 
+            'Linguistics', 
+            'Philosophy, Religion, Psychology, and Linguistics',
             hovda)
         oral2.readers = [hovda]
 

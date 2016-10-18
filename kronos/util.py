@@ -126,13 +126,13 @@ def filter_events(eventobjs, args):
         eventobjs = eventobjs.union(ora)
     if div in DIVISIONS:
         st = eventobjs.join(Oral).join(Oral.stu).\
-            join(Stu).filter(Stu.division == div)
+            join(Stu).filter(Oral.division == div)
         pf = eventobjs.join(Event.user).\
             join(Prof).filter(Prof.division == div)
         eventobjs = st.union(pf)
     if dept in DEPARTMENTS:
         st = eventobjs.join(Oral).join(Oral.stu).\
-            join(Stu).filter(Stu.department == dept)
+            join(Stu).filter(Oral.department == dept)
         pf = eventobjs.join(Event.user).\
             join(Prof).filter(Prof.department == dept)
         eventobjs = st.union(pf)
