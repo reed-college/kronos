@@ -10,7 +10,6 @@ flask site for scheduling and viewing orals
 * run `cp kronos/config.py.template kronos/config.py`
 * edit `config.py` to have the correct postgres URI for the db you just created
   * Make sure the username and password you type in are for a user who can edit the db, such as the owner
-* run `python manage.py db upgrade`
 * then you should be good to go, run `python runserver.py` and go to `localhost:5000/`
 
 ## Running Tests
