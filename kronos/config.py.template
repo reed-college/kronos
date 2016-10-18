@@ -2,7 +2,7 @@ import uuid
 
 class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://username:password@host:port/mydatabase'
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://username:password@localhost:5432/mydatabase'
     DEBUG = False 
     SECRET_KEY = str(uuid.uuid4())
     UPLOAD_FOLDER = "./kronos/static/uploads/" 

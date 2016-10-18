@@ -21,7 +21,7 @@ flask site for scheduling and viewing orals
 This is exactly how I set my db, you don't need to follow it exactly for it to work, but it may be useful if you're not used to postgres
 * launch `psql` in the command line
 * typing `\conninfo` will tell you what port to enter into the URI under the `Config` class in `config.py`
-  * with default postgres settings, the `host:port` section of the URI should be `localhost:5432`, but coninfo will tell you exactly what port if its not 5432
+  * the default postgres settings are `localhost:5432`
 * type in `CREATE ROLE kronos_dev_user WITH LOGIN PASSWORD 'password' CREATEDB;`
   * then `username:password` in the URI should be `kronos_dev_user:password`
 * enter in `CREATE DATABASE kronos_dev WITH OWNER kronos_dev_user;`
